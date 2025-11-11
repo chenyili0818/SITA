@@ -22,11 +22,6 @@ SITA/
 |   |                                       # Attribution will be restored after review.
 |   └── src/                     # Generation Code
 |   └── tool/model_downloader.py # Download the model needed
-└── Dataset/
-|   ├── Optbench                 # Output Lean files
-|   |   ├── Problem              # Generated Formal Skeleton
-|   |   └── Solution             # Generated Formal Skeleton with Proof
-|   └── Problem                  # Test Problems    
 ```
 
 ## 🚀 Getting Started
@@ -51,3 +46,4 @@ lean --run Optlib/Autoformalization/Example/GD_example.lean
 - **Integration with LLMs**: (Suggested by `api/config.json`) for proof suggestion and statement completion
   
   run `Code/src/main.py` for generation.
+
