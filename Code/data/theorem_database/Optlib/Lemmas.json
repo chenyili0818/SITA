@@ -1,0 +1,254 @@
+[
+    {
+        "theorem_name": "term‖_‖₂",
+        "theorem_statement": " : Lean.ParserDescr✝",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [],
+        "proof_process": "@[local term_parser 1000]\ndef term‖_‖₂✝ : Lean.ParserDescr✝ :=\n  ParserDescr.node✝\n    (Lean.Name.mkNum✝\n      (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ Lean.Name.anonymous✝ \"term‖_‖₂\") \"_@\") \"_hyg\") 14)\n    1024\n    (ParserDescr.binary✝ `andthen (ParserDescr.binary✝ `andthen (ParserDescr.symbol✝ \"‖\") (ParserDescr.cat✝ `term 0))\n      (ParserDescr.symbol✝ \"‖₂\"))",
+        "type": "definition",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "_aux___macroRules_term‖_‖₂_1",
+        "theorem_statement": " : Macro✝",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [],
+        "proof_process": "@[macro term‖_‖₂✝]\ndef «_aux___macroRules_term‖_‖₂_1» : Macro✝ := fun\n  | `(‖$x‖₂) => ``(@Norm.norm _ (PiLp.instNorm 2 fun _ ↦ ℝ) $x)\n  | _ => no_error_if_unused% throw✝ Lean.Macro.Exception.unsupportedSyntax✝",
+        "type": "definition",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "term‖_‖₁",
+        "theorem_statement": " : Lean.ParserDescr✝",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [],
+        "proof_process": "@[local term_parser 1000]\ndef term‖_‖₁✝ : Lean.ParserDescr✝ :=\n  ParserDescr.node✝\n    (Lean.Name.mkNum✝\n      (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ Lean.Name.anonymous✝ \"term‖_‖₁\") \"_@\") \"_hyg\") 286)\n    1024\n    (ParserDescr.binary✝ `andthen (ParserDescr.binary✝ `andthen (ParserDescr.symbol✝ \"‖\") (ParserDescr.cat✝ `term 0))\n      (ParserDescr.symbol✝ \"‖₁\"))",
+        "type": "definition",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "_aux___macroRules_term‖_‖₁_1",
+        "theorem_statement": " : Macro✝",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [],
+        "proof_process": "@[macro term‖_‖₁✝]\ndef «_aux___macroRules_term‖_‖₁_1» : Macro✝ := fun\n  | `(‖$x‖₁) => ``(@Norm.norm _ (PiLp.instNorm 1 fun _ ↦ ℝ) $x)\n  | _ => no_error_if_unused% throw✝ Lean.Macro.Exception.unsupportedSyntax✝",
+        "type": "definition",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "PiLp_instNorm1_eq",
+        "theorem_statement": " (x : EuclideanSpace ℝ (Fin n)) : ‖x‖₁ = Finset.sum Finset.univ (fun i => ‖x i‖)",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem PiLp_instNorm1_eq (x : EuclideanSpace ℝ (Fin n)) : ‖x‖₁ = Finset.sum Finset.univ (fun i => ‖x i‖) :=\n  by\n  unfold PiLp.instNorm\n  simp",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "dot_mul_eq_transpose_mul_dot",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) (u : EuclideanSpace ℝ (Fin m)) (v : EuclideanSpace ℝ (Fin n)) :\n  u ⬝ᵥ A *ᵥ v = Aᵀ *ᵥ u ⬝ᵥ v",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem dot_mul_eq_transpose_mul_dot (A : Matrix (Fin m) (Fin n) ℝ) (u : EuclideanSpace ℝ (Fin m))\n    (v : EuclideanSpace ℝ (Fin n)) : u ⬝ᵥ A *ᵥ v = Aᵀ *ᵥ u ⬝ᵥ v := by symm;\n  rw [← vecMul_transpose, transpose_transpose, dotProduct_mulVec]\n    /- `Au - Av = A(u - v)` for u v in EuclideanSpace -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "mulVec_sub",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) (u v : Fin n → ℝ) : A *ᵥ u - A *ᵥ v = A *ᵥ (u - v)",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem mulVec_sub (A : Matrix (Fin m) (Fin n) ℝ) (u v : Fin n → ℝ) : A *ᵥ u - A *ᵥ v = A *ᵥ (u - v) := by\n  rw [sub_eq_add_neg u v, mulVec_add, mulVec_neg, sub_eq_add_neg]\n    /- `‖x‖₂ ^ 2 = x ⬝ x` for x in EuclideanSpace -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "norm2eq_dot",
+        "theorem_statement": " (x : EuclideanSpace ℝ (Fin m)) : ‖x‖₂ ^ 2 = x ⬝ᵥ x",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem norm2eq_dot (x : EuclideanSpace ℝ (Fin m)) : ‖x‖₂ ^ 2 = x ⬝ᵥ x :=\n  by\n  rw [EuclideanSpace.norm_eq, Real.sq_sqrt, dotProduct]\n  rw [Finset.sum_congr]; simp\n  intro z _; simp; rw [pow_two]\n  apply sum_nonneg;\n  exact fun i _ =>\n    sq_nonneg\n      (‖x i‖)\n        /- `⟪x, y⟫_ℝ = x ⬝ y` for x y in EuclideanSpace -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "real_inner_eq_dot",
+        "theorem_statement": " (x y : EuclideanSpace ℝ (Fin m)) : inner x y = x ⬝ᵥ y",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem real_inner_eq_dot (x y : EuclideanSpace ℝ (Fin m)) : inner x y = x ⬝ᵥ y := by simp;\n  rw [dotProduct]\n    /- gradient of a quadratic in ℝⁿ -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "quadratic_gradient",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) :\n  ∀ x : (EuclideanSpace ℝ (Fin n)),\n    HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => ((A *ᵥ x) ⬝ᵥ (A *ᵥ x))) ((2 : ℝ) • Aᵀ *ᵥ A *ᵥ x) x",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem quadratic_gradient (A : Matrix (Fin m) (Fin n) ℝ) :\n    ∀ x : (EuclideanSpace ℝ (Fin n)),\n      HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => ((A *ᵥ x) ⬝ᵥ (A *ᵥ x))) ((2 : ℝ) • Aᵀ *ᵥ A *ᵥ x) x :=\n  by\n  by_cases hA : A = 0\n  · intro x\n    rw [hA]; simp; apply hasGradientAt_const\n  intro x\n  rw [HasGradient_iff_Convergence_Point]\n  intro ε εpos\n  let normA := ‖(Matrix.toEuclideanLin ≪≫ₗ LinearMap.toContinuousLinearMap) A‖\n  have norm_mul (x : EuclideanSpace ℝ (Fin n)) : ‖A *ᵥ x‖₂ ≤ normA * ‖x‖ := by apply Matrix.l2_opNorm_mulVec A\n  have normApos : 0 < normA := by\n    contrapose! hA\n    have hA' : 0 ≤ normA := by apply norm_nonneg\n    have hA'' : normA = 0 := by linarith [hA, hA']\n    rw [norm_eq_zero] at hA''; simp at hA''; exact hA''\n  use (ε / normA ^ 2)\n  constructor\n  · apply div_pos εpos; rw [sq_pos_iff]; linarith [normApos]\n  intro y ydist; rw [inner_smul_left]\n  simp; rw [← dotProduct]\n  have aux1 : (fun x_1 ↦ ((Aᵀ * A) *ᵥ x) x_1) ⬝ᵥ (fun x_1 ↦ y x_1 - x x_1) = (Aᵀ * A) *ᵥ x ⬝ᵥ (y - x) := by\n    rw [dotProduct, dotProduct]; simp\n  rw [aux1, ← mulVec_mulVec, ← dot_mul_eq_transpose_mul_dot _ _ (y - x), Matrix.mulVec_sub, dotProduct_sub]\n  ring_nf\n  have aux2 (u v : Fin m → ℝ) : u ⬝ᵥ u + (v ⬝ᵥ v - v ⬝ᵥ u * 2) = (u - v) ⬝ᵥ (u - v) :=\n    by\n    rw [dotProduct_sub, sub_dotProduct, sub_dotProduct, ← sub_add, sub_sub, dotProduct_comm u v]\n    rw [← mul_two, add_comm_sub]\n  rw [aux2, ← norm2eq_dot]; simp; rw [← Matrix.mulVec_sub]\n  calc\n    ‖(A *ᵥ (y - x))‖₂ ^ 2 ≤ (normA * ‖x - y‖) ^ 2 := by\n      rw [norm_sub_rev]\n      apply sq_le_sq' _ (norm_mul (y - x))\n      calc\n        -(normA * ‖y - x‖) ≤ 0 := by simp; apply mul_nonneg; linarith [normApos]; apply norm_nonneg\n        _ ≤ ‖A *ᵥ (y - x)‖₂ := by apply norm_nonneg\n    _ ≤ ε * ‖x - y‖ := by\n      rw [pow_two, ← mul_assoc]; apply mul_le_mul_of_nonneg_right\n      rw [mul_rotate, mul_assoc, ← pow_two]\n      calc\n        ‖x - y‖ * normA ^ 2 ≤ ε / normA ^ 2 * normA ^ 2 := mul_le_mul_of_nonneg_right ydist (sq_nonneg normA)\n        _ = ε := by field_simp\n      apply norm_nonneg",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "_private",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n  ∀ x : (EuclideanSpace ℝ (Fin n)), HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => (b ⬝ᵥ (A *ᵥ x))) (Aᵀ *ᵥ b) x",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "private theorem linear_gradient (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n    ∀ x : (EuclideanSpace ℝ (Fin n)),\n      HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => (b ⬝ᵥ (A *ᵥ x))) (Aᵀ *ᵥ b) x :=\n  by\n  intro x\n  rw [HasGradient_iff_Convergence_Point]\n  intro ε εpos\n  use ε; use εpos\n  intro y _\n  rw [dot_mul_eq_transpose_mul_dot, dot_mul_eq_transpose_mul_dot, ← dotProduct_sub]\n  rw [EuclideanSpace.inner_eq_star_dotProduct]; simp\n  repeat rw [dotProduct]\n  simp\n  apply mul_nonneg; linarith [εpos]; apply norm_nonneg",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "affine_sq_gradient",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n  ∀ x : (EuclideanSpace ℝ (Fin n)),\n    HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => ((1 / 2) * ‖A *ᵥ x - b‖₂ ^ 2)) (Aᵀ *ᵥ (A *ᵥ x - b)) x",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem affine_sq_gradient (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n    ∀ x : (EuclideanSpace ℝ (Fin n)),\n      HasGradientAt (fun x : (EuclideanSpace ℝ (Fin n)) => ((1 / 2) * ‖A *ᵥ x - b‖₂ ^ 2)) (Aᵀ *ᵥ (A *ᵥ x - b)) x :=\n  by\n  intro x\n  let f := fun x : (EuclideanSpace ℝ (Fin n)) => (1 / 2) * (A *ᵥ x) ⬝ᵥ (A *ᵥ x)\n  let f' := fun x : (EuclideanSpace ℝ (Fin n)) => Aᵀ *ᵥ A *ᵥ x\n  have fgradient : HasGradientAt f (f' x) x :=\n    by\n    let g := fun x : (EuclideanSpace ℝ (Fin n)) => (1 / (2 : ℝ)) • (2 : ℝ) • Aᵀ *ᵥ A *ᵥ x\n    have f'eqg (x : (EuclideanSpace ℝ (Fin n))) : f' x = g x := by\n      show Aᵀ *ᵥ A *ᵥ x = (1 / (2 : ℝ)) • (2 : ℝ) • Aᵀ *ᵥ A *ᵥ x; simp\n    rw [f'eqg]\n    apply HasGradientAt.const_mul' (1 / 2) (quadratic_gradient A x)\n  let h := fun x : (EuclideanSpace ℝ (Fin n)) => (b ⬝ᵥ (A *ᵥ x))\n  let h' := fun _ : (EuclideanSpace ℝ (Fin n)) => (Aᵀ *ᵥ b)\n  have hgradient : HasGradientAt h (h' x) x := by apply linear_gradient\n  let φ := fun x : (EuclideanSpace ℝ (Fin n)) => ((1 / 2) * ‖A *ᵥ x - b‖₂ ^ 2)\n  let φ' := fun x : (EuclideanSpace ℝ (Fin n)) => (Aᵀ *ᵥ (A *ᵥ x - b))\n  have φeq : φ = fun x : (EuclideanSpace ℝ (Fin n)) => f x - h x + (1 / 2) * b ⬝ᵥ b :=\n    by\n    ext z; simp [φ]; rw [norm2eq_dot]; simp [f, h]\n    rw [← sub_add, dotProduct_comm _ b, sub_sub, ← two_mul, mul_add, mul_sub, ← mul_assoc]\n    rw [inv_mul_cancel₀, one_mul]\n    simp\n  have φ'eq : φ' = fun x : (EuclideanSpace ℝ (Fin n)) => f' x - h' x :=\n    by\n    ext y z; simp [φ', f', h']\n    rw [Matrix.mulVec_sub Aᵀ]; simp\n  show HasGradientAt φ (φ' x) x\n  rw [φeq, φ'eq]\n  apply HasGradientAt.add_const\n  apply HasGradientAt.sub fgradient hgradient",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "affine_sq_convex",
+        "theorem_statement": " (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n  ConvexOn ℝ univ (fun x : (EuclideanSpace ℝ (Fin n)) => ((1 / 2) * ‖A *ᵥ x - b‖₂ ^ 2))",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem affine_sq_convex (A : Matrix (Fin m) (Fin n) ℝ) (b : (Fin m) → ℝ) :\n    ConvexOn ℝ univ (fun x : (EuclideanSpace ℝ (Fin n)) => ((1 / 2) * ‖A *ᵥ x - b‖₂ ^ 2)) :=\n  by\n  apply monotone_gradient_convex'\n  apply convex_univ\n  exact (fun x _ => affine_sq_gradient A b x)\n  intro x _ y _\n  rw [Matrix.mulVec_sub, Matrix.mulVec_sub, ← sub_add, sub_add_eq_add_sub, sub_add_cancel, ← Matrix.mulVec_sub,\n    real_inner_eq_dot]\n  rw [← dot_mul_eq_transpose_mul_dot, ← Matrix.mulVec_sub, ← norm2eq_dot]\n  apply sq_nonneg",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "norm_one_convex",
+        "theorem_statement": " : ConvexOn ℝ univ (fun x : (EuclideanSpace ℝ (Fin n)) => ‖x‖₁)",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem norm_one_convex : ConvexOn ℝ univ (fun x : (EuclideanSpace ℝ (Fin n)) => ‖x‖₁) :=\n  by\n  rw [ConvexOn]\n  constructor; use convex_univ\n  intro x _ y _ a b anneg bnneg _\n  rw [smul_eq_mul, smul_eq_mul, PiLp_instNorm1_eq, PiLp_instNorm1_eq, PiLp_instNorm1_eq, mul_sum, mul_sum, ←\n    sum_add_distrib]\n  apply sum_le_sum\n  intro i _\n  simp\n  calc\n    |a * x i + b * y i| ≤ |a * x i| + |b * y i| := by apply abs_add\n    _ = a * |x i| + b * |y i| := by\n      rw [abs_mul, abs_mul, abs_of_nonneg anneg, abs_of_nonneg bnneg]\n        /- `sgn(x)|x| = x` -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "real_sign_mul_abs",
+        "theorem_statement": " (x : ℝ) : Real.sign (x) * |x| = x",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem real_sign_mul_abs (x : ℝ) : Real.sign (x) * |x| = x :=\n  by\n  by_cases xpos : 0 < x\n  · rw [Real.sign_of_pos xpos]; simp; linarith\n  · push_neg at xpos\n    by_cases xzero : x = 0\n    · rw [xzero]; simp\n    · push_neg at xzero\n      have xneg : x < 0 := by contrapose! xzero; linarith\n      rw [Real.sign_of_neg xneg]; simp; rw [neg_eq_iff_eq_neg, abs_eq_neg_self];\n      linarith\n        /- the proximal of ‖ ‖₁ in ℝⁿ -/",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "norm_one_proximal",
+        "theorem_statement": " {t μ : ℝ} (hp : h = fun (y : EuclideanSpace ℝ (Fin n)) => μ • ‖y‖₁) (x : EuclideanSpace ℝ (Fin n))\n  (xm : EuclideanSpace ℝ (Fin n)) (tpos : 0 < t) (μpos : 0 < μ)\n  (minpoint : ∀ i : Fin n, xm i = Real.sign (x i) * (max (abs (x i) - t * μ) 0)) : prox_prop (t • h) x xm",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem norm_one_proximal {t μ : ℝ} (hp : h = fun (y : EuclideanSpace ℝ (Fin n)) => μ • ‖y‖₁)\n    (x : EuclideanSpace ℝ (Fin n)) (xm : EuclideanSpace ℝ (Fin n)) (tpos : 0 < t) (μpos : 0 < μ)\n    (minpoint : ∀ i : Fin n, xm i = Real.sign (x i) * (max (abs (x i) - t * μ) 0)) : prox_prop (t • h) x xm :=\n  by\n  let g := (t * μ) • (fun (x : EuclideanSpace ℝ (Fin n)) => ‖x‖₁)\n  have geqth : g = t • h := by ext z; rw [Pi.smul_apply]; simp [g]; rw [hp]; simp; rw [mul_assoc]\n  rw [← geqth]; simp [g]\n  show prox_prop ((t * μ) • (fun (x : EuclideanSpace ℝ (Fin n)) => ‖x‖₁)) x xm\n  have tμpos : 0 < t * μ := by apply mul_pos; linarith [tpos]; linarith [μpos]\n  rw [prox_iff_subderiv_smul (fun x : (EuclideanSpace ℝ (Fin n)) => ‖x‖₁) norm_one_convex tμpos]\n  rw [← mem_SubderivAt, HasSubgradientAt]\n  intro y\n  simp; rw [PiLp_instNorm1_eq, PiLp_instNorm1_eq, ← sum_add_distrib]; apply sum_le_sum\n  intro i _\n  let abs_subg := SubderivAt_abs (xm i)\n  by_cases hxm : xm i = 0\n  · rw [hxm]; simp\n    specialize minpoint i; rw [hxm] at minpoint; simp at minpoint\n    have aux : |x i| ≤ t * μ := by\n      by_cases hx : x i = 0\n      · rw [hx]; simp; apply mul_nonneg; linarith [tpos]; linarith [μpos]\n      · simp [hx] at minpoint; exact minpoint\n    calc\n      μ⁻¹ * t⁻¹ * x i * y i ≤ μ⁻¹ * t⁻¹ * |x i * y i| :=\n        by\n        rw [mul_assoc _ (x i), mul_le_mul_left]\n        apply le_abs_self; rw [← mul_inv, inv_pos]; apply mul_pos\n        linarith [μpos]; linarith [tpos]\n      _ ≤ |y i| * μ⁻¹ * t⁻¹ * t * μ :=\n        by\n        rw [abs_mul, ← mul_assoc, mul_comm, ← mul_assoc, ← mul_assoc, mul_assoc _ t]\n        apply mul_le_mul_of_nonneg_left\n        exact aux; apply mul_nonneg; apply mul_nonneg\n        apply abs_nonneg; simp; linarith [μpos]; simp; linarith [tpos]\n      _ = |y i| := by\n        rw [mul_assoc _ (t⁻¹) t, inv_mul_cancel₀, mul_one]\n        rw [mul_assoc _ (μ⁻¹) μ, inv_mul_cancel₀, mul_one]\n        linarith [μpos]; linarith [tpos]\n  rw [eq_ite_iff, or_iff_right] at abs_subg\n  rcases abs_subg with ⟨_, abs_subg⟩\n  let sgnxm := sign (xm i)\n  have aux : sgnxm ∈ SubderivAt abs (xm i) := by rw [abs_subg]; simp\n  rw [← mem_SubderivAt, HasSubgradientAt] at aux\n  specialize aux (y i)\n  have aux2 : inner sgnxm (y i - xm i) = μ⁻¹ * t⁻¹ * (x i - xm i) * (y i - xm i) :=\n    by\n    simp [sgnxm]; left\n    rw [minpoint]; simp; rw [minpoint] at hxm; simp at hxm; push_neg at hxm\n    rcases hxm with ⟨xiieq0, ieq⟩\n    have eq1 : max (|x i| - t * μ) 0 = |x i| - t * μ := by apply max_eq_left; linarith\n    rw [eq1]; simp; nth_rw 3 [mul_sub]\n    rw [← sub_add, real_sign_mul_abs]; simp\n    nth_rw 2 [mul_comm (sign (x i))]\n    rw [← mul_assoc _ (t * μ), ← mul_inv, mul_comm μ t, inv_mul_cancel₀, one_mul]\n    by_cases hx : 0 < x i\n    · have eq2 : sign (sign (x i) * (|x i| - t * μ)) = 1 :=\n        by\n        apply Real.sign_of_pos; apply mul_pos\n        calc\n          0 < 1 := by simp\n          1 = sign (x i) := by symm; apply Real.sign_of_pos hx\n        linarith [ieq]\n      rw [eq2]; symm; apply Real.sign_of_pos hx\n    · have xneg : x i < 0 := by contrapose! xiieq0; linarith\n      have eq2 : sign (sign (x i) * (|x i| - t * μ)) = -1 :=\n        by\n        apply Real.sign_of_neg; apply mul_neg_of_neg_of_pos\n        calc\n          sign (x i) = -1 := by apply Real.sign_of_neg xneg\n          _ < 0 := by linarith\n        linarith [ieq]\n      rw [eq2]; symm; apply Real.sign_of_neg xneg\n    linarith [μpos, tpos]\n  rw [aux2] at aux; simp; linarith [aux]\n  push_neg; intro hxm'; contrapose! hxm'; exact hxm",
+        "type": "theorem",
+        "filename": "Lemmas"
+    },
+    {
+        "theorem_name": "Transpose_mul_self_eq_zero",
+        "theorem_statement": " {A : Matrix (Fin m) (Fin n) ℝ} : Aᵀ * A = 0 ↔ A = 0",
+        "variable": [
+            "variable\n  {n m : ℕ}\n    /- Definition of `‖ ‖₁, ‖ ‖₂`, consistent with the general definition in ℝⁿ -/"
+        ],
+        "namespaces": [
+            "Finset",
+            "Matrix",
+            "Real",
+            "Set"
+        ],
+        "proof_process": "theorem Transpose_mul_self_eq_zero {A : Matrix (Fin m) (Fin n) ℝ} : Aᵀ * A = 0 ↔ A = 0 :=\n  ⟨fun h => Matrix.ext fun i j => (congr_fun <| dotProduct_self_eq_zero.1 <| Matrix.ext_iff.2 h j j) i, fun h =>\n    h ▸ Matrix.mul_zero _⟩",
+        "type": "theorem",
+        "filename": "Lemmas"
+    }
+]

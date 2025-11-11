@@ -1,0 +1,2018 @@
+[
+    {
+        "theorem_name": "term∇",
+        "theorem_statement": " : Lean.ParserDescr✝",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "@[local term_parser 1000]\ndef term∇✝ : Lean.ParserDescr✝ :=\n  ParserDescr.node✝\n    (Lean.Name.mkNum✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ Lean.Name.anonymous✝ \"term∇\") \"_@\") \"_hyg\")\n      65)\n    1024 (ParserDescr.symbol✝ \"∇\")",
+        "type": "definition",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "_aux___macroRules_term∇_1",
+        "theorem_statement": " : Macro✝",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "@[macro term∇✝]\ndef «_aux___macroRules_term∇_1» : Macro✝ := fun\n  | `(∇) => ``(gradient)\n  | _ => no_error_if_unused% throw✝ Lean.Macro.Exception.unsupportedSyntax✝",
+        "type": "definition",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "_aux___unexpand_gradient_1",
+        "theorem_statement": " : Lean.PrettyPrinter.Unexpander✝",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "",
+        "type": "definition",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hg : HasGradientAtFilter g g' (f x) L') (hf : HasGradientAtFilter f f' x L) (hL : Tendsto f L L') :\n  HasGradientAtFilter (g ∘ f) (g' • f') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem comp (hg : HasGradientAtFilter g g' (f x) L') (hf : HasGradientAtFilter f f' x L) (hL : Tendsto f L L') :\n    HasGradientAtFilter (g ∘ f) (g' • f') x L :=\n  by\n  have eq : (starRingEnd 𝕜) g' • (toDual 𝕜 F) f' = (toDual 𝕜 F) (g' • f') := by rw [map_smulₛₗ]\n  rw [HasGradientAtFilter, ← eq]\n  exact hg.hasDerivAtFilter.comp_hasFDerivAtFilter x hf hL",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hg : HasGradientWithinAt g g' t (f x)) (hf : HasGradientWithinAt f f' s x) (hst : MapsTo f s t) :\n  HasGradientWithinAt (g ∘ f) (g' • f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem comp (hg : HasGradientWithinAt g g' t (f x)) (hf : HasGradientWithinAt f f' s x) (hst : MapsTo f s t) :\n    HasGradientWithinAt (g ∘ f) (g' • f') s x :=\n  HasGradientAtFilter.comp hg hf <| hf.continuousWithinAt.tendsto_nhdsWithin hst",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hg : HasGradientAt g g' (f x)) (hf : HasGradientWithinAt f f' s x) : HasGradientWithinAt (g ∘ f) (g' • f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem comp_hasGradientWithinAt (hg : HasGradientAt g g' (f x)) (hf : HasGradientWithinAt f f' s x) :\n    HasGradientWithinAt (g ∘ f) (g' • f') s x :=\n  hg.comp hf hf.continuousWithinAt",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hg : HasGradientWithinAt g g' t (f x)) (hf : HasGradientWithinAt f f' s x) (hst : Tendsto f (𝓝[s] x) (𝓝[t] f x)) :\n  HasGradientWithinAt (g ∘ f) (g' • f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem comp_of_mem (hg : HasGradientWithinAt g g' t (f x)) (hf : HasGradientWithinAt f f' s x)\n    (hst : Tendsto f (𝓝[s] x) (𝓝[t] f x)) : HasGradientWithinAt (g ∘ f) (g' • f') s x :=\n  HasGradientAtFilter.comp hg hf hst",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hg : HasGradientAt g g' (f x)) (hf : HasGradientAt f f' x) : HasGradientAt (g ∘ f) (g' • f') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "/-- The chain rule. -/\ntheorem comp (hg : HasGradientAt g g' (f x)) (hf : HasGradientAt f f' x) : HasGradientAt (g ∘ f) (g' • f') x :=\n  HasGradientAtFilter.comp hg hf hf.continuousAt",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient",
+        "theorem_statement": " (hg : DifferentiableAt 𝕜 g (f x)) (hf : DifferentiableAt 𝕜 f x) : ∇ (g ∘ f) x = (∇ g (f x)) • (∇ f x)",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {g : 𝕜 → 𝕜}",
+            "variable {g' : 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem comp (hg : DifferentiableAt 𝕜 g (f x)) (hf : DifferentiableAt 𝕜 f x) : ∇ (g ∘ f) x = (∇ g (f x)) • (∇ f x) :=\n  (hg.hasGradientAt.comp hf.hasGradientAt).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (h : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun x => c • f x) ((starRingEnd 𝕜) c • f') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul (h : HasGradientAtFilter f f' x L) (c : 𝕜) :\n    HasGradientAtFilter (fun x => c • f x) ((starRingEnd 𝕜) c • f') x L :=\n  by\n  have : c • (toDual 𝕜 F) f' = (toDual 𝕜 F) ((starRingEnd 𝕜) c • f') := by\n    rw [map_smulₛₗ, RingHomCompTriple.comp_apply, RingHom.id_apply]\n  rw [HasGradientAtFilter, ← this]; rw [HasGradientAtFilter] at h\n  exact h.const_smul c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (h : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun x => c • f x) ((starRingEnd 𝕜) c • f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul (h : HasGradientWithinAt f f' s x) (c : 𝕜) :\n    HasGradientWithinAt (fun x => c • f x) ((starRingEnd 𝕜) c • f') s x := by exact HasGradientAtFilter.const_smul h c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (h : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c • f x) ((starRingEnd 𝕜) c • f') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul (h : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c • f x) ((starRingEnd 𝕜) c • f') x :=\n  by exact HasGradientAtFilter.const_smul h c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_const_smul",
+        "theorem_statement": " (h : DifferentiableAt 𝕜 f x) (c : 𝕜) : ∇ (fun y => c • f y) x = (starRingEnd 𝕜) c • ∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_const_smul (h : DifferentiableAt 𝕜 f x) (c : 𝕜) : ∇ (fun y => c • f y) x = (starRingEnd 𝕜) c • ∇ f x :=\n  (h.hasGradientAt.const_smul c).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (h : HasGradientAtFilter f f' x L) : HasGradientAtFilter (fun x => c • f x) (c • f') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {f : F → ℝ}",
+            "variable (c : ℝ)"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul' (h : HasGradientAtFilter f f' x L) : HasGradientAtFilter (fun x => c • f x) (c • f') x L :=\n  h.const_smul c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (h : HasGradientWithinAt f f' s x) : HasGradientWithinAt (fun x => c • f x) (c • f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {f : F → ℝ}",
+            "variable (c : ℝ)"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul' (h : HasGradientWithinAt f f' s x) : HasGradientWithinAt (fun x => c • f x) (c • f') s x := by\n  exact HasGradientWithinAt.const_smul h c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (h : HasGradientAt f f' x) : HasGradientAt (fun x => c • f x) (c • f') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {f : F → ℝ}",
+            "variable (c : ℝ)"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_smul' (h : HasGradientAt f f' x) : HasGradientAt (fun x => c • f x) (c • f') x := by\n  exact HasGradientAt.const_smul h c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_const_smul'",
+        "theorem_statement": " (h : DifferentiableAt ℝ f x) (c : ℝ) : ∇ (fun y => c • f y) x = c • ∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {f : F → ℝ}",
+            "variable (c : ℝ)"
+        ],
+        "namespaces": [
+            "Filter",
+            "Set",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_const_smul' (h : DifferentiableAt ℝ f x) (c : ℝ) : ∇ (fun y => c • f y) x = c • ∇ f x :=\n  (h.hasGradientAt.const_smul c).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (hg : HasGradientAtFilter g g' x L) :\n  HasGradientAtFilter (fun y => f y + g y) (f' + g') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add (hf : HasGradientAtFilter f f' x L) (hg : HasGradientAtFilter g g' x L) :\n    HasGradientAtFilter (fun y => f y + g y) (f' + g') x L :=\n  by\n  rw [HasGradientAtFilter]; rw [HasGradientAtFilter] at hf hg\n  have : (toDual 𝕜 F) (f' + g') = (toDual 𝕜 F) f' + (toDual 𝕜 F) g' := by simp\n  rw [this]; exact hf.add hg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (hg : HasGradientWithinAt g g' s x) :\n  HasGradientWithinAt (fun y => f y + g y) (f' + g') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add (hf : HasGradientWithinAt f f' s x) (hg : HasGradientWithinAt g g' s x) :\n    HasGradientWithinAt (fun y => f y + g y) (f' + g') s x := by exact HasGradientAtFilter.add hf hg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (hg : HasGradientAt g g' x) : HasGradientAt (fun x => f x + g x) (f' + g') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add (hf : HasGradientAt f f' x) (hg : HasGradientAt g g' x) : HasGradientAt (fun x => f x + g x) (f' + g') x :=\n  by exact HasGradientAtFilter.add hf hg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_add",
+        "theorem_statement": " (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) : ∇ (fun y => f y + g y) x = ∇ f x + ∇ g x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_add (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :\n    ∇ (fun y => f y + g y) x = ∇ f x + ∇ g x :=\n  (hf.hasGradientAt.add hg.hasGradientAt).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun y => f y + c) f' x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add_const (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun y => f y + c) f' x L :=\n  add_zero f' ▸ hf.add (hasGradientAtFilter_const _ _ _)",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun y => f y + c) f' s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add_const (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun y => f y + c) f' s x := by\n  exact HasGradientAtFilter.add_const hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => f x + c) f' x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem add_const (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => f x + c) f' x := by\n  exact HasGradientAtFilter.add_const hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_add_const",
+        "theorem_statement": " (c : 𝕜) : ∇ (fun y => f y + c) x = ∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_add_const (c : 𝕜) : ∇ (fun y => f y + c) x = ∇ f x :=\n  by\n  unfold gradient\n  simp only [EmbeddingLike.apply_eq_iff_eq]\n  exact fderiv_add_const c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun y => c + f y) f' x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_add (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun y => c + f y) f' x L :=\n  zero_add f' ▸ (hasGradientAtFilter_const _ _ _).add hf",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun y => c + f y) f' s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_add (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun y => c + f y) f' s x := by\n  exact HasGradientAtFilter.const_add hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c + f x) f' x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_add (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c + f x) f' x := by\n  exact HasGradientAtFilter.const_add hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "Gradient_const_add",
+        "theorem_statement": " (c : 𝕜) : ∇ (fun y => c + f y) x = ∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem Gradient_const_add (c : 𝕜) : ∇ (fun y => c + f y) x = ∇ f x := by simp only [add_comm c, gradient_add_const]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (h : ∀ i ∈ u, HasGradientAtFilter (A i) (A' i) x L) :\n  HasGradientAtFilter (fun y => ∑ i in u, A i y) (∑ i in u, A' i) x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {ι : Type*}",
+            "variable {u : Finset ι}",
+            "variable {A : ι → F → 𝕜}",
+            "variable {A' : ι → F}"
+        ],
+        "namespaces": [
+            "Asymptotics",
+            "BigOperators",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sum (h : ∀ i ∈ u, HasGradientAtFilter (A i) (A' i) x L) :\n    HasGradientAtFilter (fun y => ∑ i in u, A i y) (∑ i in u, A' i) x L :=\n  by\n  have : ∑ i in u, (toDual 𝕜 F) (A' i) = (toDual 𝕜 F) (∑ i in u, A' i) := by rw [map_sum]\n  rw [HasGradientAtFilter, ← this]; unfold HasGradientAtFilter at h\n  exact HasFDerivAtFilter.sum h",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (h : ∀ i ∈ u, HasGradientWithinAt (A i) (A' i) s x) :\n  HasGradientWithinAt (fun y => ∑ i in u, A i y) (∑ i in u, A' i) s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {ι : Type*}",
+            "variable {u : Finset ι}",
+            "variable {A : ι → F → 𝕜}",
+            "variable {A' : ι → F}"
+        ],
+        "namespaces": [
+            "Asymptotics",
+            "BigOperators",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sum (h : ∀ i ∈ u, HasGradientWithinAt (A i) (A' i) s x) :\n    HasGradientWithinAt (fun y => ∑ i in u, A i y) (∑ i in u, A' i) s x := by exact HasGradientAtFilter.sum h",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (h : ∀ i ∈ u, HasGradientAt (A i) (A' i) x) : HasGradientAt (fun y => ∑ i in u, A i y) (∑ i in u, A' i) x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {ι : Type*}",
+            "variable {u : Finset ι}",
+            "variable {A : ι → F → 𝕜}",
+            "variable {A' : ι → F}"
+        ],
+        "namespaces": [
+            "Asymptotics",
+            "BigOperators",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sum (h : ∀ i ∈ u, HasGradientAt (A i) (A' i) x) : HasGradientAt (fun y => ∑ i in u, A i y) (∑ i in u, A' i) x :=\n  by exact HasGradientAtFilter.sum h",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_sum",
+        "theorem_statement": " (h : ∀ i ∈ u, DifferentiableAt 𝕜 (A i) x) : ∇ (fun y => ∑ i in u, A i y) x = ∑ i in u, ∇ (A i) x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {ι : Type*}",
+            "variable {u : Finset ι}",
+            "variable {A : ι → F → 𝕜}",
+            "variable {A' : ι → F}"
+        ],
+        "namespaces": [
+            "Asymptotics",
+            "BigOperators",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_sum (h : ∀ i ∈ u, DifferentiableAt 𝕜 (A i) x) : ∇ (fun y => ∑ i in u, A i y) x = ∑ i in u, ∇ (A i) x :=\n  (HasGradientAt.sum fun i hi => (h i hi).hasGradientAt).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (h : HasGradientAtFilter f f' x L) : HasGradientAtFilter (fun x => -f x) (-f') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem neg (h : HasGradientAtFilter f f' x L) : HasGradientAtFilter (fun x => -f x) (-f') x L :=\n  by\n  have : -(toDual 𝕜 F) f' = (toDual 𝕜 F) (-f') := by simp\n  rw [HasGradientAtFilter, ← this]; rw [HasGradientAtFilter] at h\n  exact h.neg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (h : HasGradientWithinAt f f' s x) : HasGradientWithinAt (fun x => -f x) (-f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem neg (h : HasGradientWithinAt f f' s x) : HasGradientWithinAt (fun x => -f x) (-f') s x := by\n  exact HasGradientAtFilter.neg h",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (h : HasGradientAt f f' x) : HasGradientAt (fun x => -f x) (-f') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem neg (h : HasGradientAt f f' x) : HasGradientAt (fun x => -f x) (-f') x := by exact HasGradientAtFilter.neg h",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_neg",
+        "theorem_statement": " : ∇ (fun y => -f y) x = -∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_neg : ∇ (fun y => -f y) x = -∇ f x :=\n  by\n  unfold gradient\n  simp only [fderiv_neg, map_neg]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (hg : HasGradientAtFilter g g' x L) :\n  HasGradientAtFilter (fun x => f x - g x) (f' - g') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub (hf : HasGradientAtFilter f f' x L) (hg : HasGradientAtFilter g g' x L) :\n    HasGradientAtFilter (fun x => f x - g x) (f' - g') x L := by simpa only [sub_eq_add_neg] using hf.add hg.neg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (hg : HasGradientWithinAt g g' s x) :\n  HasGradientWithinAt (fun x => f x - g x) (f' - g') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub (hf : HasGradientWithinAt f f' s x) (hg : HasGradientWithinAt g g' s x) :\n    HasGradientWithinAt (fun x => f x - g x) (f' - g') s x := by exact HasGradientAtFilter.sub hf hg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (hg : HasGradientAt g g' x) : HasGradientAt (fun x => f x - g x) (f' - g') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub (hf : HasGradientAt f f' x) (hg : HasGradientAt g g' x) : HasGradientAt (fun x => f x - g x) (f' - g') x :=\n  by exact HasGradientAtFilter.sub hf hg",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_sub",
+        "theorem_statement": " (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) : ∇ (fun y => f y - g y) x = ∇ f x - ∇ g x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_sub (hf : DifferentiableAt 𝕜 f x) (hg : DifferentiableAt 𝕜 g x) :\n    ∇ (fun y => f y - g y) x = ∇ f x - ∇ g x :=\n  (hf.hasGradientAt.sub hg.hasGradientAt).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun x => f x - c) f' x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub_const (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun x => f x - c) f' x L := by\n  simpa only [sub_eq_add_neg] using hf.add_const (-c)",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun x => f x - c) f' s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub_const (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun x => f x - c) f' s x := by\n  exact HasGradientAtFilter.sub_const hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => f x - c) f' x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem sub_const (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => f x - c) f' x := by\n  exact HasGradientAtFilter.sub_const hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "Gradient_sub_const",
+        "theorem_statement": " (c : 𝕜) : ∇ (fun y => f y - c) x = ∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem Gradient_sub_const (c : 𝕜) : ∇ (fun y => f y - c) x = ∇ f x := by simp only [sub_eq_add_neg, gradient_add_const]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAtFilter",
+        "theorem_statement": " (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun x => c - f x) (-f') x L",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_sub (hf : HasGradientAtFilter f f' x L) (c : 𝕜) : HasGradientAtFilter (fun x => c - f x) (-f') x L := by\n  simpa only [sub_eq_add_neg] using hf.neg.const_add c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun x => c - f x) (-f') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_sub (hf : HasGradientWithinAt f f' s x) (c : 𝕜) : HasGradientWithinAt (fun x => c - f x) (-f') s x := by\n  exact HasGradientAtFilter.const_sub hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c - f x) (-f') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_sub (hf : HasGradientAt f f' x) (c : 𝕜) : HasGradientAt (fun x => c - f x) (-f') x := by\n  exact HasGradientAtFilter.const_sub hf c",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_const_sub",
+        "theorem_statement": " (c : 𝕜) : ∇ (fun y => c - f y) x = -∇ f x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {f' : F}",
+            "variable {g : F → 𝕜}",
+            "variable {x : F}",
+            "variable {g' : F}",
+            "variable {L : Filter F}",
+            "variable {f : F → 𝕜}",
+            "variable {L' : Filter 𝕜}",
+            "variable {t : Set 𝕜}"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_const_sub (c : 𝕜) : ∇ (fun y => c - f y) x = -∇ f x := by\n  calc\n    ∇ (fun y => c - f y) x = ∇ (fun y => -f y + c) x := by congr; ext x; rw [sub_eq_neg_add]\n    _ = -∇ f x := by rw [gradient_add_const c, gradient_neg]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "equiv_lemma_mul",
+        "theorem_statement": " :\n  c x • (toDual 𝕜 F) d' + d x • (toDual 𝕜 F) c' = (toDual 𝕜 F) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c')",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem equiv_lemma_mul :\n    c x • (toDual 𝕜 F) d' + d x • (toDual 𝕜 F) c' =\n      (toDual 𝕜 F) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c') :=\n  by\n  simp\n  congr <;> exact SemilinearMapClass.map_smul_inv _ _ _",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hc : HasGradientAt c c' x) (hd : HasGradientAt d d' x) :\n  HasGradientAt (fun y => c y * d y) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul (hc : HasGradientAt c c' x) (hd : HasGradientAt d d' x) :\n    HasGradientAt (fun y => c y * d y) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c') x :=\n  by\n  rw [hasGradientAt_iff_hasFDerivAt, ← equiv_lemma_mul]\n  rw [hasGradientAt_iff_hasFDerivAt] at hc hd\n  exact hc.mul hd",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hc : HasGradientWithinAt c c' s x) (hd : HasGradientWithinAt d d' s x) :\n  HasGradientWithinAt (fun y => c y * d y) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul (hc : HasGradientWithinAt c c' s x) (hd : HasGradientWithinAt d d' s x) :\n    HasGradientWithinAt (fun y => c y * d y) ((starRingEnd 𝕜) (c x) • d' + (starRingEnd 𝕜) (d x) • c') s x :=\n  by\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt, ← equiv_lemma_mul]\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt] at hc hd\n  exact hc.mul hd",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_mul",
+        "theorem_statement": " (hc : DifferentiableAt 𝕜 c x) (hd : DifferentiableAt 𝕜 d x) :\n  ∇ (fun y => c y * d y) x = (starRingEnd 𝕜) (c x) • ∇ d x + (starRingEnd 𝕜) (d x) • ∇ c x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_mul (hc : DifferentiableAt 𝕜 c x) (hd : DifferentiableAt 𝕜 d x) :\n    ∇ (fun y => c y * d y) x = (starRingEnd 𝕜) (c x) • ∇ d x + (starRingEnd 𝕜) (d x) • ∇ c x :=\n  (hc.hasGradientAt.mul hd.hasGradientAt).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hc : HasGradientAt c c' x) (hd : HasGradientAt d d' x) :\n  HasGradientAt (fun y => c y * d y) ((c x) • d' + (d x) • c') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → ℝ}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul' (hc : HasGradientAt c c' x) (hd : HasGradientAt d d' x) :\n    HasGradientAt (fun y => c y * d y) ((c x) • d' + (d x) • c') x :=\n  HasGradientAt.mul hc hd",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hc : HasGradientWithinAt c c' s x) (hd : HasGradientWithinAt d d' s x) :\n  HasGradientWithinAt (fun y => c y * d y) ((c x) • d' + (d x) • c') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → ℝ}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul' (hc : HasGradientWithinAt c c' s x) (hd : HasGradientWithinAt d d' s x) :\n    HasGradientWithinAt (fun y => c y * d y) ((c x) • d' + (d x) • c') s x :=\n  hc.mul hd",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_mul'",
+        "theorem_statement": " (hc : DifferentiableAt ℝ c x) (hd : DifferentiableAt ℝ d x) : ∇ (fun y => c y * d y) x = (c x) • ∇ d x + (d x) • ∇ c x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → 𝕜}",
+            "variable {x : F}",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {a' b' c' d' : F}",
+            "variable {a b c d : F → ℝ}",
+            "variable {x : F}"
+        ],
+        "namespaces": [
+            "ContinuousLinearMap",
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_mul' (hc : DifferentiableAt ℝ c x) (hd : DifferentiableAt ℝ d x) :\n    ∇ (fun y => c y * d y) x = (c x) • ∇ d x + (d x) • ∇ c x :=\n  gradient_mul hc hd",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "equiv_lemma_mul_const",
+        "theorem_statement": " : d • (toDual 𝕜 F) c' = (toDual 𝕜 F) ((starRingEnd 𝕜) d • c')",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem equiv_lemma_mul_const : d • (toDual 𝕜 F) c' = (toDual 𝕜 F) ((starRingEnd 𝕜) d • c') := by\n  rw [map_smulₛₗ, RingHomCompTriple.comp_apply, RingHom.id_apply]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hc : HasGradientWithinAt c c' s x) : HasGradientWithinAt (fun y => c y * d) ((starRingEnd 𝕜) d • c') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul_const (hc : HasGradientWithinAt c c' s x) :\n    HasGradientWithinAt (fun y => c y * d) ((starRingEnd 𝕜) d • c') s x :=\n  by\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt, ← equiv_lemma_mul_const]\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt] at hc\n  exact hc.mul_const d",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hc : HasGradientAt c c' x) : HasGradientAt (fun y => c y * d) ((starRingEnd 𝕜) d • c') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul_const (hc : HasGradientAt c c' x) : HasGradientAt (fun y => c y * d) ((starRingEnd 𝕜) d • c') x :=\n  by\n  rw [hasGradientAt_iff_hasFDerivAt, ← equiv_lemma_mul_const]\n  rw [hasGradientAt_iff_hasFDerivAt] at hc\n  exact hc.mul_const d",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_mul_const",
+        "theorem_statement": " (hc : DifferentiableAt 𝕜 c x) : ∇ (fun y => c y * d) x = (starRingEnd 𝕜) d • ∇ c x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_mul_const (hc : DifferentiableAt 𝕜 c x) : ∇ (fun y => c y * d) x = (starRingEnd 𝕜) d • ∇ c x :=\n  (hc.hasGradientAt.mul_const d).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "equiv_lemma_const_mul",
+        "theorem_statement": " : b • (toDual 𝕜 F) a' = (toDual 𝕜 F) ((starRingEnd 𝕜) b • a')",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem equiv_lemma_const_mul : b • (toDual 𝕜 F) a' = (toDual 𝕜 F) ((starRingEnd 𝕜) b • a') := by\n  rw [map_smulₛₗ, RingHomCompTriple.comp_apply, RingHom.id_apply]",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (ha : HasGradientWithinAt a a' s x) : HasGradientWithinAt (fun y => b * a y) ((starRingEnd 𝕜) b • a') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_mul (ha : HasGradientWithinAt a a' s x) :\n    HasGradientWithinAt (fun y => b * a y) ((starRingEnd 𝕜) b • a') s x :=\n  by\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt, ← equiv_lemma_const_mul]\n  rw [hasGradientWithinAt_iff_hasFDerivWithinAt] at ha\n  exact ha.const_mul b",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (ha : HasGradientAt a a' x) : HasGradientAt (fun y => b * a y) ((starRingEnd 𝕜) b • a') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_mul (ha : HasGradientAt a a' x) : HasGradientAt (fun y => b * a y) ((starRingEnd 𝕜) b • a') x :=\n  by\n  rw [hasGradientAt_iff_hasFDerivAt, ← equiv_lemma_const_mul]\n  rw [hasGradientAt_iff_hasFDerivAt] at ha\n  exact ha.const_mul b",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_const_mul",
+        "theorem_statement": " (ha : DifferentiableAt 𝕜 a x) : ∇ (fun y => b * a y) x = (starRingEnd 𝕜) b • ∇ a x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_const_mul (ha : DifferentiableAt 𝕜 a x) : ∇ (fun y => b * a y) x = (starRingEnd 𝕜) b • ∇ a x :=\n  (ha.hasGradientAt.const_mul b).gradient",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (hc : HasGradientWithinAt c c' s x) : HasGradientWithinAt (fun y => c y * d) (d • c') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul_const' (hc : HasGradientWithinAt c c' s x) : HasGradientWithinAt (fun y => c y * d) (d • c') s x :=\n  HasGradientWithinAt.mul_const d hc",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (hc : HasGradientAt c c' x) : HasGradientAt (fun y => c y * d) (d • c') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem mul_const' (hc : HasGradientAt c c' x) : HasGradientAt (fun y => c y * d) (d • c') x :=\n  HasGradientAt.mul_const d hc",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_mul_const'",
+        "theorem_statement": " (hc : DifferentiableAt ℝ c x) : ∇ (fun y => c y * d) x = d • ∇ c x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_mul_const' (hc : DifferentiableAt ℝ c x) : ∇ (fun y => c y * d) x = d • ∇ c x :=\n  gradient_mul_const d hc",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientWithinAt",
+        "theorem_statement": " (ha : HasGradientWithinAt a a' s x) : HasGradientWithinAt (fun y => b * a y) (b • a') s x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_mul' (ha : HasGradientWithinAt a a' s x) : HasGradientWithinAt (fun y => b * a y) (b • a') s x :=\n  HasGradientWithinAt.const_mul b ha",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "HasGradientAt",
+        "theorem_statement": " (ha : HasGradientAt a a' x) : HasGradientAt (fun y => b * a y) (b • a') x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem const_mul' (ha : HasGradientAt a a' x) : HasGradientAt (fun y => b * a y) (b • a') x :=\n  HasGradientAt.const_mul b ha",
+        "type": "theorem",
+        "filename": "Calculation"
+    },
+    {
+        "theorem_name": "gradient_const_mul'",
+        "theorem_statement": " (ha : DifferentiableAt ℝ a x) : ∇ (fun y => b * a y) x = b • ∇ a x",
+        "variable": [
+            "variable {𝕜 F : Type*}",
+            "variable [RCLike 𝕜]",
+            "variable [NormedAddCommGroup F]",
+            "variable [InnerProductSpace 𝕜 F]",
+            "variable [CompleteSpace F]",
+            "variable {f : F → 𝕜}",
+            "variable {f' x : F}",
+            "variable {L : Filter F}",
+            "variable {s : Set F}",
+            "variable {c' a' : F}",
+            "variable {c a : F → 𝕜}",
+            "variable {x : F}",
+            "variable (d b : 𝕜)",
+            "variable [InnerProductSpace ℝ F]",
+            "variable {c' a' : F}",
+            "variable {c a : F → ℝ}",
+            "variable {x : F}",
+            "variable (d b : ℝ)"
+        ],
+        "namespaces": [
+            "Set",
+            "InnerProductSpace",
+            "Topology"
+        ],
+        "proof_process": "theorem gradient_const_mul' (ha : DifferentiableAt ℝ a x) : ∇ (fun y => b * a y) x = b • ∇ a x :=\n  gradient_const_mul b ha",
+        "type": "theorem",
+        "filename": "Calculation"
+    }
+]

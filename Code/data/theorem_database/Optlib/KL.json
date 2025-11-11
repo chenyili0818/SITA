@@ -1,0 +1,382 @@
+[
+    {
+        "theorem_name": "limsubdifferential_Graph",
+        "theorem_statement": " (f : E → ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def limsubdifferential_Graph (f : E → ℝ) :=\n  {(x, fx, u) : E × ℝ × E | fx = f x ∧ u ∈ f_subdifferential f x}",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "subdifferential_Graph",
+        "theorem_statement": " (f : E → ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def subdifferential_Graph (f : E → ℝ) :=\n  {(x, u) : E × E | u ∈ subdifferential f x}",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "subdifferential_Graph'",
+        "theorem_statement": " (f : E → ℝ) : subdifferential_Graph f = {(x, u) : E × E | (x, f x, u) ∈ closure (limsubdifferential_Graph f)}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem subdifferential_Graph' (f : E → ℝ) :\n    subdifferential_Graph f = {(x, u) : E × E | (x, f x, u) ∈ closure (limsubdifferential_Graph f)} :=\n  by\n  ext y\n  constructor\n  · intro hy\n    simp [subdifferential_Graph, subdifferential] at hy\n    simp [mem_closure_iff_seq_limit, limsubdifferential_Graph]\n    rcases hy with ⟨u, ⟨u_conv, ⟨fun_conv, ⟨v, hv⟩⟩⟩⟩\n    use fun n => (u n, f (u n), v n)\n    constructor\n    · intro n; simp; exact (hv n).1\n    · apply Tendsto.prod_mk_nhds u_conv (Tendsto.prod_mk_nhds fun_conv ((forall_and_right _ _).1 hv).2)\n  · intro h\n    simp [subdifferential_Graph, subdifferential]\n    simp at h\n    obtain exist_seq := mem_closure_iff_seq_limit.1 h\n    rcases exist_seq with ⟨x, ⟨exist_seq₁, x_converge⟩⟩\n    rw [nhds_prod_eq] at x_converge\n    obtain ⟨x1_conv, x2_conv⟩ := (Filter.tendsto_prod_iff'.1 x_converge)\n    rw [nhds_prod_eq] at x2_conv\n    obtain ⟨fx1_conv, x2_conv'⟩ := (Filter.tendsto_prod_iff'.1 x2_conv)\n    simp [limsubdifferential_Graph] at exist_seq₁\n    use (fun n => (x n).1)\n    constructor; exact x1_conv\n    constructor\n    have : (fun n ↦ (x n).2.1) = (fun n => f (x n).1) := by ext n; exact (exist_seq₁ n).1\n    rwa [this] at fx1_conv\n    use (fun n => (x n).2.2)\n    intro n; exact ⟨(exist_seq₁ n).2, x2_conv'⟩",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "GraphOfSubgradientIsClosed",
+        "theorem_statement": " {f : E → ℝ} {xn un : ℕ → E} {x u : E} (hx : ∀ n, (xn n, un n) ∈ subdifferential_Graph f)\n  (hconv : Tendsto (fun n => (xn n, un n)) atTop (𝓝 (x, u))) (hf : Tendsto (fun n => f (xn n)) atTop (𝓝 (f x))) :\n  (x, u) ∈ subdifferential_Graph f",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem GraphOfSubgradientIsClosed {f : E → ℝ} {xn un : ℕ → E} {x u : E}\n    (hx : ∀ n, (xn n, un n) ∈ subdifferential_Graph f) (hconv : Tendsto (fun n => (xn n, un n)) atTop (𝓝 (x, u)))\n    (hf : Tendsto (fun n => f (xn n)) atTop (𝓝 (f x))) : (x, u) ∈ subdifferential_Graph f :=\n  by\n  rw [subdifferential_Graph', mem_setOf_eq]\n  simp only\n  rw [← closure_closure, mem_closure_iff_seq_limit]\n  use fun n => (xn n, f (xn n), un n)\n  constructor\n  · intro n\n    have := hx n\n    rw [subdifferential_Graph', mem_setOf_eq] at this\n    exact this\n  rw [nhds_prod_eq, Filter.tendsto_prod_iff'] at hconv; simp at hconv\n  exact\n    Tendsto.prod_mk_nhds hconv.1\n      (Tendsto.prod_mk_nhds hf hconv.2)\n        /- Definition of Φ_η, the family of desingularizing function -/",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "desingularizing_function",
+        "theorem_statement": " (η : ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def desingularizing_function (η : ℝ) :=\n  {φ : ℝ → ℝ |\n    (ConcaveOn ℝ (Ico 0 η) φ)\n        -- ∧ (∀ x ∈ Ioo 0 η, φ x > 0) ∧\n      (φ 0 = 0) ∧ (ContDiffOn ℝ 1 φ (Ioo 0 η)) ∧ (ContinuousAt φ 0) ∧ (∀ x ∈ Ioo 0 η, deriv φ x > 0)}",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "desingularizing_function_is_nonneg",
+        "theorem_statement": " (φ : ℝ → ℝ) (η : ℝ) (h : φ ∈ desingularizing_function η) : ∀ x ∈ Ioo 0 η, φ x > 0",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem desingularizing_function_is_nonneg (φ : ℝ → ℝ) (η : ℝ) (h : φ ∈ desingularizing_function η) :\n    ∀ x ∈ Ioo 0 η, φ x > 0 := by\n  simp [desingularizing_function] at h\n  intro x ⟨hx₁, hx₂⟩\n  rcases h with ⟨_, h₂, h₃, h₄, h₅⟩\n  have Cont_φ : ContinuousOn φ (Icc 0 x) := by\n    apply ContinuousAt.continuousOn\n    intro y hy\n    by_cases hy0 : y = 0\n    rwa [hy0]\n    push_neg at hy0\n    have cont_φ := ContDiffOn.continuousOn h₃\n    have isopen : IsOpen (Ioo 0 η) := isOpen_Ioo\n    by_cases hyx : y = x\n    · simp [hyx]\n      apply (IsOpen.continuousOn_iff isopen).1 cont_φ\n      exact ⟨hx₁, hx₂⟩\n    · push_neg at hyx\n      have hy2 : y ∈ Ioo 0 x := ⟨lt_of_le_of_ne hy.1 (id (Ne.symm hy0)), lt_of_le_of_ne hy.2 hyx⟩\n      apply (IsOpen.continuousOn_iff isopen).1 cont_φ\n      use hy2.1\n      rcases hy2 with ⟨_, hy2⟩\n      linarith\n  have Diff_φ : DifferentiableOn ℝ φ (Ioo 0 x) :=\n    by\n    have diff_φ := ContDiffOn.differentiableOn h₃ (by simp)\n    have subIoo : (Ioo 0 x) ⊆ (Ioo 0 η) := by intro x hx; simp at hx; use hx.1; linarith\n    exact DifferentiableOn.mono diff_φ subIoo\n  have hhh : ∃ y ∈ Ioo 0 x, φ x = φ 0 + (deriv φ y) * (x - 0) :=\n    by\n    obtain h_lag := exists_deriv_eq_slope φ hx₁ Cont_φ Diff_φ\n    rcases h_lag with ⟨c, ⟨hc, hval⟩⟩\n    use c, hc\n    field_simp [hval]\n  choose y hy₁ hy₂ using hhh\n  simp [hy₂, h₂]; field_simp; rcases hy₁ with ⟨hy₁, hy₁'⟩\n  have yleq : y < η := by linarith\n  exact h₅ y hy₁ yleq",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "KL_point_with_reparameter",
+        "theorem_statement": " (σ : E → ℝ) (u : E) (φ : ℝ → ℝ) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def KL_point_with_reparameter (σ : E → ℝ) (u : E) (φ : ℝ → ℝ) : Prop :=\n  ∃ η ∈ Ioi 0,\n    ∃ s ∈ 𝓝 u,\n      (φ ∈ desingularizing_function η) ∧\n        (∀ x ∈ s ∩ {y ∈ active_domain σ | σ u < σ y ∧ σ y < σ u + η},\n          deriv φ (σ x - σ u) * (EMetric.infEdist 0 (subdifferential σ x)).toReal ≥ 1)\n          -- Definition of the KL property at one point",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "KL_point",
+        "theorem_statement": " (f : E → ℝ) (u : E) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def KL_point (f : E → ℝ) (u : E) : Prop :=\n  ∃ η ∈ Ioi 0,\n    ∃ s ∈ 𝓝 u,\n      ∃ φ ∈ desingularizing_function η,\n        ∀ x ∈ s ∩ {y | f u < f y ∧ f y < f u + η},\n          (ENNReal.ofReal (deriv φ (f x - f u))) * (EMetric.infEdist 0 (subdifferential f x)) ≥\n            ENNReal.ofReal\n              1\n                -- Definition of the KL function",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "KL_function",
+        "theorem_statement": " (f : E → ℝ) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def KL_function (f : E → ℝ) : Prop :=\n  ∀ u ∈ active_domain f, KL_point f u",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "KL_property_with_regularization",
+        "theorem_statement": " (f : E → ℝ) (u' : E) (φ : ℝ → ℝ) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def KL_property_with_regularization (f : E → ℝ) (u' : E) (φ : ℝ → ℝ) : Prop :=\n  ∃ η ∈ Ioi 0,\n    ∃ s ∈ 𝓝 u',\n      (φ ∈ desingularizing_function η) ∧\n        (∀ x ∈ s ∩ {y ∈ active_domain f | f u' < f y ∧ f y < f u' + η},\n          (EMetric.infEdist 0 (subdifferential (λ u => φ (f u - f u')) x)).toReal ≥ 1)\n          -- deriv of function (fun t => c⁻¹ * t) is c⁻¹",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "deriv_of_const_mul_func",
+        "theorem_statement": " (x : ℝ) : deriv (fun (t : ℝ) => c⁻¹ * t) x = c⁻¹",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem deriv_of_const_mul_func (x : ℝ) : deriv (fun (t : ℝ) => c⁻¹ * t) x = c⁻¹ :=\n  by\n  apply HasDerivAt.deriv\n  have : (fun (t : ℝ) => c⁻¹ * t) = (fun t => t * c⁻¹) := by ext t; ring\n  rw [this]\n  apply\n    hasDerivAt_mul_const\n      c⁻¹\n        -- Function (fun t => c⁻¹ * t) is a desingularizing function",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "const_mul_special_concave",
+        "theorem_statement": " : ∀ c > 0, (fun t => c⁻¹ * t) ∈ desingularizing_function (c / 2)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem const_mul_special_concave : ∀ c > 0, (fun t => c⁻¹ * t) ∈ desingularizing_function (c / 2) :=\n  by\n  intro c cpos; let φ := (fun t => c⁻¹ * t)\n  simp [desingularizing_function]\n  have fun_smul_eq_mul : (fun t ↦ c⁻¹ * t) = (fun t ↦ c⁻¹ • t) := by ext t; rw [smul_eq_mul]\n  have h₁ : ConcaveOn ℝ (Ico 0 (c / 2)) φ := by\n    rw [ConcaveOn]; constructor; apply convex_Ico\n    intro x _ y _ a b _ _ _\n    show a • (c⁻¹ * x) + b • (c⁻¹ * y) ≤ c⁻¹ * (a • x + b • y)\n    rw [← smul_mul_assoc, ← smul_mul_assoc]; repeat rw [smul_eq_mul]\n    linarith\n      -- have h₂: ∀ (x : ℝ), 0 < x → x < c / 2 → 0 < φ x := by\n        --   intro x xpos _; show c⁻¹ * x > 0; field_simp; exact cpos\n  have h₃ : ContDiffOn ℝ 1 (fun t ↦ c⁻¹ * t) (Ioo 0 (c / 2)) := by rw [fun_smul_eq_mul]; apply ContDiff.contDiffOn;\n    apply contDiff_const_smul\n  have h₄ : ContinuousAt (fun t ↦ c⁻¹ * t) 0 := by\n    rw [fun_smul_eq_mul]; apply (continuousAt_const_smul_iff₀ _).2\n    apply continuousAt_id; field_simp\n  have h₅ : ∀ (x : ℝ), 0 < x → x < c / 2 → 0 < deriv (fun t ↦ c⁻¹ * t) x := by intro x _ _;\n    rw [deriv_of_const_mul_func]; field_simp; exact cpos\n  exact\n    ⟨h₁, h₃, h₄, h₅⟩\n      -- Type transformation: ENNReal.ofReal (1 / (↑n + 1)) = (1 / (↑n + 1))",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "one_div_type_trans",
+        "theorem_statement": " : ∀ n : ℕ, ENNReal.ofReal (1 / (↑n + 1)) = (1 / (↑n + 1))",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem one_div_type_trans : ∀ n : ℕ, ENNReal.ofReal (1 / (↑n + 1)) = (1 / (↑n + 1)) :=\n  by\n  intro n\n  have : ENNReal.ofReal (1 / (↑n + 1)) = ENNReal.ofReal 1 / ENNReal.ofReal (↑n + 1) :=\n    by\n    apply ENNReal.ofReal_div_of_pos\n    exact Nat.cast_add_one_pos n\n  rw [this, ENNReal.ofReal_one]\n  simp only [one_div, inv_inj]\n  rw [← ENNReal.ofReal_one]\n  have : ↑n = ENNReal.ofReal (↑n) := Eq.symm (ENNReal.ofReal_natCast n)\n  rw [this]\n  refine ENNReal.ofReal_add ?hp ?hq\n  exact Nat.cast_nonneg' n\n  exact zero_le_one' ℝ",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "const_mul_edist_ge_one",
+        "theorem_statement": " {c : ℝ} {ed : ENNReal} (hpos : c > 0) (hed : ed ≥ ENNReal.ofReal c) : ENNReal.ofReal c⁻¹ * ed ≥ ENNReal.ofReal 1",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem const_mul_edist_ge_one {c : ℝ} {ed : ENNReal} (hpos : c > 0) (hed : ed ≥ ENNReal.ofReal c) :\n    ENNReal.ofReal c⁻¹ * ed ≥ ENNReal.ofReal 1 :=\n  by\n  by_cases hed' : ed = ⊤\n  have : ENNReal.ofReal c⁻¹ * ed = ⊤ := by rw [hed']; refine ENNReal.mul_top ?h; simpa\n  rw [this]; simp; push_neg at hed'\n  calc\n    _ ≥ ENNReal.ofReal c⁻¹ * ENNReal.ofReal c := mul_le_mul_left' hed (ENNReal.ofReal c⁻¹)\n    _ = ENNReal.ofReal 1 := by rw [← ENNReal.ofReal_mul]; field_simp; simp; exact le_of_lt hpos",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "edist_geq_const",
+        "theorem_statement": " (h_noncrit : 0 ∉ subdifferential f x) :\n  ∃ c > 0, ∀ u, ‖u - x‖ + ‖f u - f x‖ < c → EMetric.infEdist 0 (subdifferential f u) ≥ ENNReal.ofReal c",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem edist_geq_const (h_noncrit : 0 ∉ subdifferential f x) :\n    ∃ c > 0, ∀ u, ‖u - x‖ + ‖f u - f x‖ < c → EMetric.infEdist 0 (subdifferential f u) ≥ ENNReal.ofReal c :=\n  by\n  by_contra! hc\n  have sqh :\n    ∀ n : ℕ,\n      ∃ u,\n        ‖u - x‖ + ‖f u - f x‖ < 1 / (n + 1) ∧\n          (EMetric.infEdist 0 (subdifferential f u)) < ENNReal.ofReal (1 / (n + 1)) :=\n    fun n ↦ hc (1 / (n + 1)) (by simp; linarith)\n  choose u hu using sqh\n  have inequ_fun : ∀ n, (EMetric.infEdist 0 (subdifferential f (u n))).toReal ≤ 1 / (n + 1) :=\n    by\n    intro n\n    apply (ENNReal.toReal_le_of_le_ofReal _ (le_of_lt (hu n).right))\n    simp; linarith\n  have : Tendsto (fun n ↦ (EMetric.infEdist 0 (subdifferential f (u n))).toReal) atTop (𝓝 0) :=\n    squeeze_zero (by simp) inequ_fun tendsto_one_div_add_atTop_nhds_zero_nat\n  have h_contra : 0 ∈ subdifferential f x :=\n    by\n    have u_to_x : Tendsto u atTop (𝓝 x) :=\n      by\n      have : Tendsto (fun n => ‖u n - x‖) atTop (𝓝 0) :=\n        by\n        apply squeeze_zero (by simp) _ tendsto_one_div_add_atTop_nhds_zero_nat\n        intro n\n        have inequ₁ : ‖u n - x‖ ≤ 1 / (n + 1) := by\n          rcases hu n with ⟨hu₁, _⟩\n          apply (le_of_add_le_of_nonneg_left (le_of_lt hu₁) (norm_nonneg (f (u n) - f x)))\n        exact inequ₁\n      apply tendsto_iff_norm_sub_tendsto_zero.2 this\n    have fu_to_fx : Tendsto (fun n ↦ f (u n)) atTop (𝓝 (f x)) :=\n      by\n      have : Tendsto (fun n => ‖f (u n) - f x‖) atTop (𝓝 0) :=\n        by\n        apply squeeze_zero (by simp) _ tendsto_one_div_add_atTop_nhds_zero_nat\n        intro n\n        have inequ₂ : ‖f (u n) - f x‖ ≤ 1 / (n + 1) :=\n          by\n          rcases hu n with ⟨hu₁, _⟩\n          apply (le_of_add_le_of_nonneg_right (le_of_lt hu₁) (norm_nonneg (u n - x)))\n        exact inequ₂\n      apply tendsto_iff_norm_sub_tendsto_zero.2 this\n    have exist_v : ∀ n : ℕ, ∃ vn, vn ∈ subdifferential f (u n) ∧ dist 0 vn < 1 / (n + 1) :=\n      by\n      intro n\n      rcases hu n with ⟨_, hu₂⟩\n      have : ∃ vn ∈ subdifferential f (u n), edist 0 vn < 1 / (n + 1) :=\n        by\n        apply EMetric.infEdist_lt_iff.1\n        rw [← one_div_type_trans n]\n        exact hu₂\n      choose vn hvn using this\n      use vn, hvn.left\n      rw [← one_div_type_trans n] at hvn\n      apply edist_lt_ofReal.1 hvn.right\n    choose v hv using exist_v\n    have v_in_subdiff : ∀ n : ℕ, (u n, v n) ∈ subdifferential_Graph f :=\n      by\n      intro n\n      exact (hv n).1\n    have v_to_zero : Tendsto v atTop (𝓝 0) := by\n      rw [dist_zero_left] at hv\n      have : Tendsto (fun n => ‖v n‖) atTop (𝓝 0) :=\n        by\n        apply squeeze_zero (by simp) _ tendsto_one_div_add_atTop_nhds_zero_nat\n        intro n\n        apply le_of_lt (hv n).right\n      apply tendsto_zero_iff_norm_tendsto_zero.2 this\n    show (x, 0) ∈ subdifferential_Graph f\n    apply GraphOfSubgradientIsClosed v_in_subdiff (Filter.Tendsto.prod_mk_nhds u_to_x v_to_zero) fu_to_fx\n  contradiction",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "KL_property_at_noncritical_point",
+        "theorem_statement": " (h_noncrit : 0 ∉ subdifferential f x) : KL_point f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- Non-critical KL property is naturally true -/\ntheorem KL_property_at_noncritical_point (h_noncrit : 0 ∉ subdifferential f x) : KL_point f x :=\n  by\n  obtain ⟨c, hc_pos, h⟩ := edist_geq_const h_noncrit\n  let φ := (fun (t : ℝ) => c⁻¹ * t)\n  rw [KL_point]\n  use c / 2, (by simpa using hc_pos), Metric.ball x (c / 2)\n  constructor\n  apply Metric.ball_mem_nhds; simpa using hc_pos\n  use φ, const_mul_special_concave c hc_pos\n  intro u hu\n  rw [deriv_of_const_mul_func (f u - f x)]\n  have : ‖u - x‖ + ‖f u - f x‖ < c := by\n    rw [← add_halves c]\n    apply add_lt_add\n    · apply mem_ball_iff_norm.1 hu.left\n    · simp at *\n      rw [abs_eq_self.2] <;> linarith\n  exact const_mul_edist_ge_one hc_pos (h u this)",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "real_geq_ennreal_ofreal_geq",
+        "theorem_statement": " {a b : ℝ} {c : ENNReal} (hgeq : a ≥ b) (apos : a > 0) : (ENNReal.ofReal a) * c ≥ (ENNReal.ofReal b) * c",
+        "variable": [],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem real_geq_ennreal_ofreal_geq {a b : ℝ} {c : ENNReal} (hgeq : a ≥ b) (apos : a > 0) :\n    (ENNReal.ofReal a) * c ≥ (ENNReal.ofReal b) * c :=\n  by\n  by_cases hc : c = 0\n  rw [hc]\n  simp\n  push_neg at hc\n  by_cases hctop : c = ⊤\n  rw [hctop]\n  have ha : (ENNReal.ofReal a) * ⊤ = ⊤ := by\n    refine ENNReal.mul_top ?h\n    simpa\n  rw [ha]\n  simp\n  push_neg at hctop\n  refine (ENNReal.mul_le_mul_right ?_ ?_).mpr ?_\n  · exact hc\n  · exact hctop\n  · exact ENNReal.ofReal_le_ofReal hgeq",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "is_constant_on",
+        "theorem_statement": " (f : E → ℝ) (Ω : Set E) : Prop",
+        "variable": [],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def is_constant_on (f : E → ℝ) (Ω : Set E) : Prop :=\n  ∀ x ∈ Ω, ∀ y ∈ Ω, f x = f y",
+        "type": "definition",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "exist_constant_value",
+        "theorem_statement": " (f : E → ℝ) (h : is_constant_on f Ω) (h_nonempty : Ω.Nonempty) : ∃ μ : ℝ, ∀ x ∈ Ω, f x = μ",
+        "variable": [],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem exist_constant_value (f : E → ℝ) (h : is_constant_on f Ω) (h_nonempty : Ω.Nonempty) :\n    ∃ μ : ℝ, ∀ x ∈ Ω, f x = μ := by\n  rcases(Set.nonempty_def.1 h_nonempty) with ⟨x, hx⟩\n  exact ⟨f x, fun y hy => h y hy x hx⟩",
+        "type": "theorem",
+        "filename": "KL"
+    },
+    {
+        "theorem_name": "uniformized_KL_property",
+        "theorem_statement": " {f : E → ℝ} {Ω : Set E} (h_compact : IsCompact Ω) (h_Ω1 : ∀ x ∈ Ω, KL_point f x) (h_Ω2 : is_constant_on f Ω) :\n  ∃ ε ∈ Ioi 0,\n    ∃ η ∈ Ioi 0,\n      ∃ φ ∈ desingularizing_function η,\n        ∀ u ∈ Ω,\n          ∀ x ∈ {y : E | (EMetric.infEdist y Ω).toReal < ε} ∩ {y | f u < f y ∧ f y < f u + η},\n            (ENNReal.ofReal (deriv φ (f x - f u))) * EMetric.infEdist 0 (subdifferential f x) ≥ 1",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable\n  [InnerProductSpace ℝ E]\n    /-  Uniformized KL property -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem uniformized_KL_property {f : E → ℝ} {Ω : Set E} (h_compact : IsCompact Ω) (h_Ω1 : ∀ x ∈ Ω, KL_point f x)\n    (h_Ω2 : is_constant_on f Ω) :\n    ∃ ε ∈ Ioi 0,\n      ∃ η ∈ Ioi 0,\n        ∃ φ ∈ desingularizing_function η,\n          ∀ u ∈ Ω,\n            ∀ x ∈ {y : E | (EMetric.infEdist y Ω).toReal < ε} ∩ {y | f u < f y ∧ f y < f u + η},\n              (ENNReal.ofReal (deriv φ (f x - f u))) * EMetric.infEdist 0 (subdifferential f x) ≥ 1 :=\n  by\n  -- case : Ω = ∅\n  by_cases h_nonempty : Ω = ∅\n  · push_neg at h_nonempty\n    use 1, (by simp), 1, (by simp), (fun t => 2⁻¹ * t)\n    constructor\n    rw [← div_self]\n    exact (const_mul_special_concave 2 (by simp))\n    simp\n    rw [h_nonempty]\n    tauto\n      -- case : Ω ≠ ∅\n  push_neg at h_nonempty\n  obtain ⟨μ, constant_value⟩ := exist_constant_value f h_Ω2 h_nonempty\n  have :\n    ∀ x ∈ Ω,\n      ∃ η ∈ Ioi 0,\n        ∃ (O : Set E) (_ : IsOpen O) (_ : x ∈ O),\n          ∃ φ ∈ desingularizing_function η,\n            ∀ u ∈ O ∩ {y | f x < f y ∧ f y < f x + η},\n              (ENNReal.ofReal (deriv φ (f u - f x))) * EMetric.infEdist 0 (subdifferential f u) ≥ 1 :=\n    by\n    intro x hx; simp [KL_point] at h_Ω1\n    rcases h_Ω1 x hx with ⟨η, ⟨hη, ⟨s, ⟨hs, ⟨φ, hφ, h_Ω1⟩⟩⟩⟩⟩\n    rcases mem_nhds_iff.1 hs with ⟨O, hO1, hO2, hO3⟩\n    use η, hη, O, hO2, hO3, φ, hφ\n    intro u hu\n    simp at hu\n    rcases hu with ⟨hu1, hu2, hu3⟩\n    have : u ∈ s := by tauto\n    exact h_Ω1 u this hu2 hu3\n  choose! η h_exist using this\n  choose hη2 h_exist using h_exist\n  choose! O h_exist using h_exist\n  choose h_Ox h_exist using h_exist\n  choose h_Ox' h_exist using h_exist\n  choose! φ h_exist using h_exist\n  choose hφ h_exist using h_exist\n  have exist_open_cover : Ω ⊆ ⋃ x ∈ Ω, O x := by\n    intro x hx; simp\n    exact\n      ⟨x, ⟨hx, h_Ox' x hx⟩⟩\n        -- There exists a finite sub-cover of this open cover.\n  obtain exist_open_sub_finite_cover := IsCompact.elim_finite_subcover_image h_compact h_Ox exist_open_cover\n  rcases exist_open_sub_finite_cover with ⟨t, ht1, ht2, ht3⟩\n  have mem_t_in_Ω : ∀ x ∈ ht2.toFinset, x ∈ Ω := by\n    intro x hx\n    obtain := (Set.Finite.mem_toFinset ht2).1 hx\n    tauto\n  have t_nonempty : ht2.toFinset.Nonempty := by\n    simp; by_contra! h\n    have : ⋃ i ∈ t, O i = ∅ := by simp [h]\n    have Ω_subset : Ω ⊆ ∅ := by rwa [this] at ht3\n    have contra₁ : Ω = ∅ := Set.subset_empty_iff.1 Ω_subset\n    have contra₂ : Ω ≠ ∅ := Set.Nonempty.ne_empty h_nonempty\n    contradiction\n  let φ_sum := ∑' x : ht2.toFinset, φ x\n  have : ∃ η_min ∈ Ioi 0, ∀ x ∈ t, η x ≥ η_min :=\n    by\n    have nonempty : (Finset.image η ht2.toFinset).Nonempty := by simpa using t_nonempty\n    let η_min := (Finset.image η ht2.toFinset).min' nonempty\n    use η_min\n    constructor\n    · simp [η_min]\n      intro c hc\n      exact hη2 c (mem_t_in_Ω c ((Set.Finite.mem_toFinset ht2).2 hc))\n    intro x xt\n    have min_le : ∀ s ∈ (Finset.image η ht2.toFinset), η_min ≤ s := by apply Finset.min'_le\n    have η_in_image : (η x) ∈ (Finset.image η ht2.toFinset) :=\n      by\n      rw [Finset.mem_image]\n      use x\n      constructor\n      simp [xt]\n      rfl\n    exact min_le (η x) η_in_image\n  rcases this with ⟨η_min, ηpos, hmin⟩\n  simp [desingularizing_function] at hφ\n  have h_special_concave : φ_sum ∈ desingularizing_function η_min :=\n    by\n    simp [desingularizing_function]\n    have h₁ : ConcaveOn ℝ (Ico 0 η_min) φ_sum := by\n      rw [ConcaveOn]\n      constructor\n      apply convex_Ico\n      intro x xpos y ypos a b apos bpos absum\n      simp [φ_sum]\n      have : ∀ d : ℝ, ∀ x : ℝ, d * ∑ c ∈ ht2.toFinset, φ c x = ∑ c ∈ ht2.toFinset, d * (φ c x) :=\n        by\n        intro d x\n        let f c := φ c x\n        show d * ∑ c ∈ ht2.toFinset, f c = ∑ c ∈ ht2.toFinset, d * f c\n        rw [← Finset.tsum_subtype', ← Finset.tsum_subtype', ← tsum_mul_left]\n      rw [this a x, this b y, ← Finset.sum_add_distrib]\n      have : ∀ c ∈ t, (a * φ c x + b * φ c y) ≤ φ c (a * x + b * y) :=\n        by\n        intro c hc\n        simp at xpos ypos\n        have xleq : x < η c := by\n          obtain := hmin c hc\n          linarith\n        have yleq : y < η c := by\n          obtain := hmin c hc\n          linarith\n        obtain c_in_finset := (Set.Finite.mem_toFinset ht2).2 hc\n        obtain inequ_concave := (hφ c (mem_t_in_Ω c c_in_finset)).1\n        simp [ConcaveOn] at inequ_concave\n        apply inequ_concave.2 xpos.1 xleq ypos.1 yleq apos bpos absum\n      apply Finset.sum_le_sum\n      intro c hc\n      exact\n        this c\n          ((Set.Finite.mem_toFinset ht2).1 hc)\n            -- have h₂ : ∀ (x : ℝ), 0 < x → x < η_min → 0 < φ_sum x := by\n                  --   intro x hx1 hx2; simp [φ_sum]\n                  --   apply Finset.sum_pos\n                  --   intro c hc\n                  --   have xleq : x < η c := by\n                  --     obtain := hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n                  --     linarith\n                  --   exact (hφ c (mem_t_in_Ω c hc)).2.1 x hx1 xleq\n                  --   exact t_nonempty\n    have h₃ : φ_sum 0 = 0 := by\n      simp [φ_sum]\n      have : ∀ x ∈ ht2.toFinset, φ x 0 = 0 := by\n        intro x xt\n        exact (hφ x (mem_t_in_Ω x xt)).2.1\n      apply Finset.sum_eq_zero this\n    have h₄ : ContDiffOn ℝ 1 φ_sum (Ioo 0 η_min) :=\n      by\n      have : φ_sum = (fun c => ∑ x ∈ ht2.toFinset, φ x c) := by ext c; simp [φ_sum]\n      rw [this]\n      apply ContDiffOn.sum\n      intro c hc\n      obtain φ_cont_diff := (hφ c (mem_t_in_Ω c hc)).2.2.1\n      apply ContDiffOn.mono φ_cont_diff\n      apply Set.Ioo_subset_Ioo_right\n      exact hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n    have h₅ : ContinuousAt φ_sum 0 := by\n      rw [ContinuousAt]\n      have : φ_sum = (fun c => ∑ x ∈ ht2.toFinset, φ x c) := by ext c; simp [φ_sum]\n      rw [this]\n      simp [φ_sum]\n      apply tendsto_finset_sum\n      intro c hc\n      obtain cont := (hφ c (mem_t_in_Ω c hc)).2.2.2.1\n      rw [ContinuousAt] at cont\n      exact cont\n    have h₆ : ∀ (x : ℝ), 0 < x → x < η_min → 0 < deriv φ_sum x :=\n      by\n      intro y ypos yleq\n      have : φ_sum = (fun c => ∑ x ∈ ht2.toFinset, φ x c) := by ext c; simp [φ_sum]\n      rw [this]\n      have : deriv (fun c ↦ ∑ x ∈ ht2.toFinset, φ x c) y = ∑ x ∈ ht2.toFinset, deriv (φ x) y :=\n        by\n        apply deriv_sum\n        intro c hc\n        have η_inequ : y < η c := by\n          obtain := hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n          linarith\n        specialize hφ c (mem_t_in_Ω c hc)\n        obtain contdiff := ContDiffOn.contDiffAt hφ.2.2.1 (Ioo_mem_nhds ypos η_inequ)\n        apply ContDiffAt.differentiableAt contdiff (by simp)\n      rw [this]\n      apply Finset.sum_pos\n      · intro c hc\n        have : y < η c := by\n          obtain := hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n          linarith\n        specialize hφ c (mem_t_in_Ω c hc)\n        exact hφ.2.2.2.2 y ypos this\n      · exact t_nonempty\n    exact ⟨h₁, h₃, h₄, h₅, h₆⟩\n  have uniform_ball : ∃ ε ∈ Ioi 0, {y | EMetric.infEdist y Ω < ENNReal.ofReal ε} ⊆ ⋃ x ∈ t, O x :=\n    by\n    have union_open : IsOpen (⋃ x ∈ t, O x) :=\n      by\n      have : ∀ x ∈ t, IsOpen (O x) := by\n        intro x hx\n        have : x ∈ Ω := by tauto\n        apply h_Ox\n        apply this\n      apply isOpen_biUnion this\n    obtain res_thickening := IsCompact.exists_thickening_subset_open h_compact union_open ht3\n    rcases res_thickening with ⟨ε, ⟨hε, h2⟩⟩\n    use ε, hε\n    have : {y | EMetric.infEdist y Ω < ENNReal.ofReal ε} = Metric.thickening ε Ω := by ext x;\n      exact Metric.mem_thickening_iff_infEdist_lt\n    rwa [this]\n  choose ε uniform_ball using uniform_ball\n  have : {y | EMetric.infEdist y Ω < ENNReal.ofReal ε} = {y | (EMetric.infEdist y Ω).toReal < ε} := by ext x;\n    apply ENNReal.lt_ofReal_iff_toReal_lt (Metric.infEdist_ne_top h_nonempty)\n  rw [this] at uniform_ball\n  have exist_one_ball :\n    ∀ u ∈ {y | (EMetric.infEdist y Ω).toReal < ε} ∩ {y | μ < f y ∧ f y < μ + η_min}, ∃ x ∈ t, u ∈ O x :=\n    by\n    intro u hu\n    obtain u_in_union := Set.mem_of_subset_of_mem uniform_ball.2 hu.1\n    simpa using u_in_union\n  use ε, uniform_ball.1, η_min, ηpos, φ_sum, h_special_concave\n  intro baru hbaru\n  rw [constant_value baru hbaru]\n  intro u hu\n  rcases exist_one_ball u hu with ⟨ui, ⟨hui₁, hui₂⟩⟩\n  simp at hu\n  rcases hu with\n    ⟨_, hu2, hu3⟩\n      -- rcases hu with ⟨_, ⟨hu21 , ⟨hu221, hu222⟩⟩⟩\n  calc\n    _ ≥ (ENNReal.ofReal (deriv (φ ui) (f u - μ))) * EMetric.infEdist 0 (subdifferential f u) :=\n      by\n      have deriv_φ_pos : deriv φ_sum (f u - μ) > 0 :=\n        by\n        simp [desingularizing_function] at h_special_concave\n        obtain h_tmp := h_special_concave.2.2.2.2\n        apply h_tmp\n        · linarith [hu2]\n        · linarith [hu3]\n      apply real_geq_ennreal_ofreal_geq\n      simp [φ_sum]\n      have equ₁ : deriv (fun c ↦ ∑ x ∈ ht2.toFinset, φ x c) (f u - μ) = ∑ x ∈ ht2.toFinset, deriv (φ x) (f u - μ) :=\n        by\n        apply deriv_sum\n        intro c hc\n        have σu_pos : f u - μ > 0 := by linarith [hu2]\n        have η_inequ : (f u - μ) < η c :=\n          by\n          obtain inequ_ηmin := hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n          linarith\n        specialize hφ c (mem_t_in_Ω c hc)\n        obtain contdiff := ContDiffOn.contDiffAt hφ.2.2.1 (Ioo_mem_nhds σu_pos η_inequ)\n        apply ContDiffAt.differentiableAt contdiff (by simp)\n      have equ₂ : deriv (fun c ↦ ∑ x ∈ ht2.toFinset, φ x c) (f u - μ) = deriv (∑ x ∈ ht2.toFinset, φ x) (f u - μ) :=\n        by\n        have : (fun c ↦ ∑ x ∈ ht2.toFinset, φ x c) = (∑ x ∈ ht2.toFinset, φ x) := by ext c;\n          exact Eq.symm (Finset.sum_apply c ht2.toFinset φ)\n        rw [this]\n      rw [← equ₂, equ₁]\n        -- have : (∑ x ∈ ht2.toFinset, deriv (φ x) (f u - μ)) ≥ deriv (φ ui) (f u - μ) := by\n      let g x := deriv (φ x) (f u - μ)\n      show (∑ x ∈ ht2.toFinset, g x) ≥ g ui\n      apply Finset.single_le_sum\n      intro c hc\n      have σu_pos : f u - μ > 0 := by linarith [hu2]\n      have η_inequ : (f u - μ) < η c :=\n        by\n        obtain inequ_ηmin := hmin c ((Set.Finite.mem_toFinset ht2).1 hc)\n        linarith\n      simp [g]\n      specialize hφ c (mem_t_in_Ω c hc)\n      apply le_of_lt (hφ.2.2.2.2 (f u - μ) σu_pos η_inequ)\n      apply\n        ((Set.Finite.mem_toFinset ht2).2 hui₁)\n          -- apply real_geq_ennreal_ofreal_geq\n                  -- apply lt_of_lt_of_le _ this\n      exact deriv_φ_pos\n    _ ≥ 1 := by\n      obtain equ_μ := constant_value ui (mem_t_in_Ω ui ((Set.Finite.mem_toFinset ht2).2 hui₁))\n      specialize h_exist ui (mem_t_in_Ω ui ((Set.Finite.mem_toFinset ht2).2 hui₁))\n      specialize h_exist u ⟨hui₂, _⟩\n      simp [equ_μ]\n      use hu2\n      have : η_min ≤ η ui := hmin ui hui₁\n      linarith\n      rw [equ_μ] at h_exist\n      exact h_exist",
+        "type": "theorem",
+        "filename": "KL"
+    }
+]

@@ -1,0 +1,554 @@
+[
+    {
+        "theorem_name": "prox_prop",
+        "theorem_statement": " (f : E → ℝ) (x : E) (xm : E) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def prox_prop (f : E → ℝ) (x : E) (xm : E) : Prop :=\n  IsMinOn (fun u ↦ f u + ‖u - x‖ ^ 2 / 2) univ xm",
+        "type": "definition",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_set",
+        "theorem_statement": " (f : E → ℝ) (x : E) : Set E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def prox_set (f : E → ℝ) (x : E) : Set E :=\n  {u | prox_prop f x u}\n    /-\n      if the proximal set is nonempty then we can choose the point that satisfies the proximal property\n    -/",
+        "type": "definition",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_point",
+        "theorem_statement": " (f : E → ℝ) (x : E) (h : ∃ y, prox_set f x y) : E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def prox_point (f : E → ℝ) (x : E) (h : ∃ y, prox_set f x y) : E :=\n  Classical.choose h",
+        "type": "definition",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_set_compact_of_lowersemi",
+        "theorem_statement": " (f : E → ℝ) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) :\n  ∀ x, Nonempty (prox_set f x) ∧ IsCompact (prox_set f x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_set_compact_of_lowersemi (f : E → ℝ) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) :\n    ∀ x, Nonempty (prox_set f x) ∧ IsCompact (prox_set f x) :=\n  by\n  intro x\n  let g := fun u ↦ f u + ‖u - x‖ ^ 2 / 2\n  let epi := {p : (E × ℝ) | g p.1 ≤ p.2}\n  let S := {y : E | g y ≤ g x}\n  have eq : S = (g ⁻¹' Set.Iic (g x)) := by constructor\n  let ImS := {g y | y ∈ S}\n  have neImS : Set.Nonempty ImS := by use g x; simp [ImS]; use x; simp [S]\n  rcases lbdf with ⟨L, Lbound⟩\n  rw [mem_lowerBounds] at Lbound\n  have boundg : ∀ (x : E), L ≤ g x := by\n    intro z\n    calc\n      L ≤ f z := by specialize Lbound (f z); simp at Lbound; exact Lbound\n      _ ≤ f z + ‖z - x‖ ^ 2 / 2 := by simp; linarith [sq_nonneg ‖z - x‖]\n  have hg : LowerSemicontinuous g := by\n    apply LowerSemicontinuous.add hc\n    apply Continuous.lowerSemicontinuous\n    apply continuous_iff_continuousOn_univ.2\n    apply HasGradientAt.continuousOn\n    intro u _; apply gradient_of_sq u\n  have S_bddbelow : BddBelow ImS := by\n    use L; rw [mem_lowerBounds]\n    rintro gy ⟨y0, _, gyeq⟩; rw [← gyeq]; exact boundg y0\n  have epi_closed : IsClosed epi := by\n    apply bounded_lowersemicontinuous_to_epi_closed\n    · exact lowerSemicontinuousOn_univ_iff.2 hg\n    use L\n  have closeds : IsClosed S := by\n    rw [eq]\n    rw [lowerSemicontinuous_iff_isClosed_preimage] at hg\n    exact hg (g x)\n  have compacts : IsCompact S := by\n    let B := Metric.closedBall x (f x - L + 1)\n    have sinb : S ⊆ B := by\n      intro u uin; simp [S] at uin\n      apply mem_closedBall_iff_norm.2\n      have norm_bound : ‖u - x‖ ≤ f x - L + 1 :=\n        by\n        have ieq : L + ‖u - x‖ ^ 2 / 2 ≤ f x := by\n          calc\n            L + ‖u - x‖ ^ 2 / 2 ≤ g u := by simp [g]; specialize Lbound (f u); simp at Lbound; exact Lbound\n            _ ≤ f x := by simp [g] at uin; exact uin\n        rw [← le_sub_iff_add_le'] at ieq\n        have aux {a b : ℝ} (h1 : a ^ 2 / 2 ≤ b) (h2 : 0 ≤ a) : a ≤ b + 1 :=\n          by\n          rw [div_le_iff₀] at h1; rw [← abs_eq_self] at h2; rw [← h2]\n          apply abs_le_of_sq_le_sq; rw [add_sq]; simp\n          calc\n            a ^ 2 ≤ b * 2 := h1\n            _ ≤ b ^ 2 + 2 * b + 1 := by rw [add_right_comm, mul_comm]; simp; linarith [sq_nonneg b]\n          calc\n            0 ≤ a ^ 2 / 2 := by linarith [sq_nonneg a]\n            _ ≤ b * 2 / 2 := by rw [div_le_div_right]; exact h1; linarith\n            _ ≤ b + 1 := by simp\n          linarith\n        apply aux ieq\n        apply norm_nonneg\n      exact norm_bound\n    have compactb : IsCompact B := isCompact_closedBall x (f x - L + 1)\n    rw [← closure_eq_iff_isClosed] at closeds; rw [← closeds]\n    apply IsCompact.closure_of_subset compactb sinb\n  rcases exists_seq_tendsto_sInf neImS S_bddbelow with ⟨fx, _, cfx, fxs⟩\n  choose xn xsub xeq using fxs\n  rcases IsCompact.tendsto_subseq compacts xsub with ⟨x', _, k, mono, cxk⟩\n  have cfxk : Filter.Tendsto (g ∘ xn ∘ k) Filter.atTop (𝓝 (sInf ImS)) :=\n    by\n    have xkeq : ∀ (n : ℕ), (g ∘ xn ∘ k) n = (fx ∘ k) n := fun n => xeq <| k n\n    rw [tendsto_congr xkeq]\n    apply Tendsto.comp cfx (StrictMono.tendsto_atTop mono)\n  have inepi : (x', sInf ImS) ∈ epi :=\n    by\n    let p := fun c ↦ (((fun n ↦ xn n) ∘ k) c, (g ∘ xn ∘ k) c)\n    have pnin : ∀ c : ℕ, p c ∈ epi := by simp [epi]\n    apply IsClosed.isSeqClosed epi_closed pnin\n    show Tendsto (fun c ↦ (((fun n ↦ xn n) ∘ k) c, (g ∘ xn ∘ k) c)) atTop (𝓝 (x', sInf ImS))\n    apply Tendsto.prod_mk_nhds cxk cfxk\n  have minima_ieq : g x' ≤ sInf ImS := inepi\n  have minima : ∀ w : E, g x' ≤ g w := by\n    intro w\n    by_cases hw : w ∈ S\n    · have gwin : g w ∈ ImS := by use w\n      have legw : sInf ImS ≤ g w := by\n        rw [Real.sInf_le_iff S_bddbelow neImS]\n        intro _ epos; use g w; use gwin; linarith\n      linarith\n    · have gwnin : g x < g w := by simp [g, S] at hw; simp [g]; exact hw\n      have gxin : g x ∈ ImS := by use x; simp [g, ImS, S]\n      have legw : sInf ImS ≤ g w := by\n        rw [Real.sInf_le_iff S_bddbelow neImS]\n        intro _ epos; use g x; use gxin; linarith\n      linarith\n  constructor\n  · use x'; simp [prox_set]; rw [prox_prop, isMinOn_iff]\n    intro v _; exact minima v\n  · have aux : prox_set f x = {x | IsMinOn g univ x} :=\n      by\n      simp [prox_set]; ext y\n      constructor\n      · intro yin; simp [prox_prop] at yin; simp; exact yin\n      · intro yin; simp; rw [prox_prop]\n        simp at yin; exact yin\n    have nes : Nonempty S := by use x; simp [S]\n    rw [eq] at compacts; rw [eq] at nes\n    rw [aux]\n      -- apply IsCompact_isMinOn_of_isCompact_preimage hc nes compacts\n    have seq : {x | IsMinOn g univ x} = (g ⁻¹' Set.Iic (g x')) :=\n      by\n      ext y\n      constructor\n      · exact fun hxx => isMinOn_iff.mp hxx x' trivial\n      · intro yin; simp at yin\n        exact fun x xuniv => le_trans yin ((fun x _ => minima x) x xuniv)\n    simp only [seq]\n    apply IsCompact.of_isClosed_subset compacts (LowerSemicontinuous.isClosed_preimage hg (g x'))\n    apply Set.preimage_mono\n    simp only [Set.Iic_subset_Iic]\n    exact minima x",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_set_compact_of_convex",
+        "theorem_statement": " (f : E → ℝ) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) :\n  ∀ x, Nonempty (prox_set f x) ∧ IsCompact (prox_set f x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_set_compact_of_convex (f : E → ℝ) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) :\n    ∀ x, Nonempty (prox_set f x) ∧ IsCompact (prox_set f x) :=\n  by\n  intro x\n  have subd : ∃ z : E, Nonempty (SubderivAt f z) := by use x; apply SubderivAt.nonempty hconv hc\n  have hc : LowerSemicontinuous f := Continuous.lowerSemicontinuous (continuous_iff_continuousOn_univ.mpr hc)\n  rcases subd with ⟨z, a, ain⟩\n  rw [← mem_SubderivAt, HasSubgradientAt] at ain\n  let g := fun u ↦ f u + ‖u - x‖ ^ 2 / 2\n  let epi := {p : (E × ℝ) | g p.1 ≤ p.2}\n  have second_lower_bound (y : E) : g y ≥ f z + inner a (y - z) + ‖y - x‖ ^ 2 / 2 :=\n    by\n    simp [g]\n    specialize ain y; linarith\n  have lower_bound (y : E) : f z + inner a (x - z) - ‖a‖ ^ 2 / 2 ≤ g y :=\n    by\n    have : y - z = x - z + (y - x) := by simp\n    specialize second_lower_bound y\n    rw [this, inner_add_right, ← add_assoc, add_assoc] at second_lower_bound\n    have : 0 ≤ ‖a‖ ^ 2 / 2 + inner a (y - x) + ‖y - x‖ ^ 2 / 2 :=\n      by\n      field_simp; rw [mul_comm, ← norm_add_sq_real]\n      apply div_nonneg (sq_nonneg ‖a + (y - x)‖)\n      norm_num\n    calc\n      f z + inner a (x - z) - ‖a‖ ^ 2 / 2 ≤\n          f z + inner a (x - z) - ‖a‖ ^ 2 / 2 + (‖a‖ ^ 2 / 2 + inner a (y - x) + ‖y - x‖ ^ 2 / 2) :=\n        le_add_of_nonneg_right this\n      _ = f z + inner a (x - z) + (inner a (y - x) + ‖y - x‖ ^ 2 / 2) := by ring\n      _ ≤ g y := second_lower_bound\n  have hg : LowerSemicontinuous g := by\n    apply LowerSemicontinuous.add hc\n    apply Continuous.lowerSemicontinuous\n    apply continuous_iff_continuousOn_univ.2\n    apply HasGradientAt.continuousOn\n    intro u _; apply gradient_of_sq u\n  have epi_closed : IsClosed epi := by\n    apply bounded_lowersemicontinuous_to_epi_closed\n    · exact lowerSemicontinuousOn_univ_iff.2 hg\n    use (f z + inner a (x - z) - ‖a‖ ^ 2 / 2)\n  let S := {y : E | g y ≤ g z}\n  have eq : S = (g ⁻¹' Set.Iic (g z)) := by constructor\n  let ImS := {g y | y ∈ S}\n  have neImS : Set.Nonempty ImS := by use g z; simp [ImS, S]; use z\n  have S_bddbelow : BddBelow ImS := by\n    use (f z + inner a (x - z) - ‖a‖ ^ 2 / 2)\n    rw [mem_lowerBounds]\n    rintro gy ⟨y0, _, gyeq⟩\n    rw [← gyeq]; exact lower_bound y0\n  have closeds : IsClosed S := by\n    rw [eq]\n    rw [lowerSemicontinuous_iff_isClosed_preimage] at hg\n    exact hg (g z)\n  have compacts : IsCompact S := by\n    let B := Metric.closedBall (x - a) (‖z - (x - a)‖ + 2)\n    have sinb : S ⊆ B := by\n      intro u uin\n      simp [S] at uin\n      apply mem_closedBall_iff_norm.2\n      have norm_bound : ‖u - (x - a)‖ ≤ ‖z - (x - a)‖ + 2 :=\n        by\n        have ieq : f z + inner a (u - z) + ‖u - x‖ ^ 2 / 2 ≤ f z + ‖z - x‖ ^ 2 / 2 + 1 := by\n          calc\n            f z + inner a (u - z) + ‖u - x‖ ^ 2 / 2 ≤ g u := second_lower_bound u\n            _ ≤ f z + ‖z - x‖ ^ 2 / 2 := uin\n            _ ≤ f z + ‖z - x‖ ^ 2 / 2 + 1 := by linarith\n        rw [add_assoc, add_assoc, add_le_add_iff_left] at ieq\n        have eq : inner a (u - z) + ‖u - x‖ ^ 2 / 2 = (‖u - (x - a)‖ ^ 2 - ‖a‖ ^ 2 + 2 * inner (x - z) a) / 2 :=\n          by\n          field_simp; rw [← sub_add, norm_add_sq_real]; ring_nf\n          rw [add_assoc, ← add_mul, ← inner_add_left, add_comm, real_inner_comm]; simp\n        rw [eq] at ieq\n        have ieq2 : ‖u - (x - a)‖ ^ 2 ≤ ‖z - (x - a)‖ ^ 2 + 2 :=\n          by\n          field_simp at ieq; rw [div_le_div_right, sub_add, sub_le_iff_le_add] at ieq\n          rw [add_right_comm, add_comm (‖z - x‖ ^ 2), norm_sub_rev z x] at ieq\n          rw [real_inner_comm, ← norm_sub_sq_real, ← sub_add a, sub_add_comm] at ieq\n          rw [sub_add] at ieq; exact ieq; norm_num\n        have : |‖z - (x - a)‖ + 2| = ‖z - (x - a)‖ + 2 :=\n          by\n          apply abs_of_pos; apply add_pos_of_nonneg_of_pos (norm_nonneg (z - (x - a)))\n          simp\n        rw [← abs_norm, ← this, ← sq_le_sq, add_sq]\n        calc\n          ‖u - (x - a)‖ ^ 2 ≤ ‖z - (x - a)‖ ^ 2 + 2 := ieq2\n          _ ≤ ‖z - (x - a)‖ ^ 2 + 2 * ‖z - (x - a)‖ * 2 + 2 ^ 2 :=\n            by\n            rw [add_assoc, add_le_add_iff_left]; apply le_add_of_nonneg_of_le\n            simp; norm_num\n      exact norm_bound\n    have compactb : IsCompact B := isCompact_closedBall (x - a) (‖z - (x - a)‖ + 2)\n    rw [← closure_eq_iff_isClosed] at closeds; rw [← closeds]\n    apply IsCompact.closure_of_subset compactb sinb\n  rcases exists_seq_tendsto_sInf neImS S_bddbelow with ⟨fx, _, cfx, fxs⟩\n  choose xn xsub xeq using fxs\n  rcases IsCompact.tendsto_subseq compacts xsub with ⟨x', _, k, mono, cxk⟩\n  have cfxk : Filter.Tendsto (g ∘ xn ∘ k) Filter.atTop (𝓝 (sInf ImS)) :=\n    by\n    have xkeq : ∀ (n : ℕ), (g ∘ xn ∘ k) n = (fx ∘ k) n := fun n => xeq <| k n\n    rw [tendsto_congr xkeq]\n    apply Tendsto.comp cfx (StrictMono.tendsto_atTop mono)\n  have inepi : (x', sInf ImS) ∈ epi :=\n    by\n    let p := fun c ↦ (((fun n ↦ xn n) ∘ k) c, (g ∘ xn ∘ k) c)\n    have pnin : ∀ c : ℕ, p c ∈ epi := by simp [epi]\n    apply IsClosed.isSeqClosed epi_closed pnin\n    show Tendsto (fun c ↦ (((fun n ↦ xn n) ∘ k) c, (g ∘ xn ∘ k) c)) atTop (𝓝 (x', sInf ImS))\n    apply Tendsto.prod_mk_nhds cxk cfxk\n  have minima_ieq : g x' ≤ sInf ImS := inepi\n  have minima : ∀ w : E, g x' ≤ g w := by\n    intro w\n    by_cases hw : w ∈ S\n    · have gwin : g w ∈ ImS := by use w\n      have legw : sInf ImS ≤ g w := by\n        rw [Real.sInf_le_iff S_bddbelow neImS]\n        intro _ epos; use g w; use gwin; linarith\n      linarith\n    · have gwnin : g z < g w := by simp [S] at hw; simp [g]; exact hw\n      have gzin : g z ∈ ImS := by use z; simp [ImS, S]\n      have legw : sInf ImS ≤ g w := by\n        rw [Real.sInf_le_iff S_bddbelow neImS]\n        intro _ epos; use g z; use gzin; linarith\n      linarith\n  constructor\n  · use x'; simp [prox_set]; rw [prox_prop, isMinOn_iff]\n    intro v _; exact minima v\n  · have aux : prox_set f x = {x | IsMinOn g univ x} :=\n      by\n      simp [prox_set]; ext y\n      constructor\n      · intro yin; simp [prox_prop] at yin; simp; exact yin\n      · intro yin; simp; rw [prox_prop]\n        simp at yin; exact yin\n    have nes : Nonempty S := by use z; simp [S]\n    rw [eq] at compacts; rw [eq] at nes\n    rw [aux]\n      -- apply IsCompact_isMinOn_of_isCompact_preimage hc nes compacts\n    have seq : {x | IsMinOn g univ x} = (g ⁻¹' Set.Iic (g x')) :=\n      by\n      ext y\n      constructor\n      · exact fun hxx => isMinOn_iff.mp hxx x' trivial\n      · intro yin; simp at yin\n        exact fun x xuniv => le_trans yin ((fun x _ => minima x) x xuniv)\n    simp only [seq]\n    apply IsCompact.of_isClosed_subset compacts (LowerSemicontinuous.isClosed_preimage hg (g x'))\n    apply Set.preimage_mono\n    simp only [Set.Iic_subset_Iic]\n    exact minima z",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_well_define",
+        "theorem_statement": " (f : E → ℝ) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) : ∀ x, ∃ y, prox_prop f x y",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_well_define (f : E → ℝ) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) :\n    ∀ x, ∃ y, prox_prop f x y := by\n  intro x\n  rcases(prox_set_compact_of_lowersemi f hc lbdf x).1 with ⟨y, yprop⟩\n  use y; simp [prox_set] at yprop; exact yprop",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_well_define_convex",
+        "theorem_statement": " (f : E → ℝ) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) : ∀ x, ∃ y, prox_prop f x y",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_well_define_convex (f : E → ℝ) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) :\n    ∀ x, ∃ y, prox_prop f x y := by\n  intro x\n  rcases(prox_set_compact_of_convex f hc hconv x).1 with ⟨y, yprop⟩\n  use y; simp [prox_set] at yprop; exact yprop",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_point_c",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) : E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def prox_point_c (f : E → ℝ) (x : E) (hc : LowerSemicontinuous f) (lbdf : BddBelow (f '' univ)) : E :=\n  have h : ∃ y, prox_set f x y := by apply prox_well_define f hc lbdf x\n  Classical.choose h",
+        "type": "definition",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_point_c'",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) : E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def prox_point_c' (f : E → ℝ) (x : E) (hc : ContinuousOn f univ) (hconv : ConvexOn ℝ univ f) : E :=\n  have h : ∃ y, prox_set f x y := by apply prox_well_define_convex f hc hconv x\n  Classical.choose h",
+        "type": "definition",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_unique_of_convex",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hfun : ConvexOn ℝ univ f) (h₁ : prox_prop f x y₁) (h₂ : prox_prop f x y₂) : y₁ = y₂",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_unique_of_convex (f : E → ℝ) (x : E) (hfun : ConvexOn ℝ univ f) (h₁ : prox_prop f x y₁)\n    (h₂ : prox_prop f x y₂) : y₁ = y₂ :=\n  by\n  let g := fun u ↦ f u + ‖u - x‖ ^ 2 / 2\n  let m := (1 : ℝ)\n  have gsconv : StrongConvexOn univ m g := by\n    apply strongconvex_of_convex_add_sq\n    show ConvexOn ℝ univ f; apply hfun\n  rw [prox_prop] at h₁\n  rw [prox_prop] at h₂\n  apply Strongly_Convex_Unique_Minima gsconv\n  apply h₁; apply h₂; simp; simp;\n  norm_num\n    /-\n       The square of norm is convex on a convex set\n    -/",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "convex_of_norm_sq",
+        "theorem_statement": " {s : Set E} (x : E) (conv : Convex ℝ s) : ConvexOn ℝ s (fun (u : E) ↦ ‖u - x‖ ^ 2 / 2)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem convex_of_norm_sq {s : Set E} (x : E) (conv : Convex ℝ s) : ConvexOn ℝ s (fun (u : E) ↦ ‖u - x‖ ^ 2 / 2) :=\n  by\n  rw [ConvexOn]; use conv\n  intro y _ z _ a b anneg bnneg absum1\n  field_simp\n  have eq1 : a • y + b • z - x = a • (y - x) + b • (z - x) :=\n    by\n    rw [smul_sub, smul_sub, add_comm_sub, sub_sub, ← add_smul, add_comm b a]\n    rw [absum1, one_smul, ← add_sub]\n  rw [eq1]\n  have ieq1 (u v : E) : ‖a • u + b • v‖ ^ 2 / 2 ≤ (a * ‖u‖ ^ 2 + b * ‖v‖ ^ 2) / 2 :=\n    by\n    rw [div_le_div_right, norm_add_sq_real, add_comm, ← add_assoc]\n    rw [norm_smul, norm_smul, mul_pow, mul_pow]; simp\n    nth_rw 3 [← mul_one a]; nth_rw 3 [← one_mul b]\n    rw [← absum1]; ring_nf; rw [add_right_comm]\n    apply add_le_add_right\n    rw [add_comm]; apply add_le_add_right\n    calc\n      inner (a • u) (b • v) * 2 ≤ ‖a • u‖ * ‖b • v‖ * 2 :=\n        by\n        rw [mul_le_mul_right]\n        apply real_inner_le_norm\n        simp\n      _ = a * b * (2 * ‖u‖ * ‖v‖) := by\n        rw [norm_smul, norm_smul]; simp\n        rw [abs_of_nonneg anneg, abs_of_nonneg bnneg]; ring\n      _ ≤ a * b * (‖u‖ ^ 2 + ‖v‖ ^ 2) := by\n        by_cases a * b > 0\n        · rw [mul_le_mul_left]\n          apply two_mul_le_add_pow_two\n          linarith\n        · have ieq2 : 0 ≤ a * b := by apply mul_nonneg anneg bnneg\n          have ieq3 : 0 = a * b := by linarith\n          rw [← ieq3]; simp\n      _ = b * ‖v‖ ^ 2 * a + b * a * ‖u‖ ^ 2 := by ring\n    simp\n  apply ieq1",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "Subderivat_eq_SubderivWithinAt_univ",
+        "theorem_statement": " (f : E → ℝ) : SubderivWithinAt f univ u = SubderivAt f u",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem Subderivat_eq_SubderivWithinAt_univ (f : E → ℝ) : SubderivWithinAt f univ u = SubderivAt f u :=\n  by\n  apply subset_antisymm\n  · intro p pin\n    rw [SubderivWithinAt] at pin\n    rw [← mem_SubderivAt, ← hasSubgradientWithinAt_univ]\n    apply pin\n  · intro p pin\n    rw [← mem_SubderivAt, ← hasSubgradientWithinAt_univ] at pin; rw [SubderivWithinAt]\n    apply pin",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "proximal_shift",
+        "theorem_statement": " (a : E) {t : ℝ} (tnz : t ≠ 0) (f : E → ℝ) :\n  ∀ z : E, prox_prop (fun x ↦ f (t • x + a)) x z ↔ prox_prop (t ^ 2 • f) (t • x + a) (t • z + a)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem proximal_shift (a : E) {t : ℝ} (tnz : t ≠ 0) (f : E → ℝ) :\n    ∀ z : E, prox_prop (fun x ↦ f (t • x + a)) x z ↔ prox_prop (t ^ 2 • f) (t • x + a) (t • z + a) :=\n  by\n  intro z\n  rw [prox_prop, prox_prop, isMinOn_univ_iff, isMinOn_univ_iff]\n  simp\n  constructor\n  · intro cond y\n    specialize cond (t⁻¹ • (y - a))\n    rw [← smul_assoc, smul_eq_mul, mul_inv_cancel₀] at cond\n    simp at cond\n    calc\n      t ^ 2 * f (t • z + a) + ‖t • z - t • x‖ ^ 2 / 2 = t ^ 2 * (f (t • z + a) + ‖z - x‖ ^ 2 / 2) := by\n        rw [← smul_sub, norm_smul, mul_pow, mul_add]; field_simp\n      _ ≤ t ^ 2 * (f y + ‖t⁻¹ • (y - a) - x‖ ^ 2 / 2) := by rw [mul_le_mul_left]; use cond; rw [sq_pos_iff]; use tnz\n      _ = t ^ 2 * f y + ‖t • ((1 / t) • (y - a) - x)‖ ^ 2 / 2 := by rw [mul_add, norm_smul, mul_pow]; field_simp\n      _ = t ^ 2 * f y + ‖y - (t • x + a)‖ ^ 2 / 2 := by\n        rw [smul_sub, ← smul_assoc, smul_eq_mul, ← sub_sub, sub_right_comm]; field_simp\n    use tnz\n  · intro cond y\n    specialize cond (t • y + a)\n    rw [← smul_sub, norm_smul, mul_pow] at cond; simp at cond\n    rw [← smul_sub, norm_smul, mul_pow] at cond; simp at cond\n    rw [mul_div_assoc, ← mul_add, mul_div_assoc, ← mul_add] at cond\n    rw [mul_le_mul_left] at cond; use cond; rw [sq_pos_iff]; use tnz",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "proximal_scale",
+        "theorem_statement": " {t : ℝ} (tpos : 0 < t) (f : E → ℝ) :\n  ∀ z : E, prox_prop (fun x ↦ t • f (t⁻¹ • x)) x z ↔ prox_prop (t⁻¹ • f) (t⁻¹ • x) (t⁻¹ • z)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem proximal_scale {t : ℝ} (tpos : 0 < t) (f : E → ℝ) :\n    ∀ z : E, prox_prop (fun x ↦ t • f (t⁻¹ • x)) x z ↔ prox_prop (t⁻¹ • f) (t⁻¹ • x) (t⁻¹ • z) :=\n  by\n  intro z\n  rw [prox_prop, prox_prop, isMinOn_univ_iff, isMinOn_univ_iff]\n  simp\n  constructor\n  · intro cond y\n    specialize cond (t • y)\n    have tsq : 0 < t ^ 2 := by field_simp\n    rw [← mul_le_mul_left tsq]\n    calc\n      t ^ 2 * (t⁻¹ * f (t⁻¹ • z) + ‖t⁻¹ • z - t⁻¹ • x‖ ^ 2 / 2) = t * f (t⁻¹ • z) + ‖z - x‖ ^ 2 / 2 :=\n        by\n        rw [← smul_sub, norm_smul, mul_pow, mul_add, pow_two, ← mul_assoc, mul_assoc _ _ (t⁻¹)]\n        rw [mul_inv_cancel₀, mul_div_assoc, ← mul_assoc]; simp\n        rw [← pow_two, mul_inv_cancel₀]; repeat simp; repeat linarith\n      _ ≤ t * f (t⁻¹ • t • y) + ‖t • y - x‖ ^ 2 / 2 := cond\n      _ = t ^ 2 * (t⁻¹ * f y) + ‖t • (y - t⁻¹ • x)‖ ^ 2 / 2 :=\n        by\n        rw [pow_two t, ← mul_assoc, mul_assoc _ _ (t⁻¹), mul_inv_cancel₀]\n        rw [← smul_assoc, smul_eq_mul, inv_mul_cancel₀]; simp\n        rw [smul_sub, ← smul_assoc, smul_eq_mul, mul_inv_cancel₀]; simp; repeat linarith\n      _ = t ^ 2 * (t⁻¹ * f y + ‖y - t⁻¹ • x‖ ^ 2 / 2) := by rw [mul_add, norm_smul, mul_pow]; field_simp\n  · intro cond y\n    specialize cond (t⁻¹ • y)\n    have tsq : 0 < t ^ 2 := by field_simp\n    rw [← mul_le_mul_left tsq] at cond\n    calc\n      t * f (t⁻¹ • z) + ‖z - x‖ ^ 2 / 2 = t ^ 2 * (t⁻¹ * f (t⁻¹ • z) + ‖t⁻¹ • z - t⁻¹ • x‖ ^ 2 / 2) :=\n        by\n        rw [← smul_sub, norm_smul, mul_pow, mul_add, pow_two t, ← mul_assoc, mul_assoc _ _ (t⁻¹)]\n        rw [mul_inv_cancel₀, mul_div_assoc, ← mul_assoc]; simp\n        rw [← pow_two, mul_inv_cancel₀]; repeat simp; repeat linarith\n      _ ≤ t ^ 2 * (t⁻¹ * f (t⁻¹ • y) + ‖t⁻¹ • y - t⁻¹ • x‖ ^ 2 / 2) := cond\n      _ = t ^ 2 * (t⁻¹ * f (t⁻¹ • y)) + ‖t • (t⁻¹ • y - t⁻¹ • x)‖ ^ 2 / 2 := by rw [mul_add, norm_smul, mul_pow];\n        field_simp\n      _ = t * f (t⁻¹ • y) + ‖y - x‖ ^ 2 / 2 :=\n        by\n        rw [pow_two t, ← mul_assoc, mul_assoc _ _ (t⁻¹), mul_inv_cancel₀]\n        rw [smul_sub, ← smul_assoc, smul_eq_mul, mul_inv_cancel₀]; simp\n        rw [← smul_assoc, smul_eq_mul, mul_inv_cancel₀]; simp;\n        repeat\n          linarith\n            /-\n              change of proximal when added a linear components\n            -/",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "proximal_add_linear",
+        "theorem_statement": " (a : E) (f : E → ℝ) : ∀ z : E, prox_prop (fun x ↦ f x + inner a x) x z ↔ prox_prop f (x - a) z",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem proximal_add_linear (a : E) (f : E → ℝ) :\n    ∀ z : E, prox_prop (fun x ↦ f x + inner a x) x z ↔ prox_prop f (x - a) z :=\n  by\n  intro z\n  rw [prox_prop, prox_prop, isMinOn_univ_iff, isMinOn_univ_iff]\n  have aux (v : E) : ‖v - (x - a)‖ ^ 2 / 2 = ‖v - x‖ ^ 2 / 2 + inner a v + (‖a‖ ^ 2 / 2 - inner a x) := by\n    rw [← sub_add, norm_add_sq_real, real_inner_comm, inner_sub_right]; ring_nf\n  constructor\n  · intro cond y\n    specialize cond y\n    rw [aux, aux, add_comm _ (inner a z), add_comm _ (inner a y)]\n    linarith\n  · intro cond y\n    specialize cond y\n    rw [aux, aux, add_comm _ (inner a z), add_comm _ (inner a y)] at cond\n    linarith\n      /-\n        change of proximal when added a square components\n      -/",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "proximal_add_sq",
+        "theorem_statement": " (a : E) {l : ℝ} (lpos : 0 < l) (f : E → ℝ) :\n  ∀ z : E,\n    prox_prop (fun x ↦ f x + l / 2 * ‖x - a‖ ^ 2) x z ↔ prox_prop ((1 / (l + 1)) • f) ((1 / (l + 1)) • (x + l • a)) z",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x y₁ y₂ : E}",
+            "variable {t : ℝ}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set",
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem proximal_add_sq (a : E) {l : ℝ} (lpos : 0 < l) (f : E → ℝ) :\n    ∀ z : E,\n      prox_prop (fun x ↦ f x + l / 2 * ‖x - a‖ ^ 2) x z ↔\n        prox_prop ((1 / (l + 1)) • f) ((1 / (l + 1)) • (x + l • a)) z :=\n  by\n  intro z\n  rw [prox_prop, prox_prop, isMinOn_univ_iff, isMinOn_univ_iff]\n  have aux (v : E) :\n    ‖v - (1 / (l + 1)) • (x + l • a)‖ ^ 2 / 2 =\n      (l + 1)⁻¹ *\n        (l / 2 * ‖v - a‖ ^ 2 + ‖v - x‖ ^ 2 / 2 + (((l + 1)⁻¹ * (‖x + l • a‖ ^ 2) - ‖x‖ ^ 2 - l * ‖a‖ ^ 2) / 2)) :=\n    by\n    rw [div_mul_eq_mul_div, ← add_div, ← add_div, ← mul_div_assoc, div_left_inj']\n    rw [norm_sub_sq_real, norm_smul, mul_pow, mul_add, sub_sub, mul_sub, ← mul_assoc, ← pow_two]\n    rw [Real.norm_eq_abs, sq_abs, ← inv_eq_one_div, add_sub, add_sub_right_comm]\n    rw [add_right_cancel_iff, norm_sub_sq_real, norm_sub_sq_real]\n    rw [← mul_sub, mul_add, ← add_assoc, ← sub_sub, inner_smul_right]; simp\n    rw [add_sub_right_comm]; simp; rw [mul_sub, ← add_sub_right_comm, ← add_sub_assoc]\n    nth_rw 3 [← one_mul (‖v‖ ^ 2)]; rw [← add_mul, ← mul_assoc l, mul_comm l 2, sub_sub]\n    rw [mul_assoc, ← mul_add, ← inner_smul_right _ _ l, ← inner_add_right]\n    field_simp; rw [mul_comm]; simp\n  constructor\n  · intro cond y\n    specialize cond y\n    rw [aux, aux]; simp; rw [← mul_add, ← mul_add, mul_le_mul_left]\n    linarith [cond]; simp; linarith\n  · intro cond y\n    specialize cond y\n    rw [aux, aux] at cond; simp at cond; rw [← mul_add, ← mul_add, mul_le_mul_left] at cond\n    linarith [cond]; simp; linarith",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_iff_subderiv",
+        "theorem_statement": " (f : E → ℝ) (hfun : ConvexOn ℝ univ f) : ∀ u : E, prox_prop f x u ↔ x - u ∈ SubderivAt f u",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x : E}",
+            "variable\n  {t : ℝ}\n    /-\n      u minimize the proximal at x iff x - u is subgradient\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_iff_subderiv (f : E → ℝ) (hfun : ConvexOn ℝ univ f) : ∀ u : E, prox_prop f x u ↔ x - u ∈ SubderivAt f u :=\n  by\n  intro u; rw [prox_prop, ← HasSubgradientAt_zero_iff_isMinOn, mem_SubderivAt]\n  let g := fun u ↦ ‖u - x‖ ^ 2 / 2\n  have hg : ConvexOn ℝ Set.univ g := by apply convex_of_norm_sq x (convex_univ)\n  have hcg : ContinuousOn g univ := by\n    simp [g]; apply ContinuousOn.div\n    apply ContinuousOn.pow _\n    · apply ContinuousOn.norm\n      apply ContinuousOn.sub continuousOn_id continuousOn_const\n    · apply continuousOn_const\n    · simp\n  show 0 ∈ SubderivAt (f + g) u ↔ x - u ∈ SubderivAt f u\n  have : SubderivAt (f + g) u = SubderivAt (g + f) u :=\n    by\n    unfold SubderivAt; ext z; rw [Set.mem_setOf, Set.mem_setOf]; constructor\n    repeat unfold HasSubgradientAt; intro hy y; specialize hy y; simp at hy ⊢; linarith\n  rw [this, ← SubderivAt.add hg hfun hcg]\n  have subg : SubderivAt g u = {u - x} := by\n    let g' := fun u ↦ u - x\n    have gderiv : ∀ x, HasGradientAt g (g' x) x := gradient_of_sq\n    have : SubderivWithinAt g univ u = {g' u} :=\n      by\n      apply SubderivWithinAt_eq_gradient; simp\n      have gconv : ConvexOn ℝ univ g := by\n        rcases hfun with ⟨conv, _⟩\n        apply convex_of_norm_sq\n        apply conv\n      apply gconv; apply gderiv\n    rw [← Subderivat_eq_SubderivWithinAt_univ, this]\n  rw [subg];\n  simp\n    /-\n      If f is differentiable and convex on E, then u minimize the proximal at x iff ∇f(u) = x - u\n    -/",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_iff_grad",
+        "theorem_statement": " (f : E → ℝ) {f' : E → E} (hfun : ConvexOn ℝ univ f) (hdiff : ∀ x, HasGradientAt f (f' x) x) :\n  ∀ u : E, prox_prop f x u ↔ f' u = x - u",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x : E}",
+            "variable\n  {t : ℝ}\n    /-\n      u minimize the proximal at x iff x - u is subgradient\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_iff_grad (f : E → ℝ) {f' : E → E} (hfun : ConvexOn ℝ univ f) (hdiff : ∀ x, HasGradientAt f (f' x) x) :\n    ∀ u : E, prox_prop f x u ↔ f' u = x - u := by\n  intro u\n  have iff_subderiv : ∀ u : E, prox_prop f x u ↔ x - u ∈ SubderivAt f u :=\n    by\n    apply prox_iff_subderiv\n    apply hfun\n  specialize iff_subderiv u\n  rw [iff_subderiv, ← Subderivat_eq_SubderivWithinAt_univ]\n  have subderiv_eq_gradient : SubderivWithinAt f univ u = {f' u} :=\n    by\n    apply SubderivWithinAt_eq_gradient; simp\n    apply hfun; apply hdiff\n  rw [subderiv_eq_gradient]; simp\n  apply eq_comm",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_iff_grad_smul",
+        "theorem_statement": " (f : E → ℝ) {f' : E → E} (t : ℝ) (hfun : ConvexOn ℝ univ f) (hdiff : ∀ x, HasGradientAt f (f' x) x) (tnonneg : 0 ≤ t) :\n  ∀ u : E, prox_prop (t • f) x u ↔ t • f' u = x - u",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x : E}",
+            "variable\n  {t : ℝ}\n    /-\n      u minimize the proximal at x iff x - u is subgradient\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_iff_grad_smul (f : E → ℝ) {f' : E → E} (t : ℝ) (hfun : ConvexOn ℝ univ f)\n    (hdiff : ∀ x, HasGradientAt f (f' x) x) (tnonneg : 0 ≤ t) : ∀ u : E, prox_prop (t • f) x u ↔ t • f' u = x - u :=\n  by\n  intro u\n  let g := fun u ↦ (t • f) u\n  let g' := fun u ↦ t • f' u\n  have gconv : ConvexOn ℝ univ g := by apply ConvexOn.smul tnonneg hfun\n  have gderiv : ∀ x, HasGradientAt g (g' x) x := by\n    intro x\n    simp only [Pi.smul_apply, g, g']\n    apply HasGradientAt.const_smul'\n    exact hdiff x\n  rw [prox_iff_subderiv]\n  have : SubderivWithinAt g univ u = {g' u} :=\n    by\n    apply SubderivWithinAt_eq_gradient; simp\n    apply gconv; apply gderiv\n  rw [← Subderivat_eq_SubderivWithinAt_univ, this]; simp\n  apply eq_comm\n  apply gconv",
+        "type": "theorem",
+        "filename": "Proximal"
+    },
+    {
+        "theorem_name": "prox_iff_subderiv_smul",
+        "theorem_statement": " (f : E → ℝ) {t : ℝ} (hfun : ConvexOn ℝ univ f) (ht : 0 < t) :\n  ∀ u : E, prox_prop (t • f) x u ↔ (1 / t) • (x - u) ∈ (SubderivAt f u)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x y y₁ y₂ : E}",
+            "variable {s : Set E}",
+            "variable\n  {f : E → ℝ}\n    /-\n      a point satisfies the proximal property if it is a minimizer of the function f(u)+1/2‖u-x‖²\n    -/",
+            "variable\n  [ProperSpace E]\n    /-\n      The existence of the proximal for proper lower-semi-continuous function\n    -/",
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {u x : E}",
+            "variable\n  {t : ℝ}\n    /-\n      u minimize the proximal at x iff x - u is subgradient\n    -/"
+        ],
+        "namespaces": [
+            "Filter",
+            "Topology",
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem prox_iff_subderiv_smul (f : E → ℝ) {t : ℝ} (hfun : ConvexOn ℝ univ f) (ht : 0 < t) :\n    ∀ u : E, prox_prop (t • f) x u ↔ (1 / t) • (x - u) ∈ (SubderivAt f u) :=\n  by\n  intro u\n  let g := fun u ↦ (t • f) u\n  have tnonneg : 0 ≤ t := by linarith\n  have gconv : ConvexOn ℝ univ g := by apply ConvexOn.smul tnonneg hfun\n  rw [prox_iff_subderiv, ← mem_SubderivAt, ← mem_SubderivAt]\n  rw [HasSubgradientAt, HasSubgradientAt]\n  constructor\n  · intro cond y\n    specialize cond y; simp at cond\n    rw [inner_smul_left]; simp\n    rw [← mul_le_mul_left ht]; ring_nf; field_simp\n    exact cond\n  · intro cond y\n    specialize cond y; rw [inner_smul_left] at cond; field_simp at cond\n    simp\n    have hrect : 0 < t⁻¹ := by simp; linarith\n    rw [← mul_le_mul_left hrect]; ring_nf; field_simp\n    exact cond\n  exact gconv",
+        "type": "theorem",
+        "filename": "Proximal"
+    }
+]

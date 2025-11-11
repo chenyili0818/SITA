@@ -1,0 +1,219 @@
+[
+    {
+        "theorem_name": "l₁",
+        "theorem_statement": " (n : ℕ)",
+        "variable": [],
+        "namespaces": [],
+        "proof_process": "/-- The `l₁` space on `Fin n → ℝ`, defined using the `PiLp` construction.-/\ndef l₁ (n : ℕ) :=\n  PiLp 1 (fun _ : Fin n => ℝ)",
+        "type": "definition",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "f",
+        "theorem_statement": " : Fin (Module.finrank ℝ α) → PiLp 1 (fun _ : Fin (Module.finrank ℝ α) => ℝ)",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "/-- A noncomputable function mapping basis vectors to the `l₁` space.-/\nnoncomputable def f : Fin (Module.finrank ℝ α) → PiLp 1 (fun _ : Fin (Module.finrank ℝ α) => ℝ) := fun i j =>\n  if i = j then ‖(Module.finBasis ℝ α) i‖ else 0",
+        "type": "definition",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "σ",
+        "theorem_statement": "",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "noncomputable def σ :=\n  Basis.constrL (Module.finBasis ℝ α) f",
+        "type": "definition",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "continuous_map_sigma",
+        "theorem_statement": " : Continuous (σ (α := α))",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem continuous_map_sigma : Continuous (σ (α := α)) := by exact ContinuousLinearMap.continuous σ",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_orthogonal_same_index",
+        "theorem_statement": " {i j : Fin (Module.finrank ℝ α)} (h : i = j) : (σ ((Module.finBasis ℝ α) i)) j = ‖(Module.finBasis ℝ α) i‖",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_orthogonal_same_index {i j : Fin (Module.finrank ℝ α)} (h : i = j) :\n    (σ ((Module.finBasis ℝ α) i)) j = ‖(Module.finBasis ℝ α) i‖ := by simp [σ, f, h]",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_orthogonal_diff_index",
+        "theorem_statement": " {i j : Fin (Module.finrank ℝ α)} (h : i ≠ j) : (σ ((Module.finBasis ℝ α) i)) j = 0",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_orthogonal_diff_index {i j : Fin (Module.finrank ℝ α)} (h : i ≠ j) :\n    (σ ((Module.finBasis ℝ α) i)) j = 0 := by simp [σ, f, h]",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_apply_basis",
+        "theorem_statement": " (i : Fin (Module.finrank ℝ α)) : σ ((Module.finBasis ℝ α) i) = fun j => if i = j then ‖(Module.finBasis ℝ α) i‖ else 0",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_apply_basis (i : Fin (Module.finrank ℝ α)) :\n    σ ((Module.finBasis ℝ α) i) = fun j => if i = j then ‖(Module.finBasis ℝ α) i‖ else 0 :=\n  by\n  ext j\n  simp [σ, f];",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_norm_apply",
+        "theorem_statement": " :\n  ∀ x,\n    ∀ j,\n      ∑ i, (((Module.finBasis ℝ α).repr x) i) • σ ((Module.finBasis ℝ α) i) j =\n        (((Module.finBasis ℝ α).repr x) j) * ‖(Module.finBasis ℝ α) j‖",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_norm_apply :\n    ∀ x,\n      ∀ j,\n        ∑ i, (((Module.finBasis ℝ α).repr x) i) • σ ((Module.finBasis ℝ α) i) j =\n          (((Module.finBasis ℝ α).repr x) j) * ‖(Module.finBasis ℝ α) j‖ :=\n  by\n  intro x j\n  nth_rw 2 [pi_eq_sum_univ ((Module.finBasis ℝ α).repr x)]\n  repeat rw [Finset.sum_apply];\n  rw [Finset.sum_mul]\n  congr; ext u\n  rw [sigma_apply_basis]; simp only [smul_eq_mul, mul_ite, mul_zero, Pi.smul_apply, mul_one, ite_mul, zero_mul]\n  exact\n    ite_congr rfl\n      (fun a ↦\n        congrArg (HMul.hMul (((Module.finBasis ℝ α).repr x) u)) (congrArg norm (congrArg (⇑(Module.finBasis ℝ α)) a)))\n      (congrFun rfl)",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_decompose_apply",
+        "theorem_statement": " : ∀ x, ∀ j, (σ x) j = ∑ i, (((Module.finBasis ℝ α).repr x) i) • σ ((Module.finBasis ℝ α) i) j",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_decompose_apply :\n    ∀ x, ∀ j, (σ x) j = ∑ i, (((Module.finBasis ℝ α).repr x) i) • σ ((Module.finBasis ℝ α) i) j :=\n  by\n  intro x\n  rw [← PiLp.ext_iff]\n  calc\n    _ = σ (∑ i, (((Module.finBasis ℝ α).repr x) i) • (Module.finBasis ℝ α) i) := by congr;\n      exact Eq.symm (Basis.sum_repr (Module.finBasis ℝ α) x)\n    _ = ∑ i, σ ((((Module.finBasis ℝ α).repr x) i) • (Module.finBasis ℝ α) i) := by simp only [map_sum, map_smul]\n    _ = _ := by\n      ext j; repeat rw [Finset.sum_apply]\n      congr\n      ext x\n      simp only [map_smul, PiLp.smul_apply, smul_eq_mul]",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "l1_norm_eq",
+        "theorem_statement": " : ∀ x, ‖σ x‖ = ∑ i, ‖((Module.finBasis ℝ α).repr x) i‖ * ‖(Module.finBasis ℝ α) i‖",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "/-- For any element x in the vector space α, the norm of the image of x\nunder the map σ can be expressed as a weighted sum.\nSpecifically, it is the sum of the norms of the coefficients\nin the finite basis representation of x, each multiplied by the norm of the corresponding basis vector.\n-/\ntheorem l1_norm_eq : ∀ x, ‖σ x‖ = ∑ i, ‖((Module.finBasis ℝ α).repr x) i‖ * ‖(Module.finBasis ℝ α) i‖ :=\n  by\n  intro x\n  rw [PiLp.norm_eq_of_nat 1 (by norm_num)]\n  simp only [pow_one, Nat.cast_one, ne_eq, one_ne_zero, not_false_eq_true, div_self, Real.rpow_one]\n  congr\n  ext i\n  rw [sigma_decompose_apply x i, ← norm_smul, sigma_norm_apply, norm_smul]\n  simp;",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "termB",
+        "theorem_statement": " : Lean.ParserDescr✝",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "/-- For a given point x in the vector space α, a positive radius r,\nand the condition that the finite dimension of α over ℝ is non-zero,\nthe preimage under the map σ of the metric ball centered at （σ x） with radius r\nis contained within the convex hull of a set.\nThis set is the Minkowski sum of {x} and the union of scaled basis vectors\nb i, including both positive and negative scalings.\n-/\n@[local term_parser 1000]\ndef termB✝ : Lean.ParserDescr✝ :=\n  ParserDescr.node✝\n    (Lean.Name.mkNum✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ (Lean.Name.mkStr✝ Lean.Name.anonymous✝ \"termB\") \"_@\") \"_hyg\")\n      1169)\n    1024 (ParserDescr.symbol✝ \"b\")",
+        "type": "definition",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "_aux___macroRules_termB_1",
+        "theorem_statement": " : Macro✝",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "@[macro termB✝]\ndef _aux___macroRules_termB_1 : Macro✝ := fun\n  | `(b) => ``((Module.finBasis ℝ α))\n  | _ => no_error_if_unused% throw✝ Lean.Macro.Exception.unsupportedSyntax✝",
+        "type": "definition",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "l1Ball_sub_convexHull",
+        "theorem_statement": " {x : α} {r : ℝ} (hr : r > 0) (hn : Module.finrank ℝ α ≠ 0) :\n  σ.toFun ⁻¹' (Metric.ball (σ.toFun x) r) ⊆\n    convexHull ℝ (({ x } : Set α) + ((⋃ i, {(r / ‖b i‖) • (b i)}) ∪ (⋃ i, {-(r / ‖b i‖) • (b i)})))",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem l1Ball_sub_convexHull {x : α} {r : ℝ} (hr : r > 0) (hn : Module.finrank ℝ α ≠ 0) :\n    σ.toFun ⁻¹' (Metric.ball (σ.toFun x) r) ⊆\n      convexHull ℝ (({ x } : Set α) + ((⋃ i, {(r / ‖b i‖) • (b i)}) ∪ (⋃ i, {-(r / ‖b i‖) • (b i)}))) :=\n  by\n  intro x₀ hx₀\n  simp [dist_eq_norm] at hx₀\n  rw [← map_sub] at hx₀\n  have sum_le_r : ∑ i, ‖(b).equivFun (x₀ - x) i‖ * ‖(b) i‖ / r ≤ 1 :=\n    by\n    rw [← Finset.sum_div]\n    simp only [Basis.equivFun_apply, Pi.sub_apply]\n    rw [← l1_norm_eq (x₀ - x)]\n    apply le_of_lt\n    apply Bound.div_lt_one_of_pos_of_lt hr hx₀\n  let n := Module.finrank ℝ α\n  let ι := Fin n\n  let ι₀ := Fin (n + 2)\n  let w₀ := (b).equivFun (x₀ - x)\n  have repr : ∑ i, w₀ i • b i = x₀ - x := Basis.sum_equivFun b (x₀ - x)\n  let w₁ : ι → ℝ := fun i => |(b).equivFun (x₀ - x) i| * ‖b i‖ / r\n  let sum := ∑ i : ι, w₁ i\n  have sum_pos : 1 - sum ≥ 0 :=\n    by\n    simp only [sum, w₁, ge_iff_le, gt_iff_lt, sub_pos, Pi.sub_apply, sub_nonneg]\n    apply sum_le_r\n  let w : ι₀ → ℝ\n    | ⟨i, hi⟩ => if h : i < n then w₁ ⟨i, h⟩ else (1 - sum) / 2\n  have lem_i {i : ℕ} (hi : i < n + 2) (h₁ : ¬i = n + 1) (h₂ : ¬i = n) : i < n :=\n    by\n    by_contra h₃; push_neg at h₁ h₂ h₃; have : n ≤ i ∧ i ≤ n + 1 := ⟨h₃, by linarith [hi]⟩\n    rw [Nat.le_and_le_add_one_iff] at this\n    rcases this with h | h\n    · apply h₂ h\n    · apply h₁ h\n  have n_pos : n > 0 := Nat.zero_lt_of_ne_zero hn\n  let fin0 : ι := ⟨0, n_pos⟩\n  let z : ι₀ → α\n    | ⟨i, hi⟩ =>\n      if h₁ : i = n + 1 then -(r / ‖b fin0‖) • (b fin0)\n      else\n        if h₂ : i = n then (r / ‖b fin0‖) • (b fin0)\n        else\n          if _h₃ : (b).equivFun (x₀ - x) ⟨i, lem_i hi h₁ h₂⟩ = 0 then\n            (r / ‖b ⟨i, lem_i hi h₁ h₂⟩‖) • (b ⟨i, lem_i hi h₁ h₂⟩)\n          else\n            ((SignType.sign ((b).equivFun (x₀ - x) ⟨i, lem_i hi h₁ h₂⟩)) * (r / ‖b ⟨i, lem_i hi h₁ h₂⟩‖)) •\n              (b ⟨i, lem_i hi h₁ h₂⟩)\n  have hw₀ : ∀ (i : ι₀), 0 ≤ w i := by\n    intro ⟨i, hi⟩\n    by_cases h : i < n\n    · simp only [Pi.sub_apply, h, ↓reduceDIte, ge_iff_le, w, w₁]\n      apply div_nonneg _ (le_of_lt hr)\n      apply mul_nonneg\n      apply abs_nonneg\n      apply norm_nonneg\n    · simp [w, h]; linarith [sum_pos];\n  have hw₁ : ∑ i : ι₀, w i = 1 := by\n    simp [w, ι₀]\n    have : n + 1 + 1 = n + 2 := by norm_num\n    rw [← this]\n    rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]\n    simp only [Fin.coe_castSucc, Fin.is_lt, ↓reduceDIte, Fin.eta, Fin.val_last, lt_self_iff_false, add_lt_iff_neg_left,\n      not_lt_zero']\n    have : ∑ x : Fin n, w₁ x = sum := rfl\n    rw [this]\n    linarith\n  have hz : ∀ (i : ι₀), z i ∈ ((⋃ i, {(r / ‖b i‖) • (b i)}) ∪ (⋃ i, {-(r / ‖b i‖) • (b i)})) :=\n    by\n    intro i\n    simp only [dite_eq_ite, z]\n    by_cases h₁ : (i : ℕ) = n + 1\n    · simp [h₁]\n    simp only [h₁, ↓reduceIte]\n    by_cases h₂ : (i : ℕ) = n\n    · simp [h₂]\n    simp only [h₂, ↓reduceIte, add_right_inj]\n    let use_i : ι := ⟨i, lem_i i.2 h₁ h₂⟩\n    simp only [↓reduceDIte]\n    let a := (b).equivFun (x₀ - x) use_i\n    rcases lt_trichotomy a 0 with ha | ha | ha\n    · right\n      have : (b).equivFun (x₀ - x) use_i ≠ 0 := by linarith\n      simp at this\n      rw [sign_neg ha]\n      simp [this, ↓reduceIte]\n    · left; simp only [a] at ha\n      rw [ha, sign_zero]\n      simp;\n    · left\n      rw [sign_pos ha]\n      simp\n  have bi_pos : ∀ i : ι, ‖b i‖ ≠ 0 := by\n    intro i\n    refine norm_ne_zero_iff.mpr ?_\n    exact Basis.ne_zero b i\n  have hx : ∑ i : ι₀, w i • z i = x₀ - x :=\n    by\n    rw [Fin.sum_univ_castSucc, Fin.sum_univ_castSucc]\n    simp [w]\n    have : ((1 - sum) / 2) • z (Fin.last n).castSucc + ((1 - sum) / 2) • z (Fin.last (n + 1)) = 0 := by simp [z];\n    rw [add_assoc, this]\n    simp; rw [← repr]\n    congr\n    ext i\n    have h₁ : (i : ℕ) ≠ n + 1 := by\n      refine Nat.ne_of_lt ?h\n      refine Nat.lt_succ_of_lt i.2\n    have h₂ : (i : ℕ) ≠ n := Ne.symm (Nat.ne_of_lt' i.2)\n    simp only [neg_smul, dite_eq_ite, Fin.coe_castSucc, h₁, ↓reduceIte, h₂, Fin.eta, z]\n    have : w₁ i • ((SignType.sign ((b).equivFun (x₀ - x) i)) * (r / ‖b i‖)) = w₀ i :=\n      by\n      simp only [Pi.sub_apply, smul_eq_mul, w₁, w₀]\n      calc\n        _ = |(b).equivFun (x₀ - x) i| * (‖b i‖ / r) * (SignType.sign ((b).equivFun (x₀ - x) i)) * (r / ‖b i‖) :=\n          by\n          rw [← mul_div]\n          linarith\n        _ = ((SignType.sign ((b).equivFun (x₀ - x) i)) * |(b).equivFun (x₀ - x) i|) * ((‖b i‖ / r) * (r / ‖b i‖)) := by\n          linarith\n        _ = _ := by\n          rw [sign_mul_abs]\n          field_simp [bi_pos i]\n    by_cases h : (b).equivFun (x₀ - x) i = 0\n    · simp [h]\n      rw [← smul_assoc]\n      simp only [smul_eq_mul, w₁, w₀, h]; simp\n    simp only [h, ↓reduceIte]\n    simp only [w₁, w₀]\n    rw [← smul_assoc]\n    apply congrFun (congrArg HSMul.hSMul this) (b i)\n  rw [convexHull_add]\n  have sub_in₁ := mem_convexHull_of_exists_fintype w z hw₀ hw₁ hz hx\n  have x_in₂ : x ∈ (convexHull ℝ) { x } := mem_convexHull_iff.mpr fun t a _ => a rfl\n  have : x₀ = x + (x₀ - x) := by simp only [add_sub_cancel]\n  rw [this]\n  apply Set.add_mem_add x_in₂ sub_in₁",
+        "type": "theorem",
+        "filename": "L1Space"
+    },
+    {
+        "theorem_name": "sigma_is_injective",
+        "theorem_statement": " : Function.Injective σ (α := α)",
+        "variable": [
+            "variable {α : Type*}",
+            "variable [NormedAddCommGroup α]",
+            "variable [InnerProductSpace ℝ α]",
+            "variable [FiniteDimensional ℝ α]"
+        ],
+        "namespaces": [
+            "FiniteDimensional"
+        ],
+        "proof_process": "theorem sigma_is_injective : Function.Injective σ (α := α) :=\n  by\n  intro x y h\n  rw [← sub_eq_zero]\n  rw [← sub_eq_zero, ← map_sub] at h\n  let z := x - y\n  let n := Module.finrank ℝ α\n  let bs := Module.finBasis ℝ α\n  have hz : z = ∑ i : Fin n, (bs.repr z i) • bs i := Eq.symm (Basis.sum_repr bs z)\n  change σ z = 0 at h\n  rw [hz] at h\n  simp at h\n  have hi : ∀ i, (∑ x : Fin n, (bs.repr z) x • σ (bs x)) i = (bs.repr z) i * ‖(Module.finBasis ℝ α) i‖ :=\n    by\n    intro i\n    repeat rw [Finset.sum_apply];\n    simp only [PiLp.smul_apply]\n    rw [sigma_norm_apply]\n  show z = 0\n  rw [hz]\n  apply Fintype.sum_eq_zero (fun a => (bs.repr z) a • bs a)\n  intro i\n  rw [smul_eq_zero]\n  left\n  have : ‖(Module.finBasis ℝ α) i‖ ≠ 0 := norm_ne_zero_iff.mpr $ Basis.ne_zero (Module.finBasis ℝ α) i\n  have h1 : (bs.repr z) i * ‖(Module.finBasis ℝ α) i‖ = 0 := by rw [← hi, h, PiLp.zero_apply]\n  apply eq_zero_of_ne_zero_of_mul_right_eq_zero this h1",
+        "type": "theorem",
+        "filename": "L1Space"
+    }
+]

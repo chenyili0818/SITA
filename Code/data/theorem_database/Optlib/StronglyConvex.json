@@ -1,0 +1,170 @@
+[
+    {
+        "theorem_name": "Strongly_Convex_Bound",
+        "theorem_statement": " (m : ℝ) (strongly_convex : StrongConvexOn s m f) :\n  ∀ ⦃x⦄,\n    x ∈ s →\n      ∀ ⦃y⦄,\n        y ∈ s →\n          ∀ ⦃a⦄, 0 < a → ∀ ⦃b⦄, 0 < b → a + b = 1 → f (a • x + b • y) ≤ a * f x + b * f y - m / 2 * a * b * ‖x - y‖ ^ 2",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem Strongly_Convex_Bound (m : ℝ) (strongly_convex : StrongConvexOn s m f) :\n    ∀ ⦃x⦄,\n      x ∈ s →\n        ∀ ⦃y⦄,\n          y ∈ s →\n            ∀ ⦃a⦄,\n              0 < a → ∀ ⦃b⦄, 0 < b → a + b = 1 → f (a • x + b • y) ≤ a * f x + b * f y - m / 2 * a * b * ‖x - y‖ ^ 2 :=\n  by\n  intro x xs y ys a ap b bp abp\n  rcases strongly_convex with ⟨_, sc⟩\n  have anneg : a ≥ 0 := by linarith\n  have bnneg : b ≥ 0 := by linarith\n  rcases sc xs ys anneg bnneg abp with ineq\n  simp at ineq\n  rw [mul_comm (m / 2), mul_assoc a, mul_comm (m / 2), ← mul_assoc, mul_assoc (a * b)]\n  apply ineq",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "stronglyConvexOn_def",
+        "theorem_statement": " (hs : Convex ℝ s)\n  (hfun :\n    ∀ ⦃x⦄,\n      x ∈ s →\n        ∀ ⦃y⦄,\n          y ∈ s →\n            ∀ ⦃a⦄,\n              0 ≤ a → ∀ ⦃b⦄, 0 ≤ b → a + b = 1 → f (a • x + b • y) ≤ a * f x + b * f y - m / 2 * a * b * ‖x - y‖ ^ 2) :\n  StrongConvexOn s m f",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem stronglyConvexOn_def (hs : Convex ℝ s)\n    (hfun :\n      ∀ ⦃x⦄,\n        x ∈ s →\n          ∀ ⦃y⦄,\n            y ∈ s →\n              ∀ ⦃a⦄,\n                0 ≤ a →\n                  ∀ ⦃b⦄, 0 ≤ b → a + b = 1 → f (a • x + b • y) ≤ a * f x + b * f y - m / 2 * a * b * ‖x - y‖ ^ 2) :\n    StrongConvexOn s m f := by\n  constructor\n  · exact hs\n  intro x hx y hy a b ha hb hab\n  specialize hfun hx hy ha hb hab\n  dsimp\n  have : m / 2 * a * b * ‖x - y‖ ^ 2 = a * b * (m / 2 * ‖x - y‖ ^ 2) := by ring_nf\n  simp at this; rw [← this]; exact hfun",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "Strongly_Convex_Unique_Minima",
+        "theorem_statement": " (hsc : StrongConvexOn s m f) {mp : m > 0} (min : IsMinOn f s xm) (min' : IsMinOn f s xm') (hxm : xm ∈ s)\n  (hxm' : xm' ∈ s) : xm = xm'",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem Strongly_Convex_Unique_Minima (hsc : StrongConvexOn s m f) {mp : m > 0} (min : IsMinOn f s xm)\n    (min' : IsMinOn f s xm') (hxm : xm ∈ s) (hxm' : xm' ∈ s) : xm = xm' :=\n  by\n  by_contra neq\n  push_neg at neq\n  have eq : f xm = f xm' := by\n    apply le_antisymm\n    . apply min hxm'\n    . apply min' hxm\n  let x := (2 : ℝ)⁻¹ • xm + (2 : ℝ)⁻¹ • xm'\n  have xeq : x = (2 : ℝ)⁻¹ • xm + (2 : ℝ)⁻¹ • xm' := by rfl\n  rcases hsc with ⟨cr, sc⟩\n  have : (0 : ℝ) ≤ 1 / 2 := by norm_num\n  have p : (0 : ℝ) < 1 / 2 := by norm_num\n  have xs : x ∈ s := by\n    rcases convex_iff_forall_pos.mp cr hxm hxm' p p (by norm_num) with cxs\n    simp at cxs\n    rw [← xeq] at cxs\n    apply cxs\n  specialize sc hxm hxm' this this (by norm_num)\n  simp at sc\n  rw [← xeq, ← eq] at sc\n  rw [← two_mul, ← mul_assoc, mul_inv_cancel₀ (by norm_num), one_mul] at sc\n  have normp : ‖xm - xm'‖ > 0 := by\n    apply norm_sub_pos_iff.mpr\n    apply neq\n  have nng : m / 2 * ‖xm - xm'‖ ^ 2 > 0 := by\n    apply mul_pos\n    . linarith\n    . apply pow_pos; linarith\n  apply absurd (min xs)\n  simp [← xeq]\n  calc\n    f x ≤ f xm - 2⁻¹ * 2⁻¹ * (m / 2 * ‖xm - xm'‖ ^ 2) := by apply sc\n    _ < f xm := by apply lt_of_sub_pos; simp; apply nng",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "strongconvex_of_convex_add_sq",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hfun : ConvexOn ℝ univ f) : StrongConvexOn univ (1 : ℝ) fun u ↦ f u + ‖u - x‖ ^ 2 / 2",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "/-- The sum of a convex function and a square of norm is strongly convex\n-/\ntheorem strongconvex_of_convex_add_sq (f : E → ℝ) (x : E) (hfun : ConvexOn ℝ univ f) :\n    StrongConvexOn univ (1 : ℝ) fun u ↦ f u + ‖u - x‖ ^ 2 / 2 :=\n  by\n  rw [ConvexOn] at hfun\n  rcases hfun with ⟨conv, hfun⟩\n  rw [StrongConvexOn, UniformConvexOn]\n  constructor\n  · exact conv\n  · intro y yin z zin a b anneg bnneg absum1; simp\n    rw [mul_add, add_assoc, add_comm (a * (‖y - x‖ ^ 2 / 2)), ← add_assoc]\n    rw [mul_add, ← add_assoc, ← add_sub _ (a * (‖y - x‖ ^ 2 / 2)), add_assoc]\n    apply add_le_add\n    · rw [← smul_eq_mul, ← smul_eq_mul]\n      apply hfun yin zin anneg bnneg absum1\n    · field_simp; rw [div_le_div_right, add_sub]\n      have eq1 : a • y + b • z - x = a • (y - x) + b • (z - x) :=\n        by\n        rw [smul_sub, smul_sub, add_comm_sub, sub_sub, ← add_smul, add_comm b a]\n        rw [absum1, one_smul, ← add_sub]\n      have eq2 (u v : E) : ‖a • u + b • v‖ ^ 2 = b * ‖v‖ ^ 2 + a * ‖u‖ ^ 2 - a * b * ‖u - v‖ ^ 2 :=\n        by\n        rw [norm_add_sq_real, norm_sub_sq_real]\n        rw [inner_smul_left, inner_smul_right, norm_smul, norm_smul]; field_simp\n        rw [add_comm (b * ‖v‖ ^ 2), mul_pow, sq_abs, mul_pow, sq_abs]\n        rw [mul_add, ← sub_sub, mul_sub, ← sub_add]\n        rw [add_sub_right_comm, add_sub_right_comm, ← sub_mul, ← add_sub, ← sub_mul]\n        nth_rw 3 [← mul_one a]; rw [← absum1, mul_add]\n        nth_rw 5 [← mul_one b]; rw [← absum1, mul_add, mul_comm b a]\n        rw [pow_two, pow_two b]; simp; rw [add_right_comm, add_left_cancel_iff]\n        rw [mul_mul_mul_comm, mul_comm a 2, mul_assoc]\n      have eq3 : y - z = (y - x) - (z - x) := by simp\n      have eq4 (u v : E) : ‖a • u + b • v‖ ^ 2 ≤ b * ‖v‖ ^ 2 + a * ‖u‖ ^ 2 - a * b * ‖u - v‖ ^ 2 := by rw [eq2]\n      let u := y - x\n      let v := z - x\n      rw [eq1, eq3]; show ‖a • u + b • v‖ ^ 2 ≤ b * ‖v‖ ^ 2 + a * ‖u‖ ^ 2 - a * b * ‖u - v‖ ^ 2\n      apply eq4 u v\n      simp",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "Strong_Convex_lower",
+        "theorem_statement": " (hsc : StrongConvexOn s m f) (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) :\n  ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}",
+            "variable [CompleteSpace E]"
+        ],
+        "namespaces": [],
+        "proof_process": "theorem Strong_Convex_lower (hsc : StrongConvexOn s m f) (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) :\n    ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2 :=\n  by\n  intro x xs y ys\n  have cvx := strongConvexOn_iff_convex.mp hsc\n  have grd := sub_normsquare_gradient hf m\n  have grm := Convex_monotone_gradient' cvx grd x xs y ys\n  rw [sub_sub, add_sub, add_comm, ← add_sub, ← sub_sub, inner_sub_left, ← smul_sub] at grm\n  apply le_of_sub_nonneg at grm\n  rw [real_inner_smul_left, real_inner_self_eq_norm_sq] at grm\n  apply grm",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "Lower_Strong_Convex",
+        "theorem_statement": " (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) (hs : Convex ℝ s)\n  (h : ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2) : StrongConvexOn s m f",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}",
+            "variable [CompleteSpace E]"
+        ],
+        "namespaces": [],
+        "proof_process": "theorem Lower_Strong_Convex (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) (hs : Convex ℝ s)\n    (h : ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2) : StrongConvexOn s m f :=\n  by\n  apply strongConvexOn_iff_convex.mpr\n  have grd := sub_normsquare_gradient hf m\n  apply monotone_gradient_convex' hs grd\n  intro x xs y ys\n  specialize h x xs y ys\n  rw [sub_sub, add_sub, add_comm, ← add_sub, ← sub_sub, inner_sub_left, ← smul_sub]\n  apply sub_nonneg_of_le\n  rw [real_inner_smul_left, real_inner_self_eq_norm_sq]\n  apply h",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "Strong_Convex_iff_lower",
+        "theorem_statement": " (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) (hs : Convex ℝ s) :\n  StrongConvexOn s m f ↔ ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}",
+            "variable [CompleteSpace E]"
+        ],
+        "namespaces": [],
+        "proof_process": "theorem Strong_Convex_iff_lower (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) (hs : Convex ℝ s) :\n    StrongConvexOn s m f ↔ ∀ x ∈ s, ∀ y ∈ s, inner (f' x - f' y) (x - y) ≥ m * ‖x - y‖ ^ 2 :=\n  ⟨fun hsc x xs y ys ↦ Strong_Convex_lower hsc hf x xs y ys, fun h ↦ Lower_Strong_Convex hf hs h⟩",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    },
+    {
+        "theorem_name": "Strong_Convex_second_lower",
+        "theorem_statement": " (hsc : StrongConvexOn s m f) (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) :\n  ∀ x ∈ s, ∀ y ∈ s, f y ≥ f x + inner (f' x) (y - x) + m / 2 * ‖y - x‖ ^ 2",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {s : Set E}",
+            "variable {f : E → ℝ}",
+            "variable {m : ℝ}",
+            "variable {xm xm' : E}",
+            "variable {f' : E → E}",
+            "variable {mp : m > 0}",
+            "variable [CompleteSpace E]"
+        ],
+        "namespaces": [],
+        "proof_process": "theorem Strong_Convex_second_lower (hsc : StrongConvexOn s m f) (hf : ∀ x ∈ s, HasGradientAt f (f' x) x) :\n    ∀ x ∈ s, ∀ y ∈ s, f y ≥ f x + inner (f' x) (y - x) + m / 2 * ‖y - x‖ ^ 2 :=\n  by\n  intro x xs y ys\n  have cvx := strongConvexOn_iff_convex.mp hsc\n  have grd := sub_normsquare_gradient hf m x xs\n  let g := fun x ↦ f' x - m • x\n  have : g x = f' x - m • x := by rfl\n  rw [← this] at grd\n  have foc := Convex_first_order_condition' grd cvx xs y ys\n  rw [this] at foc\n  apply sub_nonneg_of_le at foc\n  apply le_of_sub_nonneg\n  rw [sub_right_comm, sub_add, ← sub_add, add_sub, add_sub_right_comm] at foc\n  rw [inner_sub_left, sub_add, sub_sub (f y), sub_sub, add_sub, add_sub] at foc\n  rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, sub_add, ← mul_sub] at foc\n  nth_rw 7 [← zero_add x] at foc\n  nth_rw 5 [← sub_zero y] at foc\n  nth_rw 1 [← sub_self y] at foc\n  rw [← sub_self x] at foc\n  rw [sub_add, ← sub_add y x x, add_comm (y - x), inner_sub_right x, inner_add_right y] at foc\n  rw [real_inner_comm x y, sub_right_comm (inner x y), ← sub_sub, sub_self, sub_sub 0] at foc\n  rw [← inner_add_left, zero_sub, mul_neg, sub_neg_eq_add] at foc\n  have : m = m / 2 * 2 := by simp\n  nth_rw 1 [this] at foc\n  rw [← smul_smul, inner_smul_left, two_smul] at foc\n  simp [map_div₀, map_ofNat] at foc\n  rw [sub_add, ← mul_sub, ← inner_sub_left, ← sub_sub, sub_right_comm, ← add_sub x, add_sub_cancel] at foc\n  have : x - y = -(y - x) := by simp\n  rw [this, inner_neg_left, mul_neg, sub_neg_eq_add, real_inner_self_eq_norm_sq] at foc\n  linarith",
+        "type": "theorem",
+        "filename": "StronglyConvex"
+    }
+]

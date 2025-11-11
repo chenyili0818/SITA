@@ -1,0 +1,119 @@
+[
+    {
+        "theorem_name": "_private",
+        "theorem_statement": " {f : E → F} (y : F) (h : (f ⁻¹' Set.Iic y).Nonempty) : sInf ({f x | x ∈ f ⁻¹' Set.Iic y}) = sInf {f x | x : E}",
+        "variable": [
+            "variable {E F : Type*}",
+            "variable {E F : Type*}",
+            "variable [CompleteLinearOrder F]"
+        ],
+        "namespaces": [
+            "TopologicalSpace",
+            "Filter",
+            "Topology",
+            "Bornology",
+            "Set"
+        ],
+        "proof_process": "private theorem l0 {f : E → F} (y : F) (h : (f ⁻¹' Set.Iic y).Nonempty) :\n    sInf ({f x | x ∈ f ⁻¹' Set.Iic y}) = sInf {f x | x : E} :=\n  by\n  have h₀ : {f x | x : E} = {f x | x ∈ f ⁻¹' Set.Iic y} ∪ {f x | x ∈ (f ⁻¹' Set.Iic y)ᶜ} :=\n    by\n    ext y'; constructor\n    · rintro ⟨x, xeq⟩\n      by_cases xsub : x ∈ f ⁻¹' Set.Iic y\n      · exact Or.inl ⟨x, xsub, xeq⟩\n      · exact Or.inr ⟨x, xsub, xeq⟩\n    · intro h'\n      rcases h' with ⟨x, _, xeq⟩ | ⟨x, _, xeq⟩\n      · exact Exists.intro x xeq\n      · exact Exists.intro x xeq\n  have h₁ : sInf ({f x | x ∈ f ⁻¹' Set.Iic y}) ≤ sInf ({f x | x ∈ (f ⁻¹' Set.Iic y)ᶜ}) :=\n    by\n    apply sInf_le_sInf_of_forall_exists_le\n    intro y' ynsub\n    rcases h with ⟨x', xsub⟩; use f x'\n    constructor\n    · exact ⟨x', xsub, rfl⟩\n    rcases ynsub with ⟨x, xnsub, xeq⟩\n    apply le_trans xsub (Eq.trans_ge xeq (le_of_lt _))\n    simp only [← Set.preimage_setOf_eq, ← Set.preimage_compl, Set.compl_Iic, Set.Ioi_def] at xnsub\n    assumption\n  calc\n    sInf ({f x | x ∈ f ⁻¹' Set.Iic y}) = sInf ({f x | x ∈ f ⁻¹' Set.Iic y}) ⊓ sInf ({f x | x ∈ (f ⁻¹' Set.Iic y)ᶜ}) :=\n      Iff.mpr left_eq_inf h₁\n    _ = sInf ({f x | x ∈ f ⁻¹' Set.Iic y} ∪ {f x | x ∈ (f ⁻¹' Set.Iic y)ᶜ}) := (Eq.symm sInf_union)\n    _ = sInf {f x | x : E} := congrArg sInf (id (Eq.symm h₀))",
+        "type": "theorem",
+        "filename": "MinimaClosedFunction"
+    },
+    {
+        "theorem_name": "IsMinOn",
+        "theorem_statement": " (hf : LowerSemicontinuous f) {y : F} (h1 : (f ⁻¹' Set.Iic y).Nonempty) (h2 : IsCompact (f ⁻¹' Set.Iic y)) :\n  ∃ x, IsMinOn f univ x",
+        "variable": [
+            "variable {E F : Type*}",
+            "variable [CompleteLinearOrder F]",
+            "variable [DenselyOrdered F]",
+            "variable {f : E → F}",
+            "variable [TopologicalSpace E]",
+            "variable [TopologicalSpace F]",
+            "variable [OrderTopology F]",
+            "variable [FirstCountableTopology E]",
+            "variable\n  [FirstCountableTopology F]\n    /- If a premiage of `f` is nonempty and compact,\n      then its minimum point set `{x | IsMinOn f univ x}` is nonempty -/"
+        ],
+        "namespaces": [
+            "TopologicalSpace",
+            "Filter",
+            "Topology",
+            "Bornology",
+            "Set"
+        ],
+        "proof_process": "theorem of_isCompact_preimage (hf : LowerSemicontinuous f) {y : F} (h1 : (f ⁻¹' Set.Iic y).Nonempty)\n    (h2 : IsCompact (f ⁻¹' Set.Iic y)) : ∃ x, IsMinOn f univ x :=\n  by\n  have hs : Set.Nonempty ({f x | x ∈ (f ⁻¹' Set.Iic y)}) :=\n    by\n    rcases h1 with ⟨x, xsub⟩\n    exact Exists.intro (f x) (Exists.intro x ⟨xsub, rfl⟩)\n  have hs' : BddBelow ({f x | x ∈ (f ⁻¹' Set.Iic y)}) := OrderBot.bddBelow {x | ∃ x_1 ∈ f ⁻¹' Iic y, f x_1 = x}\n  rcases exists_seq_tendsto_sInf hs hs' with ⟨fx, _, cfx, fxs⟩\n  choose x xsub xeq using fxs\n  rcases IsCompact.tendsto_subseq h2 xsub with ⟨x', xsub', k, mono, cxk⟩\n  have cfxk : Tendsto (f ∘ x ∘ k) atTop (𝓝 (sInf ({f x | x ∈ (f ⁻¹' Set.Iic y)}))) :=\n    by\n    have xkeq : ∀ (n : ℕ), (f ∘ x ∘ k) n = (fx ∘ k) n := fun n => xeq <| k n\n    rw [tendsto_congr xkeq]\n    apply Tendsto.comp cfx (StrictMono.tendsto_atTop mono)\n  have inepi : (x', sInf ({f x | x ∈ (f ⁻¹' Set.Iic y)})) ∈ {p : E × F | f p.1 ≤ p.2} :=\n    (IsClosed.isSeqClosed (LowerSemicontinuous.isClosed_epigraph hf)) (fun n => Eq.le (by rfl))\n      (Tendsto.prod_mk_nhds cxk cfxk)\n  use x'; intro xx _\n  apply le_of_eq_of_le\n  · apply le_antisymm inepi (sInf_le (Exists.intro x' ⟨xsub', rfl⟩))\n  ·\n    apply\n      le_of_eq_of_le (l0 y h1)\n        (sInf_le (by use xx))\n          /- If a premiage of `f` is nonempty and compact,\n            then its minimum point set `{x | IsMinOn f univ x}` is compact -/",
+        "type": "theorem",
+        "filename": "MinimaClosedFunction"
+    },
+    {
+        "theorem_name": "IsCompact_isMinOn_of_isCompact_preimage",
+        "theorem_statement": " (hf : LowerSemicontinuous f) {y : F} (h1 : (f ⁻¹' Set.Iic y).Nonempty) (h2 : IsCompact (f ⁻¹' Set.Iic y)) :\n  IsCompact {x | IsMinOn f univ x}",
+        "variable": [
+            "variable {E F : Type*}",
+            "variable [CompleteLinearOrder F]",
+            "variable [DenselyOrdered F]",
+            "variable {f : E → F}",
+            "variable [TopologicalSpace E]",
+            "variable [TopologicalSpace F]",
+            "variable [OrderTopology F]",
+            "variable [FirstCountableTopology E]",
+            "variable\n  [FirstCountableTopology F]\n    /- If a premiage of `f` is nonempty and compact,\n      then its minimum point set `{x | IsMinOn f univ x}` is nonempty -/"
+        ],
+        "namespaces": [
+            "TopologicalSpace",
+            "Filter",
+            "Topology",
+            "Bornology",
+            "Set"
+        ],
+        "proof_process": "theorem IsCompact_isMinOn_of_isCompact_preimage (hf : LowerSemicontinuous f) {y : F} (h1 : (f ⁻¹' Set.Iic y).Nonempty)\n    (h2 : IsCompact (f ⁻¹' Set.Iic y)) : IsCompact {x | IsMinOn f univ x} :=\n  by\n  obtain ⟨x', hx'⟩ := IsMinOn.of_isCompact_preimage hf h1 h2\n  have seq : {x | IsMinOn f univ x} = (f ⁻¹' Set.Iic (f x')) :=\n    Set.ext fun xx =>\n      { mp := fun hxx => isMinOn_iff.mp hxx x' trivial, mpr := fun hxx x xuniv => ge_trans (hx' xuniv) hxx }\n  simp only [seq]\n  apply IsCompact.of_isClosed_subset h2 (LowerSemicontinuous.isClosed_preimage hf (f x'))\n  apply Set.preimage_mono\n  simp only [Set.Iic_subset_Iic]\n  obtain ⟨x, hx⟩ := h1\n  exact ge_trans hx (hx' trivial)",
+        "type": "theorem",
+        "filename": "MinimaClosedFunction"
+    },
+    {
+        "theorem_name": "strong_quasi",
+        "theorem_statement": " (f : E → F) (𝕜 : Type _) [LinearOrderedRing 𝕜] [Module 𝕜 E] : Prop",
+        "variable": [
+            "variable {E F : Type*}",
+            "variable {𝕜 : Type _}",
+            "variable {f : E → F}",
+            "variable [AddCommMonoid E]",
+            "variable [CompleteLinearOrder F]",
+            "variable [LinearOrderedRing 𝕜]",
+            "variable [DenselyOrdered 𝕜]",
+            "variable [Module 𝕜 E]"
+        ],
+        "namespaces": [
+            "TopologicalSpace",
+            "Filter",
+            "Topology",
+            "Bornology",
+            "Set"
+        ],
+        "proof_process": "def strong_quasi (f : E → F) (𝕜 : Type _) [LinearOrderedRing 𝕜] [Module 𝕜 E] : Prop :=\n  ∀ ⦃x⦄,\n    ∀ ⦃y⦄,\n      x ≠ y →\n        ∀ ⦃a b : 𝕜⦄,\n          0 < a →\n            0 < b →\n              a + b = 1 →\n                f ((a • x : E) + (b • y : E)) <\n                  max (f x)\n                    (f y)\n                      /- the Minimum of strongly quasi function is unique -/",
+        "type": "definition",
+        "filename": "MinimaClosedFunction"
+    },
+    {
+        "theorem_name": "isMinOn_unique",
+        "theorem_statement": " {x y : E} (hf' : strong_quasi f 𝕜) (hx : IsMinOn f univ x) (hy : IsMinOn f univ y) : x = y",
+        "variable": [
+            "variable {E F : Type*}",
+            "variable {𝕜 : Type _}",
+            "variable {f : E → F}",
+            "variable [AddCommMonoid E]",
+            "variable [CompleteLinearOrder F]",
+            "variable [LinearOrderedRing 𝕜]",
+            "variable [DenselyOrdered 𝕜]",
+            "variable [Module 𝕜 E]"
+        ],
+        "namespaces": [
+            "TopologicalSpace",
+            "Filter",
+            "Topology",
+            "Bornology",
+            "Set"
+        ],
+        "proof_process": "theorem isMinOn_unique {x y : E} (hf' : strong_quasi f 𝕜) (hx : IsMinOn f univ x) (hy : IsMinOn f univ y) : x = y :=\n  by\n  by_contra neq\n  have : (0 : 𝕜) < (1 : 𝕜) := one_pos\n  obtain ⟨a, lta, alt⟩ := exists_between this\n  have eqone : a + (1 - a) = 1 := add_sub_cancel a 1\n  have lta' : 0 < 1 - a := sub_pos_of_lt alt\n  have h : f (a • x + (1 - a) • y) < f y :=\n    by\n    apply Eq.trans_gt (max_eq_right (hx trivial))\n    apply hf' neq lta lta' eqone\n  simp only [isMinOn_iff] at hy\n  specialize hy (a • x + (1 - a) • y) trivial\n  apply not_le_of_lt h hy",
+        "type": "theorem",
+        "filename": "MinimaClosedFunction"
+    }
+]

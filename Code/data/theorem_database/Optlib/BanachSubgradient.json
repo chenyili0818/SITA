@@ -1,0 +1,161 @@
+[
+    {
+        "theorem_name": "EpigraphInterior_existence",
+        "theorem_statement": " (hc : ContinuousOn f (interior s)) (hx : x ∈ interior s) :\n  ∀ t > f x, (x, t) ∈ interior {p : E × ℝ | p.1 ∈ s ∧ f p.1 ≤ p.2}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Set"
+        ],
+        "proof_process": "theorem EpigraphInterior_existence (hc : ContinuousOn f (interior s)) (hx : x ∈ interior s) :\n    ∀ t > f x, (x, t) ∈ interior {p : E × ℝ | p.1 ∈ s ∧ f p.1 ≤ p.2} :=\n  by\n  intro _ _\n  have h : IsOpen {p : E × ℝ | (p.1 ∈ interior s) ∧ f p.1 < p.2} :=\n    by\n    let t := (fun p : E × ℝ => p.fst) ⁻¹' {p : E | p ∈ interior s}\n    have h1 : IsOpen t := IsOpen.preimage continuous_fst isOpen_interior\n    have h2 : ContinuousOn (fun p : (E × ℝ) => f p.fst) t := ContinuousOn.comp hc continuousOn_fst (fun ⦃x⦄ a => a)\n    apply ContinuousOn.isOpen_inter_preimage (h2.prod continuousOn_snd) h1 isOpen_lt_prod\n  have h' : {p : E × ℝ | p.1 ∈ interior s ∧ f p.1 < p.2} ⊆ {p | p.1 ∈ s ∧ f p.1 ≤ p.2} := fun p ⟨hp1, hp2⟩ =>\n    ⟨interior_subset hp1, le_of_lt hp2⟩\n  apply interior_mono h'\n  rw [IsOpen.interior_eq h]\n  exact ⟨hx, by dsimp; linarith⟩",
+        "type": "theorem",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "mem_epi_frontier",
+        "theorem_statement": " : ∀ y ∈ interior s, (y, f y) ∈ frontier {p : E × ℝ | p.1 ∈ s ∧ f p.1 ≤ p.2}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Set"
+        ],
+        "proof_process": "theorem mem_epi_frontier : ∀ y ∈ interior s, (y, f y) ∈ frontier {p : E × ℝ | p.1 ∈ s ∧ f p.1 ≤ p.2} :=\n  by\n  intro y ys\n  constructor\n  · exact subset_closure ⟨interior_subset ys, Eq.ge rfl⟩\n  by_contra h\n  simp only [mem_interior] at h\n  obtain ⟨t, ⟨st, ⟨opent, ht⟩⟩⟩ := h\n  simp only [Metric.isOpen_iff] at opent\n  obtain ⟨ε, εpos, ballmem⟩ := opent (y, f y) ht\n  have : (y, f y - ε / 2) ∈ t := by\n    apply ballmem\n    simp only [Metric.mem_ball, dist_eq_norm]\n    calc\n      ‖(y, f y - ε / 2) - (y, f y)‖ = ‖((0 : E), -(ε / 2))‖ := by\n        apply congrArg norm (by simp only [Prod.mk_sub_mk, sub_self]; ring_nf)\n      _ = ε / 2 := by simp [norm]; exact LT.lt.le (half_pos εpos)\n      _ < ε := half_lt_self εpos\n  obtain ⟨_, h2⟩ := st this\n  simp at h2; linarith",
+        "type": "theorem",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Continuous_epi_open",
+        "theorem_statement": " {f₁ : E → ℝ} (hcon : ContinuousOn f₁ univ) : IsOpen {(x, y) : E × ℝ | y > f₁ x}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Set"
+        ],
+        "proof_process": "theorem Continuous_epi_open {f₁ : E → ℝ} (hcon : ContinuousOn f₁ univ) : IsOpen {(x, y) : E × ℝ | y > f₁ x} :=\n  by\n  let t := (fun p : E × ℝ => p.fst) ⁻¹' univ\n  have h1 : IsOpen t := IsOpen.preimage continuous_fst isOpen_univ\n  have h2 : ContinuousOn (fun p : (E × ℝ) => f₁ p.fst) t :=\n    ContinuousOn.comp (t := univ) hcon continuousOn_fst (fun _ a => a)\n  have : {(x, y) : E × ℝ | y > f₁ x} = {(x, y) : E × ℝ | x ∈ univ ∧ y > f₁ x} := by ext z; simp\n  rw [this]\n  apply ContinuousOn.isOpen_inter_preimage (h2.prod continuousOn_snd) h1 isOpen_lt_prod",
+        "type": "theorem",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Banach_HasSubgradientAt",
+        "theorem_statement": " (f : E → ℝ) (g : E →L[ℝ] ℝ) (x : E) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "/-- Subgradient of functions --/\ndef Banach_HasSubgradientAt (f : E → ℝ) (g : E →L[ℝ] ℝ) (x : E) : Prop :=\n  ∀ y, f y ≥ f x + g (y - x)",
+        "type": "definition",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Banach_HasSubgradientWithinAt",
+        "theorem_statement": " (f : E → ℝ) (g : E →L[ℝ] ℝ) (s : Set E) (x : E) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "def Banach_HasSubgradientWithinAt (f : E → ℝ) (g : E →L[ℝ] ℝ) (s : Set E) (x : E) : Prop :=\n  ∀ y ∈ s, f y ≥ f x + g (y - x)",
+        "type": "definition",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Banach_SubderivAt",
+        "theorem_statement": " (f : E → ℝ) (x : E) : Set (E →L[ℝ] ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "/-- Subderiv of functions --/\ndef Banach_SubderivAt (f : E → ℝ) (x : E) : Set (E →L[ℝ] ℝ) :=\n  {g : E →L[ℝ] ℝ | Banach_HasSubgradientAt f g x}",
+        "type": "definition",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Banach_SubderivWithinAt",
+        "theorem_statement": " (f : E → ℝ) (s : Set E) (x : E) : Set (E →L[ℝ] ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "def Banach_SubderivWithinAt (f : E → ℝ) (s : Set E) (x : E) : Set (E →L[ℝ] ℝ) :=\n  {g : E →L[ℝ] ℝ | Banach_HasSubgradientWithinAt f g s x}",
+        "type": "definition",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Epi",
+        "theorem_statement": " (f : E → ℝ) (s : Set E) : Set (E × ℝ)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "def Epi (f : E → ℝ) (s : Set E) : Set (E × ℝ) :=\n  {p : E × ℝ | p.1 ∈ s ∧ f p.1 ≤ p.2}",
+        "type": "definition",
+        "filename": "BanachSubgradient"
+    },
+    {
+        "theorem_name": "Banach_SubderivWithinAt",
+        "theorem_statement": " (hf : ConvexOn ℝ s f) (hc : ContinuousOn f (interior s)) (hx : x ∈ interior s) :\n  Set.Nonempty (Banach_SubderivWithinAt f s x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [SeminormedAddCommGroup E]",
+            "variable [NormedSpace ℝ E]",
+            "variable {f : E → ℝ}",
+            "variable {x : E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "Filter"
+        ],
+        "proof_process": "theorem Nonempty (hf : ConvexOn ℝ s f) (hc : ContinuousOn f (interior s)) (hx : x ∈ interior s) :\n    Set.Nonempty (Banach_SubderivWithinAt f s x) :=\n  by\n  have hepi_f₁ : Convex ℝ (interior (Epi f s)) := Convex.interior (ConvexOn.convex_epigraph hf)\n  have disj : (x, f x) ∉ interior (Epi f s) := by\n    by_contra h\n    simp only [mem_interior] at h\n    obtain ⟨t, ⟨st, ⟨opent, ht⟩⟩⟩ := h\n    simp only [Metric.isOpen_iff] at opent\n    obtain ⟨ε, εpos, ballmem⟩ := opent (x, f x) ht\n    have : (x, f x - ε / 2) ∈ t := by\n      apply ballmem\n      simp only [Metric.mem_ball, dist_eq_norm]\n      calc\n        ‖(x, f x - ε / 2) - (x, f x)‖ = ‖((0 : E), -(ε / 2))‖ := by\n          apply congrArg norm (by simp only [Prod.mk_sub_mk, sub_self]; ring_nf)\n        _ = ε / 2 := by simp [norm]; exact LT.lt.le (half_pos εpos)\n        _ < ε := half_lt_self εpos\n    obtain ⟨_, h2⟩ := st this\n    simp at h2; linarith\n  obtain ⟨φ, hφ⟩ := geometric_hahn_banach_point_open hepi_f₁ isOpen_interior disj\n  let g := (LinearEquiv.symm (Module.dualProdDualEquivDual ℝ E ℝ)) φ\n  have hg : ∀ a, φ a = g.1 a.1 + g.2 a.2 := by\n    intro a\n    rw [← Module.dualProdDualEquivDual_apply_apply ℝ E ℝ g a]\n    apply LinearMap.congr_fun ((LinearEquiv.symm_apply_eq (Module.dualProdDualEquivDual ℝ E ℝ)).1 (by rfl)) a\n  have hua : ∃ u, ∀ a, g.2 a = u * a := by\n    use g.2 1; intro a; simp [g]\n    have : a • ((0 : E), 1) = (0, a) := by simp only [Prod.smul_mk, smul_eq_mul, smul_zero, mul_one]\n    rw [← this, ContinuousLinearMap.map_smulₛₗ]\n    simp only [RingHom.id_apply, smul_eq_mul]; ring_nf\n  obtain ⟨u, hu⟩ := hua\n  have hgu : ∀ a ∈ interior (Epi f s), g.1 x + u * f x < g.1 a.1 + u * a.2 :=\n    by\n    intro a ha\n    have hgu' : g.1 x + g.2 (f x) < g.1 a.1 + g.2 a.2 :=\n      by\n      obtain hg1 := hg a; obtain hg2 := hg (x, f x)\n      rw [← hg1, ← hg2]; apply hφ a ha\n    simp only [hu, hu] at hgu'; exact hgu'\n  have hu0 : u > 0 :=\n    by\n    specialize hgu (x, f x + 1) (EpigraphInterior_existence hc hx (f x + 1) (lt_add_one (f x)))\n    dsimp at hgu; linarith\n  let h := -(1 / u) • g.1\n  have : ∀ (x : E), ‖h x‖ ≤ ((1 / u) * ‖φ‖) * ‖x‖ := by\n    intro x; field_simp [h]; simp only [abs_of_pos hu0]\n    apply div_le_div_of_nonneg_right _ (by linarith)\n    calc\n      |φ (x, 0)| = ‖φ (x, 0)‖ := rfl\n      _ ≤ ‖φ‖ * ‖(x, (0 : ℝ))‖ := (ContinuousLinearMap.le_opNorm φ (x, 0))\n      _ = ‖φ‖ * ‖x‖ := by simp only [Prod.norm_def, norm_zero, max_eq_left (norm_nonneg x)]\n  have hh : ∃ (C : ℝ), ∀ (x : E), ‖h x‖ ≤ C * ‖x‖ := by use ((1 / u) * ‖φ‖)\n  let h' := (LinearMap.mkContinuousOfExistsBound h hh)\n  have key1 : ∀ a ∈ interior (Epi f s), h' (a.1 - x) + f x < a.2 :=\n    by\n    dsimp [h']; intro a ha\n    specialize hgu a ha; dsimp [g] at hgu\n    have uneq : u ≠ 0 := by linarith\n    rw [← mul_lt_mul_iff_of_pos_left hu0]; field_simp\n    have eq1 : u * (-φ (a.1 - x, 0) + f x * u) / u = u * f x - φ (a.1 - x, 0) := by field_simp; ring_nf\n    have eq2 : φ (x, 0) - φ (a.1, 0) = -φ (a.1 - x, 0) :=\n      by\n      have : φ (x, 0) - φ (a.1, 0) = φ ((x, 0) - (a.1, 0)) := by simp only [φ.map_sub]\n      simp only [this, Prod.mk_sub_mk, sub_zero]\n      have : (-(1 : ℝ)) • (a.1 - x, (0 : ℝ)) = (x - a.1, 0) := by simp\n      rw [← this, ContinuousLinearMap.map_smulₛₗ]; simp\n    field_simp [h, g, eq1, eq2, hgu]\n    rw [div_lt_iff₀ (by positivity)]; rw [← mul_lt_mul_iff_of_pos_left hu0] at hgu\n    linarith\n  have key2₀ : ∀ a ∈ (Epi f s), a.1 ∈ interior s → h' (a.1 - x) + f x ≤ a.2 :=\n    by\n    intro a ha posa\n    by_cases hfa : f a.1 < a.2\n    · apply le_of_lt (key1 a (EpigraphInterior_existence hc posa a.2 hfa))\n    have hfa : f a.1 = a.2 := by linarith [ha.2]\n    let an : ℕ → E × ℝ := fun n => (a.1, f a.1 + 1 / (n + 1))\n    have can2 : Tendsto (fun n => (an n).2) atTop (nhds (f a.1)) :=\n      by\n      obtain hh := Tendsto.add (tendsto_const_nhds) (tendsto_one_div_add_atTop_nhds_zero_nat)\n      simp only [add_zero] at hh; exact hh\n    have hxn : ∀ (n : ℕ), h' ((an n).1 - x) + f x ≤ (an n).2 :=\n      by\n      intro n\n      have : (1 : ℝ) / (n + 1) > 0 := one_div_pos.mpr (by linarith)\n      obtain han : f a.1 + 1 / (n + 1) > f a.1 := by linarith\n      apply le_of_lt (key1 (an n) (EpigraphInterior_existence hc posa (an n).2 han))\n    simp only [hfa] at can2\n    have cleft : Tendsto (fun n => h' ((an n).1 - x) + f x) atTop (nhds (h' (a.1 - x) + f x)) := by\n      exact tendsto_const_nhds\n    apply le_of_tendsto_of_tendsto' cleft ?_ hxn\n    simp only [an, hfa]\n    exact can2\n  have key2₁ : ∀ a ∈ (Epi f s), a.1 ∉ interior s → h' (a.1 - x) + f x ≤ a.2 :=\n    by\n    intro a ha _\n    let an : ℕ → E × ℝ := fun n => ((n : ℝ) / (n + 1)) • a + ((1 : ℝ) / (n + 1)) • (x, f x)\n    have han : ∀ (n : ℕ), h' ((an n).1 - x) + f x ≤ (an n).2 :=\n      by\n      intro n\n      have anin : (an n).1 ∈ interior s := by\n        dsimp [an]\n        apply Convex.combo_self_interior_mem_interior hf.1 ha.1 hx\n        · apply div_nonneg (Nat.cast_nonneg n) (by linarith)\n        · apply one_div_pos.mpr (by linarith)\n        field_simp\n      apply key2₀ (an n) ?_ anin\n      constructor\n      · apply interior_subset anin\n      have ineq : ((n : ℝ) / (n + 1)) * f a.1 ≤ ((n : ℝ) / (n + 1)) * a.2 := by\n        apply mul_le_mul_of_nonneg_left ha.2 (div_nonneg (Nat.cast_nonneg n) (by linarith))\n      calc\n        f (an n).1 = f (((n : ℝ) / (n + 1)) • a.1 + ((1 : ℝ) / (n + 1)) • x) := rfl\n        _ ≤ ((n : ℝ) / (n + 1)) * f a.1 + ((1 : ℝ) / (n + 1)) * f x := by\n          apply\n            hf.2 ha.1 (interior_subset hx) (div_nonneg (Nat.cast_nonneg n) (by linarith))\n              (one_div_nonneg.mpr (by linarith)) (by field_simp)\n        _ ≤ ((n : ℝ) / (n + 1)) * a.2 + ((1 : ℝ) / (n + 1)) * f x := by linarith\n        _ = (an n).2 := rfl\n    have c1 : Tendsto (fun (n : ℕ) => ((n : ℝ) / (n + 1))) atTop (nhds 1) := tendsto_natCast_div_add_atTop 1\n    have c2 : Tendsto (fun (n : ℕ) => ((1 : ℝ) / (n + 1))) atTop (nhds 0) := tendsto_one_div_add_atTop_nhds_zero_nat\n    have can1 : Tendsto (fun n => (an n).1) atTop (nhds a.1) :=\n      by\n      have ca1 : Tendsto (fun (n : ℕ) => ((n : ℝ) / (n + 1)) • a.1) atTop (nhds a.1) :=\n        by\n        have : Tendsto (fun (_ : ℕ) => a.1) atTop (nhds a.1) := tendsto_const_nhds\n        obtain cc := Tendsto.smul c1 this\n        rw [one_smul] at cc; exact cc\n      have cx1 : Tendsto (fun (n : ℕ) => ((1 : ℝ) / (n + 1)) • x) atTop (nhds 0) :=\n        by\n        have : Tendsto (fun (_ : ℕ) => x) atTop (nhds x) := tendsto_const_nhds\n        obtain cc := Tendsto.smul c2 this\n        rw [zero_smul] at cc; exact cc\n      obtain cc := Tendsto.add ca1 cx1\n      rw [add_zero] at cc; exact cc\n    have can2 : Tendsto (fun n => (an n).2) atTop (nhds a.2) :=\n      by\n      have ca1 : Tendsto (fun (n : ℕ) => ((n : ℝ) / (n + 1)) * a.2) atTop (nhds a.2) :=\n        by\n        have : Tendsto (fun (_ : ℕ) => a.2) atTop (nhds a.2) := tendsto_const_nhds\n        obtain cc := Tendsto.smul c1 this\n        rw [one_smul] at cc; exact cc\n      have cx1 : Tendsto (fun (n : ℕ) => ((1 : ℝ) / (n + 1)) * f x) atTop (nhds 0) :=\n        by\n        have : Tendsto (fun (_ : ℕ) => f x) atTop (nhds (f x)) := tendsto_const_nhds\n        obtain cc := Tendsto.smul c2 this\n        rw [zero_smul] at cc; exact cc\n      obtain cc := Tendsto.add ca1 cx1\n      rw [add_zero] at cc; exact cc\n    have cleft : Tendsto (fun n => h' ((an n).1 - x) + f x) atTop (nhds (h' (a.1 - x) + f x)) :=\n      by\n      obtain hh := h'.continuous.tendsto\n      apply Filter.Tendsto.add_const\n      apply Filter.Tendsto.comp (hh (a.1 - x)) (Tendsto.sub_const can1 x)\n    apply le_of_tendsto_of_tendsto' cleft can2 han\n  have key2 : ∀ a ∈ (Epi f s), h' (a.1 - x) + f x ≤ a.2 :=\n    by\n    intro a ha\n    by_cases posa : a.1 ∈ interior s\n    · exact key2₀ a ha posa\n    exact key2₁ a ha posa\n  have : h' ∈ (Banach_SubderivWithinAt f s x) := fun a ha => (by linarith [key2 (a, f a) ⟨ha, Eq.le rfl⟩])\n  use h'",
+        "type": "theorem",
+        "filename": "BanachSubgradient"
+    }
+]

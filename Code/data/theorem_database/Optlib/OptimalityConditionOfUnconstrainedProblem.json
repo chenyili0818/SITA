@@ -1,0 +1,107 @@
+[
+    {
+        "theorem_name": "DescentDirection",
+        "theorem_statement": " (d : E) (x : E) (_ : HasGradientAt f (f' x) x) : Prop",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x xm : E}",
+            "variable {f : E → ℝ}",
+            "variable {f' : E → E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "def DescentDirection (d : E) (x : E) (_ : HasGradientAt f (f' x) x) : Prop :=\n  inner (f' x) d <\n    (0 : ℝ)\n      /-\n        For any vector d, there does not exist a descent direction for the function f\n        at the minimum point xm.\n      -/",
+        "type": "definition",
+        "filename": "OptimalityConditionOfUnconstrainedProblem"
+    },
+    {
+        "theorem_name": "optimal_no_descent_direction",
+        "theorem_statement": " (hf : ∀ x : E, HasGradientAt f (f' x) x) (min : IsMinOn f univ xm) (hfc : ContinuousOn f' univ) :\n  ∀ d : E, ¬(DescentDirection d xm (hf xm))",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x xm : E}",
+            "variable {f : E → ℝ}",
+            "variable {f' : E → E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem optimal_no_descent_direction (hf : ∀ x : E, HasGradientAt f (f' x) x) (min : IsMinOn f univ xm)\n    (hfc : ContinuousOn f' univ) : ∀ d : E, ¬(DescentDirection d xm (hf xm)) :=\n  by\n  intro d\n  by_contra h\n  have : ∃ t : ℝ, f (xm + t • d) < f xm :=\n    by\n    have h₁ : ∃ T : ℝ, T > 0 ∧ (∀ a ∈ Icc (-T) T, inner (f' (xm + a • d)) d < (0 : ℝ)) :=\n      by\n      let g := fun r : ℝ ↦ (inner (f' (xm + r • d)) d : ℝ)\n      have hg0 : g 0 = inner (f' xm) d := by simp [g]\n      have hc : ContinuousOn g univ := by\n        simp [g]\n        apply ContinuousOn.inner\n        · apply ContinuousOn.comp hfc\n          · apply ContinuousOn.add continuousOn_const\n            apply ContinuousOn.smul continuousOn_id continuousOn_const\n          · simp\n        · exact continuousOn_const\n      have hu : ∃ u < (0 : ℝ), inner (f' xm) d ≤ u :=\n        by\n        use (inner (f' xm) d / 2)\n        rw [DescentDirection] at h\n        constructor\n        · linarith\n        · rw [le_div_iff₀ (by norm_num)]; linarith\n      rcases hu with ⟨u, ⟨hu1, hu2⟩⟩\n      rw [← hg0] at hu2\n      have hc' : ∃ T, T > 0 ∧ (∀ a ∈ Icc (-T) T, g a < 0) :=\n        by\n        have : univ ∈ nhds (0 : ℝ) := by simp\n        rcases continuous (ContinuousOn.continuousAt hc this) with h1\n        specialize h1 (-u / 2) (by linarith)\n        rcases h1 with ⟨T, ⟨hT1, hT2⟩⟩\n        use T / 2; constructor\n        · linarith\n        · intro a ha\n          have : ‖a - 0‖ < T := by\n            simp; rw [abs_lt]; simp at ha\n            rcases ha with ⟨ha1, ha2⟩\n            constructor; linarith; linarith\n          specialize hT2 a this\n          simp at hT2\n          rw [abs_lt] at hT2\n          rcases hT2 with ⟨_, hs2⟩\n          rw [sub_lt_iff_lt_add] at hs2\n          apply lt_trans hs2\n          · linarith\n      rcases hc' with ⟨T, ⟨hT1, hT2⟩⟩\n      use T\n    rcases h₁ with ⟨T, ⟨hT1, hT2⟩⟩\n    have h₂ : ∃ t1 : ℝ, t1 ≥ -T ∧ t1 ≤ T ∧ f (xm + T • d) = f xm + inner (f' (xm + t1 • d)) (T • d) :=\n      by\n      rcases(expansion hf xm (T • d)) with ⟨ts, ⟨ts1, ⟨ts2, ts3⟩⟩⟩\n      use (ts • T)\n      constructor\n      · simp; apply le_trans\n        · show -T ≤ 0\n          linarith\n        · simp [hT1]; linarith\n      · constructor\n        · simp [hT1]; linarith\n        · rw [smul_assoc]; exact ts3\n    rcases h₂ with ⟨t1, ⟨ht1, ⟨ht2, ht3⟩⟩⟩\n    use T; rw [ht3]; simp; rw [inner_smul_right]\n    simp at ht1\n    exact mul_neg_of_pos_of_neg hT1 (hT2 t1 ⟨ht1, ht2⟩)\n  rcases this with ⟨t, ht⟩\n  have : f (xm + t • d) ≥ f xm := min trivial\n  linarith\n    /-\n      Suppose we have a function f defined on a set E, such that for every point x in E,\n      f has a gradient f'(x) at x. Let xm be a point in E where f attains its minimum on the entire set.\n      Assume that f' is continuous on the entire set, then the gradient of f at xm equals 0.\n    -/",
+        "type": "theorem",
+        "filename": "OptimalityConditionOfUnconstrainedProblem"
+    },
+    {
+        "theorem_name": "first_order_unconstrained",
+        "theorem_statement": " (hf : ∀ x : E, HasGradientAt f (f' x) x) (min : IsMinOn f univ xm) (hfc : ContinuousOn f' univ) : f' xm = 0",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x xm : E}",
+            "variable {f : E → ℝ}",
+            "variable {f' : E → E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem first_order_unconstrained (hf : ∀ x : E, HasGradientAt f (f' x) x) (min : IsMinOn f univ xm)\n    (hfc : ContinuousOn f' univ) : f' xm = 0 := by\n  by_contra h\n  have h1 : DescentDirection (-f' xm) xm (hf xm) :=\n    by\n    rw [DescentDirection, inner_neg_right, Left.neg_neg_iff]\n    rw [real_inner_self_eq_norm_sq]\n    simp [h]\n  exact (optimal_no_descent_direction hf min hfc (-f' xm)) h1",
+        "type": "theorem",
+        "filename": "OptimalityConditionOfUnconstrainedProblem"
+    },
+    {
+        "theorem_name": "first_order_convex",
+        "theorem_statement": " (hf : ∀ x : E, HasGradientAt f (f' x) x) (hcon : ConvexOn ℝ univ f) (hfm : f' xm = 0) : IsMinOn f univ xm",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x xm : E}",
+            "variable {f : E → ℝ}",
+            "variable {f' : E → E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem first_order_convex (hf : ∀ x : E, HasGradientAt f (f' x) x) (hcon : ConvexOn ℝ univ f) (hfm : f' xm = 0) :\n    IsMinOn f univ xm :=\n  by\n  have : ∀ y, f y ≥ f xm + inner (f' xm) (y - xm) := by\n    intro y\n    apply Convex_first_order_condition' (hf xm) hcon (by trivial)\n    · trivial\n  intro y\n  dsimp; specialize this y\n  rw [hfm, inner_zero_left, add_zero] at this\n  exact fun _ => this",
+        "type": "theorem",
+        "filename": "OptimalityConditionOfUnconstrainedProblem"
+    },
+    {
+        "theorem_name": "first_order_convex_iff",
+        "theorem_statement": " (hf : ∀ x : E, HasGradientAt f (f' x) x) (hcon : ConvexOn ℝ univ f) (hfc : ContinuousOn f' univ) :\n  IsMinOn f univ xm ↔ f' xm = 0",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {x xm : E}",
+            "variable {f : E → ℝ}",
+            "variable {f' : E → E}",
+            "variable {s : Set E}"
+        ],
+        "namespaces": [
+            "InnerProductSpace",
+            "Set"
+        ],
+        "proof_process": "theorem first_order_convex_iff (hf : ∀ x : E, HasGradientAt f (f' x) x) (hcon : ConvexOn ℝ univ f)\n    (hfc : ContinuousOn f' univ) : IsMinOn f univ xm ↔ f' xm = 0 :=\n  by\n  constructor\n  · intro hmin\n    exact first_order_unconstrained hf hmin hfc\n  · intro hgrad\n    apply first_order_convex hf hcon hgrad",
+        "type": "theorem",
+        "filename": "OptimalityConditionOfUnconstrainedProblem"
+    }
+]

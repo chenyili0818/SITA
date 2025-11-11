@@ -1,0 +1,557 @@
+[
+    {
+        "theorem_name": "differential_fun",
+        "theorem_statement": " (x : E) (f : E → ℝ) (u : E)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def differential_fun (x : E) (f : E → ℝ) (u : E) := fun y ↦\n  Real.toEReal\n    ((f y - f x - inner u (y - x)) / ‖y - x‖)\n      /- the definition of the Frechet subdifferential-/",
+        "type": "definition",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdifferential",
+        "theorem_statement": " (f : E → ℝ) (x : E) : Set E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def f_subdifferential (f : E → ℝ) (x : E) : Set E :=\n  {v : E | liminf (differential_fun x f v) (𝓝[≠] x) ≥ 0}\n    /- the definition of the limit subdifferential-/",
+        "type": "definition",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "subdifferential",
+        "theorem_statement": " (f : E → ℝ) (x : E) : Set E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def subdifferential (f : E → ℝ) (x : E) : Set E :=\n  {v₀ : E |\n    ∃ u : ℕ → E,\n      Tendsto u atTop (𝓝 x) ∧\n        Tendsto (fun n ↦ f (u n)) atTop (𝓝 (f x)) ∧\n          (∃ v : ℕ → E, ∀ n, v n ∈ f_subdifferential f (u n) ∧ Tendsto v atTop (𝓝 v₀))}\n    /- the domain of the function is the points whose subifferential are non empty -/",
+        "type": "definition",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "active_domain",
+        "theorem_statement": " (f : E → ℝ) : Set E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def active_domain (f : E → ℝ) : Set E :=\n  {x | subdifferential f x ≠ ∅}\n    /- the critial point of a function -/",
+        "type": "definition",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "critial_point",
+        "theorem_statement": " (f : E → ℝ) : Set E",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "def critial_point (f : E → ℝ) : Set E :=\n  {x | 0 ∈ subdifferential f x}",
+        "type": "definition",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "has_f_subdiff_iff",
+        "theorem_statement": " : u ∈ f_subdifferential f x ↔ ∀ ε > 0, ∀ᶠ y in 𝓝 x, f y - f x - inner u (y - x) ≥ -ε * ‖y - x‖",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- equivalence of Frechet subdifferential -/\ntheorem has_f_subdiff_iff :\n    u ∈ f_subdifferential f x ↔ ∀ ε > 0, ∀ᶠ y in 𝓝 x, f y - f x - inner u (y - x) ≥ -ε * ‖y - x‖ :=\n  by\n  have h0 :\n    (∀ ε > 0, ∀ᶠ y in 𝓝[≠] x, f y - f x - inner u (y - x) > -ε * ‖y - x‖) ↔\n      ∀ ε > 0, ∀ᶠ y in 𝓝 x, f y - f x - inner u (y - x) ≥ -ε * ‖y - x‖ :=\n    by\n    constructor\n    · intro h ε εpos\n      specialize h ε εpos\n      rw [eventually_nhdsWithin_iff] at h\n      filter_upwards [h] with y hy\n      by_cases heq : y = x; rw [heq]; simp\n      exact le_of_lt (hy heq)\n    · intro h ε εpos\n      specialize h (ε / 2) (by positivity)\n      rw [eventually_nhdsWithin_iff]\n      filter_upwards [h] with y h hy\n      have : 0 < ε * ‖y - x‖ := mul_pos εpos (norm_sub_pos_iff.2 hy)\n      linarith\n  rw [← h0]\n  simp only [f_subdifferential, mem_setOf_eq, liminf, limsInf, eventually_map]\n  let sa := {a | ∀ᶠ (y : E) in 𝓝[≠] x, a ≤ differential_fun x f u y}\n  constructor\n  · intro (h : 0 ≤ sSup sa) ε εpos\n    have hn : sa.Nonempty := by\n      by_contra hn\n      have : sa = ∅ := not_nonempty_iff_eq_empty.mp hn\n      rw [this, sSup_empty] at h\n      absurd h; exact of_decide_eq_false rfl\n    have hsa : Real.toEReal (-ε) < sSup sa := by\n      apply lt_of_lt_of_le _ h\n      rw [EReal.coe_neg']\n      exact neg_neg_iff_pos.mpr εpos\n    obtain ⟨a, as, ha⟩ := exists_lt_of_lt_csSup hn hsa\n    rw [mem_setOf_eq] at as\n    apply Eventually.mp as\n    apply eventually_nhdsWithin_of_forall\n    rintro y hy h\n    have := (lt_div_iff₀ (norm_sub_pos_iff.2 hy)).1 (EReal.coe_lt_coe_iff.1 (lt_of_lt_of_le ha h))\n    linarith\n  · intro h\n    show 0 ≤ sSup sa\n    rw [le_sSup_iff]\n    intro b hb\n    rw [mem_upperBounds] at hb\n    contrapose! hb\n    have h' : ∀ ε > 0, ∀ᶠ (y : E) in 𝓝[≠] x, differential_fun x f u y > -ε :=\n      by\n      intro ε εpos\n      by_cases hε : ε = ⊤\n      · filter_upwards with a\n        rw [hε]\n        exact Batteries.compareOfLessAndEq_eq_lt.mp rfl\n      have heq : ε.toReal = ε := EReal.coe_toReal hε (LT.lt.ne_bot εpos)\n      have : 0 < ε.toReal := by\n        rw [← EReal.coe_lt_coe_iff]\n        exact lt_of_lt_of_eq εpos (id (Eq.symm heq))\n      specialize h ε.toReal this\n      apply Eventually.mp h\n      apply eventually_nhdsWithin_of_forall\n      rintro y hy h\n      rw [← heq, ← EReal.coe_neg, differential_fun, gt_iff_lt, EReal.coe_lt_coe_iff]\n      rw [lt_div_iff₀ (norm_sub_pos_iff.2 hy)]\n      linarith\n    by_cases hnb : b = ⊥\n    · use -1\n      constructor\n      · specialize h' 1 (zero_lt_one' EReal)\n        filter_upwards [h'] with y\n        exact le_of_lt\n      · rw [hnb]\n        exact Batteries.compareOfLessAndEq_eq_lt.mp rfl\n    · use b / 2\n      have heq : b.toReal = b := EReal.coe_toReal (LT.lt.ne_top hb) hnb\n      change b < Real.toEReal 0 at hb\n      rw [← heq, EReal.coe_lt_coe_iff] at hb\n      constructor\n      · have : Real.toEReal 0 < -(b / Real.toEReal 2) :=\n          by\n          rw [← heq, ← EReal.coe_div, ← EReal.coe_neg, EReal.coe_lt_coe_iff]\n          linarith\n        specialize h' (-(b / 2)) this\n        simp only [neg_neg] at h'\n        rw [mem_setOf]\n        filter_upwards [h'] with y\n        exact le_of_lt\n      · show b < b / Real.toEReal 2\n        rw [← heq, ← EReal.coe_div, EReal.coe_lt_coe_iff]\n        linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "subdifferential_subset",
+        "theorem_statement": " (f : E → ℝ) (x : E) : f_subdifferential f x ⊆ subdifferential f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- frechet subdifferential is a subset of limit subdifferential -/\ntheorem subdifferential_subset (f : E → ℝ) (x : E) : f_subdifferential f x ⊆ subdifferential f x := fun v vin ↦\n  ⟨(fun _ ↦ x), tendsto_const_nhds, tendsto_const_nhds, ⟨fun _ ↦ v, fun _ ↦ ⟨vin, tendsto_const_nhds⟩⟩⟩",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "subdifferential_closed",
+        "theorem_statement": " (f : E → ℝ) (x : E) : IsClosed (subdifferential f x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the limit subdifferential is a convex set -/\ntheorem subdifferential_closed (f : E → ℝ) (x : E) : IsClosed (subdifferential f x) :=\n  by\n  apply IsSeqClosed.isClosed\n  intro vn v vnin vntov\n  have h' (xk : ℕ → E) (uk : ℕ → E) (u : E) (n : ℕ) (npos : 0 < n) (xkt : Tendsto xk atTop (𝓝 x))\n    (fxkt : Tendsto (fun k ↦ f (xk k)) atTop (𝓝 (f x))) (ukt : Tendsto uk atTop (𝓝 u)) :\n    ∃ N, ‖(uk N) - u‖ < 1 / (2 * n) ∧ ‖(xk N) - x‖ < 1 / (2 * n) ∧ ‖(f (xk N)) - (f x)‖ < 1 / (2 * n) :=\n    by\n    have ttrans (ak : ℕ → E) (a : E) (akt : Tendsto ak atTop (𝓝 a)) : (∃ N, ∀ k, N ≤ k → ‖(ak k) - a‖ < 1 / (2 * n)) :=\n      by\n      rw [tendsto_atTop_nhds] at akt\n      specialize akt (Metric.ball a (1 / (2 * n))) _ _\n      simp; apply Nat.zero_lt_of_ne_zero\n      apply Nat.ne_zero_iff_zero_lt.mpr npos\n      exact Metric.isOpen_ball\n      rcases akt with ⟨N, hN⟩\n      use N; intro k kge\n      specialize hN k kge\n      exact mem_ball_iff_norm.mp hN\n    have ttransr (ak : ℕ → ℝ) (a : ℝ) (akt : Tendsto ak atTop (𝓝 (a))) :\n      ∃ N, ∀ k, N ≤ k → ‖(ak k) - a‖ < (1 / (2 * n)) :=\n      by\n      rw [tendsto_atTop_nhds] at akt\n      specialize akt (Metric.ball a (1 / (2 * n))) _ _\n      simp; apply Nat.zero_lt_of_ne_zero\n      apply Nat.ne_zero_iff_zero_lt.mpr npos\n      exact Metric.isOpen_ball\n      rcases akt with ⟨N, hN⟩\n      use N; intro k kge\n      specialize hN k kge\n      exact mem_ball_iff_norm.mp hN\n    rcases ttrans xk x xkt with ⟨xkN, hxkN⟩\n    rcases ttransr (fun k ↦ f (xk k)) (f x) fxkt with ⟨fxkN, hfxkN⟩\n    rcases ttrans uk u ukt with ⟨ukN, hukN⟩\n    let N := max (max xkN fxkN) ukN\n    use N\n    constructor\n    · specialize hukN N _\n      exact Nat.le_max_right (max xkN fxkN) ukN\n      assumption\n    constructor\n    repeat\n      · specialize hxkN N _\n        apply le_trans\n        apply le_max_left xkN fxkN\n        apply le_max_left\n        assumption\n      · specialize hfxkN N _\n        apply le_trans\n        apply le_max_right xkN fxkN\n        apply le_max_left\n        assumption\n  rw [subdifferential, mem_setOf] at *\n  have h'' :\n    ∀ (n : ℕ),\n      ∃ (xnk : ℕ → E),\n        Tendsto xnk atTop (𝓝 x) ∧\n          Tendsto (fun k ↦ f (xnk k)) atTop (𝓝 (f x)) ∧\n            (∃ v, ∀ (n_1 : ℕ), v n_1 ∈ f_subdifferential f (xnk n_1) ∧ Tendsto v atTop (𝓝 (vn n))) :=\n    by\n    intro n; specialize vnin n; rw [mem_setOf] at vnin\n    rcases vnin with ⟨xnk, xnkt, fxnkt, other⟩\n    use xnk\n  apply Classical.axiomOfChoice at h''\n  rcases h'' with ⟨xnk, allh⟩\n  let xnkt := fun n ↦ (allh n).left\n  let fxnkt := fun n ↦ (allh n).right.left\n  let propv := fun n ↦ (allh n).right.right\n  apply Classical.axiomOfChoice at propv\n  rcases propv with ⟨vnk, allh'⟩\n  let vnkt := fun n ↦ (allh' n 1).right\n  have npos (n : ℕ) : 0 < n + 1 := by simp\n  let hNn := fun n ↦\n    (h' (xnk (n + 1)) (vnk (n + 1)) (vn (n + 1)) (n + 1) (npos n) (xnkt (n + 1)) (fxnkt (n + 1)) (vnkt (n + 1)))\n  apply Classical.axiomOfChoice at hNn\n  rcases hNn with ⟨Nn, hNn'⟩\n  use fun n ↦ (xnk (n + 1)) ((Nn (n)))\n  constructor\n  · rw [tendsto_atTop_nhds]\n    intro u xinu uopen\n    rw [Metric.isOpen_iff] at uopen\n    specialize uopen x xinu\n    rcases uopen with ⟨ε, εpos, εin⟩\n    rcases Real.exists_floor (1 / ε) with ⟨ε', hε', hε''⟩\n    have hN : ∃ (N : ℕ), N ≤ (1 / ε) ∧ (1 / ε) ≤ (N + 1) :=\n      by\n      have hN' : ∃ (N : ℕ), N = ε' := by\n        refine CanLift.prf ε' ?_\n        by_contra εneg\n        push_neg at εneg\n        specialize hε'' 0 _\n        apply le_of_lt\n        simp at εpos; simp\n        apply εpos; linarith\n      rcases hN' with ⟨N, hN'⟩\n      use N\n      have hN'' : (N : ℝ) = (ε' : ℝ) :=\n        Eq.symm (Real.ext_cauchy (congrArg Real.cauchy (congrArg Int.cast (id (Eq.symm hN')))))\n      constructor\n      rw [hN'']\n      exact hε'\n      rw [hN'']\n      by_contra this\n      push_neg at this\n      specialize hε'' (ε' + 1) _\n      apply le_of_lt\n      simp; simp at this; apply this\n      have this : ¬ε' + 1 ≤ ε' := by linarith\n      apply this; apply hε''\n    rcases hN with ⟨N, _, Nge⟩\n    use (N)\n    intro n nge\n    apply mem_of_subset_of_mem\n    apply εin\n    rw [Metric.ball, mem_setOf, dist_eq_norm]\n    apply lt_of_lt_of_le\n    apply (hNn' n).right.left\n    simp; apply le_trans\n    apply le_of_lt\n    apply div_two_lt_of_pos\n    apply inv_pos.mpr\n    linarith\n    apply (inv_le_comm₀ _ _).mp\n    simp at Nge\n    apply le_trans\n    apply Nge\n    simp; assumption\n    simp at εpos\n    assumption\n    linarith\n  constructor\n  · rw [tendsto_atTop_nhds]\n    intro u fxinu uopen\n    rw [Metric.isOpen_iff] at uopen\n    specialize uopen (f x) fxinu\n    rcases uopen with ⟨ε, εpos, εin⟩\n    rcases Real.exists_floor (1 / ε) with ⟨ε', hε', hε''⟩\n    have hN : ∃ (N : ℕ), N ≤ (1 / ε) ∧ (1 / ε) ≤ (N + 1) :=\n      by\n      have hN' : ∃ (N : ℕ), N = ε' := by\n        refine CanLift.prf ε' ?_\n        by_contra εneg\n        push_neg at εneg\n        specialize hε'' 0 _\n        apply le_of_lt\n        simp at εpos\n        simp\n        apply εpos\n        linarith\n      rcases hN' with ⟨N, hN'⟩\n      use N\n      have hN'' : (N : ℝ) = (ε' : ℝ) :=\n        Eq.symm (Real.ext_cauchy (congrArg Real.cauchy (congrArg Int.cast (id (Eq.symm hN')))))\n      constructor\n      rw [hN'']\n      exact hε'\n      rw [hN'']\n      by_contra this\n      push_neg at this\n      specialize hε'' (ε' + 1) _\n      apply le_of_lt\n      simp\n      simp at this\n      apply this\n      have this : ¬ε' + 1 ≤ ε' := by linarith\n      apply this\n      apply hε''\n    rcases hN with ⟨N, _, Nge⟩\n    use N\n    intro n nge\n    apply mem_of_subset_of_mem\n    apply εin\n    rw [Metric.ball, mem_setOf, dist_eq_norm]\n    apply lt_of_lt_of_le\n    apply (hNn' n).right.right\n    simp\n    apply le_trans\n    apply le_of_lt\n    apply div_two_lt_of_pos\n    apply inv_pos.mpr\n    linarith\n    apply (inv_le_comm₀ _ _).mp\n    simp at Nge\n    apply le_trans\n    apply Nge\n    simp; assumption\n    simp at εpos\n    assumption\n    linarith\n  · use fun n ↦ (vnk (n + 1)) ((Nn (n)))\n    intro n\n    constructor\n    specialize allh' (n + 1) (Nn n)\n    apply allh'.left\n    rw [tendsto_atTop_nhds]\n    intro u vinu uopen\n    rw [Metric.isOpen_iff] at uopen\n    specialize uopen (v) vinu\n    rcases uopen with ⟨ε, εpos, εin⟩\n    rcases Real.exists_floor (1 / ε) with ⟨ε', hε', hε''⟩\n    have hN : ∃ (N : ℕ), N ≤ (1 / ε) ∧ (1 / ε) ≤ (N + 1) :=\n      by\n      have hN' : ∃ (N : ℕ), N = ε' := by\n        refine CanLift.prf ε' ?_\n        by_contra εneg\n        push_neg at εneg\n        specialize hε'' 0 _\n        apply le_of_lt\n        simp at εpos\n        simp\n        apply εpos\n        linarith\n      rcases hN' with ⟨N, hN'⟩\n      use N\n      have hN'' : (N : ℝ) = (ε' : ℝ) :=\n        Eq.symm (Real.ext_cauchy (congrArg Real.cauchy (congrArg Int.cast (id (Eq.symm hN')))))\n      constructor\n      rw [hN'']\n      exact hε'\n      rw [hN'']\n      by_contra this\n      push_neg at this\n      specialize hε'' (ε' + 1) _\n      apply le_of_lt\n      simp\n      simp at this\n      apply this\n      have this : ¬ε' + 1 ≤ ε' := by linarith\n      apply this\n      apply hε''\n    rcases hN with ⟨N, Nle, Nge⟩\n    let δ := (1 : ℝ) / (2 * (N + 1))\n    have le' : ∃ N', ∀ k, N' ≤ k → ‖vn (k + 1) - v‖ < δ :=\n      by\n      rw [tendsto_atTop_nhds] at vntov\n      specialize vntov (Metric.ball v δ) _ _\n      apply Metric.mem_ball_self\n      refine one_div_pos.mpr ?specialize_1.h.a\n      apply mul_pos\n      simp\n      linarith\n      exact Metric.isOpen_ball\n      rcases vntov with ⟨N, hN⟩\n      use (N - 1); intro k kge\n      specialize hN (k + 1) _\n      exact Nat.le_add_of_sub_le kge\n      apply mem_ball_iff_norm.mp\n      assumption\n    rcases le' with ⟨N', hN'⟩\n    use (max N N'); intro n nge\n    apply mem_of_subset_of_mem\n    apply εin\n    rw [Metric.ball, mem_setOf, dist_eq_norm]\n    apply lt_of_lt_of_le\n    rw [← add_sub_cancel (vn (n + 1)) (vnk (n + 1) (Nn n)), add_comm, ← add_sub]\n    apply lt_of_le_of_lt\n    apply norm_add_le\n    have this : ‖vnk (n + 1) (Nn n) - vn (n + 1)‖ + ‖vn (n + 1) - v‖ < (1 : ℝ) / (N + 1) :=\n      by\n      specialize hN' n _\n      apply le_trans\n      apply le_max_right\n      exact N\n      assumption\n      specialize hNn' n\n      let vnkle := hNn'.left\n      have vnkle' : ‖vnk (n + 1) (Nn n) - vn (n + 1)‖ < δ :=\n        by\n        apply lt_of_lt_of_le vnkle\n        apply (one_div_le_one_div _ _).mpr\n        simp\n        apply le_trans\n        apply le_max_left\n        apply N'\n        assumption\n        simp\n        exact Nat.cast_add_one_pos n\n        simp\n        exact Nat.cast_add_one_pos N\n      have that : δ + δ = 1 / (↑N + 1) := by rw [← mul_two, div_mul]; simp\n      rw [← that]\n      apply add_lt_add\n      repeat' assumption\n    apply this\n    apply (one_div_le _ _).mpr\n    assumption\n    exact Nat.cast_add_one_pos N\n    simp at εpos\n    assumption",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_closed",
+        "theorem_statement": " (f : E → ℝ) (x : E) : IsClosed (f_subdifferential f x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the Frechet subdifferential is a closed set-/\ntheorem f_subdiff_closed (f : E → ℝ) (x : E) : IsClosed (f_subdifferential f x) :=\n  by\n  rw [← isOpen_compl_iff, Metric.isOpen_iff]\n  intro v hv'\n  rw [mem_compl_iff, has_f_subdiff_iff] at hv'; push_neg at hv'\n  rcases hv' with ⟨ε, εpos, hε⟩\n  rw [Filter.Eventually, mem_nhds_iff] at hε\n  push_neg at hε\n  have hh : f_subdifferential f x = {u | ∀ ε > 0, ∀ᶠ (y : E) in 𝓝 x, f y - f x - (inner u (y - x)) ≥ -ε * ‖y - x‖} :=\n    by\n    ext u\n    rw [has_f_subdiff_iff, mem_setOf]\n  rw [hh]\n  by_contra h\n  push_neg at h\n  have ε2pos : 0 < (ε / 2) := by linarith\n  specialize h (ε / 2) ε2pos\n  rw [not_subset] at h\n  rcases h with ⟨a, amem, anotmem⟩\n  rw [not_mem_compl_iff, mem_setOf] at anotmem\n  specialize anotmem (ε / 2) ε2pos\n  rw [Filter.Eventually, mem_nhds_iff] at anotmem\n  rcases anotmem with ⟨ta, tasubset, taopen, xinta⟩\n  have tasubset' : ta ⊆ {x_1 | f x_1 - f x - (inner v (x_1 - x)) ≥ -ε * ‖x_1 - x‖} :=\n    by\n    intro y yinta; rw [mem_setOf, ge_iff_le]\n    rw [← add_sub_cancel a v, inner_add_left, ← sub_sub, sub_eq_add_neg (f y - f x - inner a (y - x))]\n    have εtrans : -ε = -(ε / 2) + -(ε / 2) := by linarith\n    rw [εtrans, add_mul]\n    apply add_le_add\n    · exact tasubset yinta\n    · simp\n      apply le_trans; apply real_inner_le_norm\n      apply mul_le_mul_of_nonneg_right\n      rw [← dist_eq_norm']\n      rw [Metric.ball, mem_setOf] at amem\n      exact le_of_lt amem\n      apply norm_nonneg\n  specialize hε ta tasubset' taopen\n  apply hε\n  apply xinta",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_convex",
+        "theorem_statement": " (f : E → ℝ) (x : E) : Convex ℝ (f_subdifferential f x)",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the Frechet subdifferential is a convex set-/\ntheorem f_subdiff_convex (f : E → ℝ) (x : E) : Convex ℝ (f_subdifferential f x) :=\n  by\n  intro u hu v hv a b ha hb hab\n  rw [has_f_subdiff_iff] at *\n  intro ε εpos\n  filter_upwards [hu _ εpos, hv _ εpos] with y hyu hyv\n  rw [inner_add_left, real_inner_smul_left, real_inner_smul_left]\n  rw [← one_mul (f y), ← one_mul (f x), ← hab, add_mul, add_mul, sub_add_eq_sub_sub, add_comm, sub_add_eq_sub_sub, ←\n    add_sub, ← mul_sub a (f y) (f x), add_comm, ← add_sub, ← mul_sub, add_comm, ← add_sub, ← mul_sub, add_comm, ←\n    add_sub, ← mul_sub]\n  rw [← one_mul (-ε * ‖y - x‖), ← hab, add_mul]\n  rw [ge_iff_le] at *\n  apply add_le_add\n  · exact mul_le_mul_of_nonneg_left hyu ha\n  · exact mul_le_mul_of_nonneg_left hyv hb",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "convex_f_f_subdiff_eq_subgradient",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hconv : ConvexOn ℝ univ f) : f_subdifferential f x = SubderivAt f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- if f is a convex function, Frechet subdifferential is equal to subgradient-/\ntheorem convex_f_f_subdiff_eq_subgradient (f : E → ℝ) (x : E) (hconv : ConvexOn ℝ univ f) :\n    f_subdifferential f x = SubderivAt f x := by\n  rw [SubderivAt]\n  ext g\n  rw [mem_setOf, HasSubgradientAt]\n  constructor\n  · intro hg\n    by_contra h'\n    push_neg at h'\n    rcases h' with ⟨y', hy'⟩\n    rw [has_f_subdiff_iff] at hg\n    rw [ConvexOn] at hconv\n    rcases hconv with ⟨convset, convfun⟩\n    have xin : x ∈ univ := by simp\n    have yin' : y' ∈ univ := by simp\n    specialize convfun xin yin'\n    have pos : 0 < (1 / 2) * ((f x) + inner g (y' - x) - f y') / ‖y' - x‖ :=\n      by\n      apply div_pos\n      · apply mul_pos\n        simp; simp\n        apply hy'\n      · apply norm_pos_iff.mpr\n        by_contra yeq'\n        rw [sub_eq_zero] at yeq'\n        rw [yeq'] at hy'\n        simp at hy'\n    rw [← gt_iff_lt] at pos\n    specialize hg ((1 / 2) * ((f x) + inner g (y' - x) - f y') / ‖y' - x‖)\n    specialize hg pos\n    simp at hg\n    rw [Filter.Eventually, mem_nhds_iff] at hg\n    rcases hg with ⟨T, tin, topen, xint⟩\n    let S := {x_1 | ∃ (r : ℝ), 0 < r ∧ r < 1 ∧ x_1 = r • x + (1 - r) • y'}\n    let ST := S ∩ T\n    have STnonempty : ∃ x_1, x_1 ∈ ST := by\n      rw [Metric.isOpen_iff] at topen\n      specialize topen x xint\n      rcases topen with ⟨δ, posδ, hδ⟩\n      let δ' := min δ ‖y' - x‖\n      let δ'' := 1 - (1 / 2) * (δ' / ‖y' - x‖)\n      use (δ'') • x + (1 - δ'') • y'\n      apply mem_inter\n      · rw [mem_setOf]\n        use δ''\n        constructor\n        · apply sub_pos_of_lt\n          simp\n          refine (inv_mul_lt_iff₀ ?h.left.a.h).mpr ?h.left.a.a\n          · simp\n          · simp\n            apply lt_of_le_of_lt\n            apply (div_le_one _).mpr\n            apply min_le_right\n            apply norm_pos_iff.mpr\n            by_contra yeq'\n            rw [sub_eq_zero] at yeq'\n            rw [yeq'] at hy'\n            rw [sub_self, inner_zero_right, add_zero, lt_iff_not_le] at hy'\n            apply hy'\n            simp\n            simp\n        constructor\n        · change 1 - 1 / 2 * (δ' / ‖y' - x‖) < 1\n          simp\n          apply div_pos\n          · apply lt_min\n            apply posδ\n            apply norm_pos_iff.mpr\n            by_contra yeq'\n            rw [sub_eq_zero] at yeq'\n            rw [yeq'] at hy'\n            rw [sub_self, inner_zero_right, add_zero, lt_iff_not_le] at hy'\n            apply hy'\n            simp\n          · apply norm_pos_iff.mpr\n            by_contra yeq'\n            rw [sub_eq_zero] at yeq'\n            rw [yeq'] at hy'\n            rw [sub_self, inner_zero_right, add_zero, lt_iff_not_le] at hy'\n            apply hy'\n            simp\n        simp\n      apply mem_of_subset_of_mem hδ\n      rw [Metric.ball, mem_setOf, dist_eq_norm]\n      have this : δ'' • x + (1 - δ'') • y' - x = (1 - δ'') • (y' - x) :=\n        by\n        rw [smul_sub, sub_smul 1 δ'', sub_smul 1 δ'']\n        rw [add_sub, sub_sub_sub_eq, add_comm (1 • y'), one_smul, one_smul]\n        rw [sub_sub]\n      rw [this, norm_smul]\n      simp\n      rw [← sub_add]; simp\n      rw [abs_eq_self.mpr]\n      rw [mul_assoc]\n      have this : δ' / ‖y' - x‖ * ‖y' - x‖ = δ' :=\n        by\n        have nonzero : ‖y' - x‖ ≠ 0 := by\n          by_contra yeq'\n          rw [norm_eq_zero, sub_eq_zero] at yeq'\n          rw [yeq'] at hy'\n          rw [sub_self, inner_zero_right, add_zero, lt_iff_not_le] at hy'\n          apply hy'\n          simp\n        refine div_mul_cancel₀ δ' nonzero\n      rw [this]\n      refine (inv_mul_lt_iff₀ ?h.hb.h).mpr ?h.hb.a\n      simp\n      apply lt_of_le_of_lt\n      apply min_le_left\n      exact lt_two_mul_self posδ\n      simp\n      apply div_nonneg\n      apply le_min\n      linarith\n      apply norm_nonneg\n      apply norm_nonneg\n    rcases STnonempty with ⟨x1, hx1⟩\n    rw [mem_inter_iff] at hx1\n    rcases hx1 with ⟨x1s, x1t⟩\n    rw [mem_setOf] at x1s\n    rcases x1s with ⟨r, rpos, rltone, x1eq⟩\n    have x1in :\n      x1 ∈ {x_1 | inner g (x_1 - x) ≤ f x_1 - f x + 2⁻¹ * (f x + inner g (y' - x) - f y') / ‖y' - x‖ * ‖x_1 - x‖} :=\n      by\n      apply mem_of_subset_of_mem tin\n      assumption\n    rw [mem_setOf, x1eq] at x1in\n    rw [add_comm] at x1in\n    have this : (1 - r) • y' + r • x - x = (1 - r) • (y' - x) :=\n      by\n      rw [smul_sub, sub_smul 1 r, sub_smul 1 r]\n      rw [sub_sub_sub_eq, add_comm (1 • y'), one_smul, one_smul, add_comm]\n      rw [add_sub_add_comm, add_sub, add_sub]\n      simp\n      rw [add_comm, add_comm (r • x - r • y'), add_sub]\n    rw [this] at x1in\n    rw [inner_smul_right, norm_smul] at x1in\n    have rnonneg : 0 ≤ r := by linarith\n    have rleone : 0 ≤ 1 - r := by linarith\n    have r2pos : 0 < (1 - r) / 2 := by linarith\n    have req : r + (1 - r) = 1 := by simp\n    specialize convfun rnonneg rleone req\n    have nonneg : 0 ≤ f y' - f x - inner g (y' - x) :=\n      by\n      apply nonneg_of_mul_nonneg_right _ r2pos\n      rw [mul_sub, ← sub_self_div_two (1 - r), sub_mul, sub_mul (1 - r)]\n      simp\n      apply le_trans x1in\n      rw [add_comm ((1 - r) • y'), sub_add, sub_le_iff_le_add]\n      apply le_trans convfun\n      simp; rw [abs_eq_self.mpr rleone]\n      rw [← mul_assoc]; rw [← sub_le_iff_le_add]\n      rw [← sub_add, add_comm (r * f x), add_comm (f x), ← add_sub, ← add_sub, mul_add]\n      nth_rw 2 [← one_mul (f x)]\n      rw [← sub_mul]\n      nth_rw 2 [← neg_sub]\n      rw [neg_mul, ← sub_eq_add_neg ((1 - r) * f y'), ← mul_sub, mul_assoc, mul_comm (1 - r) ‖y' - x‖]\n      rw [← mul_assoc, div_mul, div_self]\n      simp\n      rw [mul_comm (2⁻¹ * inner g (y' - x) + 2⁻¹ * (f x - f y')), mul_add,\n        add_comm ((1 - r) * (2⁻¹ * inner g (y' - x)))]\n      rw [← add_assoc, ← mul_assoc, ← mul_assoc, inv_eq_one_div]\n      linarith\n      by_contra yeq'\n      rw [norm_eq_zero, sub_eq_zero] at yeq'\n      rw [yeq'] at hy'\n      rw [sub_self, inner_zero_right, add_zero, lt_iff_not_le] at hy'\n      apply hy'\n      simp\n    have nonneg' : ¬0 > f y' - f x - inner g (y' - x) := by linarith\n    apply nonneg'\n    simp\n    linarith\n  · intro h\n    rw [has_f_subdiff_iff]\n    intro ε εpos\n    filter_upwards\n    intro y\n    rw [ge_iff_le]\n    apply le_trans\n    simp\n    apply neg_le.mpr\n    have pos : -0 ≤ ε * ‖y - x‖ := by\n      simp\n      rw [mul_comm]\n      apply (mul_nonneg_iff_left_nonneg_of_pos εpos).mpr\n      simp\n    apply pos\n    simp\n    specialize h y\n    simp at h\n    linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_neg_f_subdiff_unique",
+        "theorem_statement": " (hu : u ∈ f_subdifferential f x) (hv : v ∈ f_subdifferential (-f) x) : u = -v",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- correlation of the Frechet subdifferential between negative function -/\ntheorem f_subdiff_neg_f_subdiff_unique (hu : u ∈ f_subdifferential f x) (hv : v ∈ f_subdifferential (-f) x) : u = -v :=\n  by\n  rw [has_f_subdiff_iff] at *\n  have h : ∀ ε > 0, ∀ᶠ y in 𝓝 x, inner (u + v) (y - x) ≤ ε * ‖y - x‖ :=\n    by\n    intro ε εpos\n    have ε2pos : 0 < ε / 2 := by positivity\n    filter_upwards [hu _ ε2pos, hv _ ε2pos] with y huy hvy\n    rw [InnerProductSpace.add_left]\n    simp only [Pi.neg_apply, sub_neg_eq_add] at hvy\n    linarith\n  by_cases heq : u + v = 0; exact eq_neg_of_add_eq_zero_left heq\n  apply eq_of_forall_dist_le\n  rw [dist_eq_norm, sub_neg_eq_add]\n  intro ε εpos\n  specialize h ε εpos\n  rw [Metric.eventually_nhds_iff_ball] at h\n  obtain ⟨δ, δpos, hd⟩ := h\n  have hne := norm_ne_zero_iff.mpr heq\n  have hb : x + (δ / 2 / ‖u + v‖) • (u + v) ∈ Metric.ball x δ :=\n    by\n    rw [mem_ball_iff_norm', sub_add_cancel_left]\n    rw [norm_neg, norm_smul, Real.norm_eq_abs, abs_div, abs_norm]\n    rw [div_mul_cancel₀ _ hne, abs_of_nonneg (by positivity)]\n    linarith\n  specialize hd (x + ((δ / 2) / ‖u + v‖) • (u + v)) hb\n  rw [add_sub_cancel_left, inner_smul_right, norm_smul, Real.norm_eq_abs, abs_div, abs_norm] at hd\n  rw [real_inner_self_eq_norm_mul_norm, ← mul_assoc, div_mul_cancel₀ _ hne] at hd\n  rw [div_mul_cancel₀ _ hne, abs_of_nonneg (by positivity), mul_comm] at hd\n  exact le_of_mul_le_mul_right hd (by positivity)",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_add",
+        "theorem_statement": " (hf : u ∈ f_subdifferential f x) (hg : v ∈ f_subdifferential g x) : u + v ∈ f_subdifferential (f + g) x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the calculation rule for addition -/\ntheorem f_subdiff_add (hf : u ∈ f_subdifferential f x) (hg : v ∈ f_subdifferential g x) :\n    u + v ∈ f_subdifferential (f + g) x := by\n  rw [has_f_subdiff_iff] at *\n  intro ε εpos\n  have ε2pos : 0 < ε / 2 := by positivity\n  filter_upwards [hf _ ε2pos, hg _ ε2pos] with y hfy hgy\n  simp only [Pi.add_apply, neg_mul, ge_iff_le, neg_le_sub_iff_le_add]\n  rw [InnerProductSpace.add_left]\n  linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_smul",
+        "theorem_statement": " (h : u ∈ f_subdifferential (c • f) x) (cpos : 0 < c) : c⁻¹ • u ∈ f_subdifferential f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the calculation rule for functions timing a positive constant -/\ntheorem f_subdiff_smul (h : u ∈ f_subdifferential (c • f) x) (cpos : 0 < c) : c⁻¹ • u ∈ f_subdifferential f x :=\n  by\n  rw [has_f_subdiff_iff] at *\n  intro ε εpos\n  filter_upwards [h _ (mul_pos cpos εpos)] with y hy\n  rw [real_inner_smul_left]\n  simp only [Pi.smul_apply, smul_eq_mul, neg_mul, neg_le_sub_iff_le_add] at hy\n  apply (mul_le_mul_left cpos).mp\n  field_simp\n  linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "convex_f_f_subdiff_eq_subdiff",
+        "theorem_statement": " (f : E → ℝ) (x : E) (hconv : ConvexOn ℝ univ f) : f_subdifferential f x = subdifferential f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- if f is convex , then Frechet subdifferential equals subdifferential equals subgradient-/\ntheorem convex_f_f_subdiff_eq_subdiff (f : E → ℝ) (x : E) (hconv : ConvexOn ℝ univ f) :\n    f_subdifferential f x = subdifferential f x :=\n  by\n  rw [subdifferential]\n  ext v\n  rw [mem_setOf]\n  constructor\n  · intro h\n    use fun (_k : ℕ) ↦ x\n    constructor\n    simp\n    constructor\n    simp\n    use fun _k ↦ v\n    intro _k\n    constructor\n    assumption; simp\n  · intro h\n    rw [convex_f_f_subdiff_eq_subgradient f x hconv]\n    rcases h with ⟨u, utendsx, futendsfx, vn, hvn⟩\n    rw [SubderivAt, mem_setOf, HasSubgradientAt]\n    intro y\n    have hvnin : ∀ (n : ℕ), f y ≥ f (u n) + inner (vn n) (y - (u n)) :=\n      by\n      intro n\n      specialize hvn n\n      rcases hvn with ⟨hvnin, vntendsv⟩\n      rw [convex_f_f_subdiff_eq_subgradient f (u n) hconv] at hvnin\n      rw [SubderivAt, mem_setOf, HasSubgradientAt] at hvnin\n      apply hvnin\n    have vntendsv : Tendsto vn atTop (𝓝 v) := by\n      specialize hvn 1\n      exact hvn.right\n    have tendsto : Tendsto (fun n ↦ f (u n) + inner (vn n) (y - (u n))) atTop (𝓝 (f x + inner v (y - x))) :=\n      by\n      apply Tendsto.add futendsfx\n      apply Tendsto.inner vntendsv\n      exact (tendsto_const_sub_iff y).mpr utendsx\n    simp\n    simp at hvnin\n    apply le_of_tendsto_of_frequently\n    apply tendsto\n    exact Filter.Frequently.of_forall hvnin",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "first_order_optimality_condition",
+        "theorem_statement": " (f : E → ℝ) (x₀ : E) (hx : IsLocalMin f x₀) : (0 : E) ∈ f_subdifferential f x₀",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- first order optimality condition for unconstrained optimization problem -/\ntheorem first_order_optimality_condition (f : E → ℝ) (x₀ : E) (hx : IsLocalMin f x₀) :\n    (0 : E) ∈ f_subdifferential f x₀ := by\n  rw [has_f_subdiff_iff]\n  intro ε εpos\n  filter_upwards [hx] with y hy\n  have : 0 ≤ ε * ‖y - x₀‖ := by positivity\n  simp only [inner_zero_left, sub_zero, neg_mul, ge_iff_le, neg_le_sub_iff_le_add]\n  linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "first_order_optimality_condition'",
+        "theorem_statement": " (f : E → ℝ) (x₀ : E) (hx : IsLocalMin f x₀) : (0 : E) ∈ subdifferential f x₀",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable\n  {c : ℝ}\n    /- the general differential function used in the definition -/"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- first order optimality condition for unconstrained optimization problem -/\ntheorem first_order_optimality_condition' (f : E → ℝ) (x₀ : E) (hx : IsLocalMin f x₀) :\n    (0 : E) ∈ subdifferential f x₀ := by\n  obtain hcon := subdifferential_subset f x₀\n  apply hcon; exact first_order_optimality_condition f x₀ hx",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "HasGradientAt_iff_f_subdiff",
+        "theorem_statement": " : HasGradientAt f u x ↔ u ∈ f_subdifferential f x ∧ -u ∈ f_subdifferential (-f) x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- an equal statement for differential function in Frechet subdifferential-/\ntheorem HasGradientAt_iff_f_subdiff : HasGradientAt f u x ↔ u ∈ f_subdifferential f x ∧ -u ∈ f_subdifferential (-f) x :=\n  by\n  rw [hasGradientAt_iff_isLittleO, Asymptotics.isLittleO_iff]\n  rw [has_f_subdiff_iff, has_f_subdiff_iff]\n  constructor\n  · intro h\n    constructor\n    · intro ε εpos\n      filter_upwards [h εpos] with y hy\n      rw [Real.norm_eq_abs, abs_le] at hy\n      linarith\n    · intro ε εpos\n      filter_upwards [h εpos] with y hy\n      rw [Real.norm_eq_abs, abs_le] at hy\n      simp only [Pi.neg_apply, sub_neg_eq_add, inner_neg_left, neg_mul]\n      linarith\n  · intro ⟨h1, h2⟩ c cpos\n    filter_upwards [h1 c cpos, h2 c cpos] with y h1y h2y\n    simp only [Pi.neg_apply, sub_neg_eq_add, inner_neg_left, neg_mul] at h2y\n    rw [Real.norm_eq_abs, abs_le]\n    constructor <;> linarith",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_gradiant",
+        "theorem_statement": " (f : E → ℝ) (f' : E → E) (z : E) (hf : HasGradientAt f (f' z) z) : f_subdifferential f z = {f' z}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the Frechet subdifferential of a differentiable function is its gradient set-/\ntheorem f_subdiff_gradiant (f : E → ℝ) (f' : E → E) (z : E) (hf : HasGradientAt f (f' z) z) :\n    f_subdifferential f z = {f' z} := by\n  ext u\n  rw [mem_singleton_iff]\n  rw [HasGradientAt_iff_f_subdiff] at hf\n  constructor\n  · exact fun h ↦ (neg_neg (f' z)) ▸ (f_subdiff_neg_f_subdiff_unique h hf.2)\n  · exact fun h ↦ h ▸ hf.1",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "subdiff_gradient",
+        "theorem_statement": " (f : E → ℝ) (f' : E → E) (hf : ∀ x₁, HasGradientAt f (f' x₁) x₁) (gradcon : Continuous f') (z : E) :\n  subdifferential f z = {f' z}",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the subdifferential of a differentiable function is its gradient set-/\ntheorem subdiff_gradient (f : E → ℝ) (f' : E → E) (hf : ∀ x₁, HasGradientAt f (f' x₁) x₁) (gradcon : Continuous f')\n    (z : E) : subdifferential f z = {f' z} := by\n  rw [subdifferential]\n  ext x\n  constructor\n  · intro xin\n    rw [mem_setOf] at *\n    rcases xin with ⟨u, ⟨utendz, ⟨utendfz, ⟨v, hv⟩⟩⟩⟩\n    have veq : ∀ (n : ℕ), v n = f' (u n) := by\n      intro n\n      rcases hv n with ⟨vin, vtend⟩\n      rw [f_subdiff_gradiant f f'] at vin\n      exact vin\n      exact hf (u n)\n    apply tendsto_nhds_unique (hv 1).right\n    rw [tendsto_congr veq]\n    apply tendsto_atTop_nhds.mpr\n    intro U uin uopen\n    rw [continuous_def] at gradcon\n    rw [tendsto_atTop_nhds] at utendz\n    have zinvu : z ∈ ((f') ⁻¹' U) := by simp; assumption\n    rcases utendz ((f') ⁻¹' U) zinvu (gradcon U uopen) with ⟨N, hN⟩\n    use N\n    intro n nge\n    change u n ∈ (f') ⁻¹' U\n    apply hN n nge\n  · intro xin\n    rw [mem_setOf, xin]\n    use fun _ ↦ z\n    constructor; simp\n    constructor; simp\n    use fun _ ↦ f' z\n    intro _; constructor; rw [f_subdiff_gradiant f f']\n    rfl\n    apply hf z\n    simp only [tendsto_const_nhds_iff]",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_add_smooth",
+        "theorem_statement": " (h : u ∈ f_subdifferential f x) (hg : HasGradientAt g v x) : u + v ∈ f_subdifferential (f + g) x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem f_subdiff_add_smooth (h : u ∈ f_subdifferential f x) (hg : HasGradientAt g v x) :\n    u + v ∈ f_subdifferential (f + g) x :=\n  f_subdiff_add h (HasGradientAt_iff_f_subdiff.mp hg).1",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_prox",
+        "theorem_statement": " (h : prox_prop f y x) : y - x ∈ f_subdifferential f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem f_subdiff_prox (h : prox_prop f y x) : y - x ∈ f_subdifferential f x :=\n  by\n  have : IsLocalMin (fun u ↦ f u + ‖u - y‖ ^ 2 / 2) x :=\n    by\n    have := h.localize\n    rwa [IsLocalMinOn, nhdsWithin_univ] at this\n  have hd := first_order_optimality_condition _ _ this\n  have hg := HasGradientAt.neg (@gradient_of_sq _ _ _ _ y x)\n  have := f_subdiff_add_smooth hd hg\n  simp only [neg_sub, zero_add] at this\n  have hf : f = (fun u ↦ f u + ‖u - y‖ ^ 2 / 2) + fun x ↦ -(‖x - y‖ ^ 2 / 2) :=\n    by\n    ext x\n    simp only [Pi.add_apply, add_neg_cancel_right]\n  exact hf ▸ this",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_add'",
+        "theorem_statement": " (f : E → ℝ) (g : E → ℝ) (g' : E → E) (x : E) (hg : ∀ x₁, HasGradientAt g (g' x₁) x₁) (z : E) :\n  z ∈ f_subdifferential (f + g) x ↔ ∃ zf ∈ f_subdifferential f x, ∃ zg ∈ f_subdifferential g x, z = zf + zg",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- if one function is differentiable, the Frechet subdifferential of the sum of two functions\ncan be transverted to the sum of Frechet subdifferential for each function-/\ntheorem f_subdiff_add' (f : E → ℝ) (g : E → ℝ) (g' : E → E) (x : E) (hg : ∀ x₁, HasGradientAt g (g' x₁) x₁) (z : E) :\n    z ∈ f_subdifferential (f + g) x ↔ ∃ zf ∈ f_subdifferential f x, ∃ zg ∈ f_subdifferential g x, z = zf + zg :=\n  by\n  constructor\n  · intro zin\n    use z - g' x\n    constructor\n    · rw [has_f_subdiff_iff] at *\n      intro ε εpos\n      specialize hg x\n      rw [hasGradientAt_iff_isLittleO, Asymptotics.isLittleO_iff] at hg\n      have ε2pos : 0 < ε / 2 := by positivity\n      specialize hg ε2pos\n      filter_upwards [zin _ ε2pos, hg] with a za ga\n      simp at ga\n      have h : -(g a - g x - inner (g' x) (a - x)) ≥ -(ε / 2) * ‖a - x‖ :=\n        by\n        change -(ε / 2) * ‖a - x‖ ≤ -(g a - g x - inner (g' x) (a - x))\n        rw [neg_mul, neg_le_neg_iff]\n        apply le_trans; apply le_abs_self; assumption\n      rw [inner_sub_left]; simp; simp at h za\n      linarith\n    · use g' x\n      constructor\n      · rw [f_subdiff_gradiant g g']\n        simp\n        exact hg x\n      · simp\n  · intro zin\n    rcases zin with ⟨zf, zfin, zg, zgin, fgadd⟩\n    rw [fgadd]\n    apply f_subdiff_add; repeat' assumption",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "subdiff_add",
+        "theorem_statement": " (f : E → ℝ) (g : E → ℝ) (g' : E → E) (x : E) (hg : ∀ x₁, HasGradientAt g (g' x₁) x₁) (gcon : Continuous g)\n  (gradcon : Continuous g') (z : E) :\n  z ∈ subdifferential (f + g) x ↔ ∃ zf ∈ subdifferential f x, ∃ zg ∈ subdifferential g x, z = zf + zg",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- if one function is smooth, the subdifferential of the sum of two functions\ncan be transverted to the sum of subdifferential for each function-/\ntheorem subdiff_add (f : E → ℝ) (g : E → ℝ) (g' : E → E) (x : E) (hg : ∀ x₁, HasGradientAt g (g' x₁) x₁)\n    (gcon : Continuous g) (gradcon : Continuous g') (z : E) :\n    z ∈ subdifferential (f + g) x ↔ ∃ zf ∈ subdifferential f x, ∃ zg ∈ subdifferential g x, z = zf + zg :=\n  by\n  constructor\n  · intro zin\n    rw [subdifferential, mem_setOf] at zin\n    rcases zin with ⟨u, hux, hufx, hv⟩\n    rcases hv with ⟨v, vlim⟩\n    use z - g' x\n    constructor\n    · rw [subdifferential, mem_setOf]\n      constructor\n      · constructor\n        use hux\n        constructor\n        · have glim : Tendsto (fun n ↦ -g (u n)) atTop (𝓝 (-g x)) :=\n            by\n            have contneg : Continuous (-g) := by exact continuous_neg_iff.mpr gcon\n            apply tendsto_atTop_nhds.mpr\n            intro U uin uopen\n            rw [continuous_def] at contneg\n            rw [tendsto_atTop_nhds] at hux\n            have invuopen : IsOpen ((-g) ⁻¹' U) := by exact contneg U uopen\n            have xinvu : x ∈ ((-g) ⁻¹' U) := by simp; exact uin\n            rcases hux ((-g) ⁻¹' U) xinvu invuopen with ⟨N, hN⟩\n            use N\n            intro n nge\n            change u n ∈ (-g) ⁻¹' U\n            apply hN n nge\n          have functrans : (fun n ↦ f (u n)) = (fun n ↦ ((f + g) (u n)) + (-g (u n))) :=\n            by\n            ext n\n            simp\n          rw [functrans]\n          have nhds_trans : 𝓝 (f x) = (𝓝 ((f + g) x + -g x)) := by simp\n          rw [nhds_trans]\n          apply Filter.Tendsto.add hufx glim\n        use fun n ↦ (v n) - (g' (u n))\n        intro n\n        rcases vlim n with ⟨vin, vtends⟩\n        constructor\n        rw [f_subdiff_add'] at vin\n        rw [f_subdiff_gradiant g g'] at vin\n        rcases vin with ⟨zf, zfin, zg, zgin, fgadd⟩\n        simp at zgin; simp\n        rw [fgadd, zgin]\n        simp; assumption\n        exact hg (u n)\n        use g'; exact hg\n        have gradlim : Tendsto (fun n ↦ g' (u n)) atTop (𝓝 (g' x)) :=\n          by\n          apply tendsto_atTop_nhds.mpr\n          intro U uin uopen\n          rw [continuous_def] at gradcon\n          rw [tendsto_atTop_nhds] at hux\n          have invuopen : IsOpen ((g') ⁻¹' U) := by exact gradcon U uopen\n          have xinvu : x ∈ ((g') ⁻¹' U) := by simp; exact uin\n          rcases hux ((g') ⁻¹' U) xinvu invuopen with ⟨N, hN⟩\n          use N\n          intro n nge\n          change u n ∈ (g') ⁻¹' U\n          apply hN n nge\n        apply Tendsto.sub vtends\n        assumption\n    · use g' x\n      constructor\n      · rw [subdiff_gradient g g' hg gradcon]\n        simp\n      · simp\n  · intro zin\n    rcases zin with ⟨zf, zfin, zg, zgin, fgadd⟩\n    rw [fgadd, subdifferential, mem_setOf]\n    rw [subdifferential, mem_setOf] at zfin zgin\n    rcases zfin with ⟨uf, ufx, uffx, hfv⟩\n    rcases hfv with ⟨vf, vflim⟩\n    rcases zgin with ⟨ug, ugx, uggx, hgv⟩\n    rcases hgv with ⟨vg, vglim⟩\n    constructor\n    constructor\n    use ufx\n    constructor\n    · apply Filter.Tendsto.add\n      exact uffx\n      apply tendsto_atTop_nhds.mpr\n      intro U uin uopen\n      rw [continuous_def] at gcon\n      rw [tendsto_atTop_nhds] at ufx\n      have invuopen : IsOpen ((g) ⁻¹' U) := by exact gcon U uopen\n      have xinvu : x ∈ ((g) ⁻¹' U) := by simp; exact uin\n      rcases ufx ((g) ⁻¹' U) xinvu invuopen with ⟨N, hN⟩\n      use N\n      intro n nge\n      change uf n ∈ (g) ⁻¹' U\n      apply hN n nge\n    · use fun n ↦ (vf n) + g' (uf n)\n      intro n\n      constructor\n      rcases vglim n with ⟨vgin, vgtends⟩\n      rcases vflim n with ⟨vfin, vftends⟩\n      · rw [f_subdiff_add' f g g']\n        rw [f_subdiff_gradiant g g']; rw [f_subdiff_gradiant g g'] at vgin; simp at vgin\n        use vf n\n        constructor\n        assumption\n        use g' (uf n)\n        constructor\n        simp; simp; apply hg (ug n)\n        apply hg (uf n)\n        repeat' assumption;\n      · apply Filter.Tendsto.add\n        rcases vflim n with ⟨_, vflim⟩\n        apply vflim\n        have limgrad :\n          (An : ℕ → E) → (x : E) → (Tendsto An atTop (𝓝 x)) → Tendsto (fun n ↦ g' (An n)) atTop (𝓝 (g' x)) :=\n          by\n          intro An x antends\n          apply tendsto_atTop_nhds.mpr\n          intro U uin uopen\n          rw [continuous_def] at gradcon\n          rw [tendsto_atTop_nhds] at antends\n          have invuopen : IsOpen ((g') ⁻¹' U) := by exact gradcon U uopen\n          have xinvu : x ∈ ((g') ⁻¹' U) := by simp; exact uin\n          rcases antends ((g') ⁻¹' U) xinvu invuopen with ⟨N, hN⟩\n          use N\n          intro n nge\n          change An n ∈ (g') ⁻¹' U\n          apply hN n nge\n        rcases vglim n with ⟨vgin, vgtends⟩\n        rw [f_subdiff_gradiant g g'] at vgin\n        have funtrans : ∀ (n : ℕ), vg n = g' (ug n) := by\n          intro k; rcases vglim k with ⟨vgin', vgtends'⟩; rw [f_subdiff_gradiant g g'] at vgin'\n          repeat' assumption\n          apply hg (ug k)\n        rw [tendsto_congr funtrans] at vgtends\n        have zgeq : zg = g' x := by\n          apply tendsto_nhds_unique vgtends\n          apply limgrad; apply ugx\n        rw [zgeq]\n        apply limgrad; apply ufx; apply hg (ug n)",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "f_subdiff_smul_prox",
+        "theorem_statement": " (h : prox_prop (c • f) u x) (cpos : 0 < c) : c⁻¹ • (u - x) ∈ f_subdifferential f x",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "theorem f_subdiff_smul_prox (h : prox_prop (c • f) u x) (cpos : 0 < c) : c⁻¹ • (u - x) ∈ f_subdifferential f x :=\n  f_subdiff_smul (f_subdiff_prox h) cpos",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    },
+    {
+        "theorem_name": "rela_proximal_operator_partial",
+        "theorem_statement": " (f : E → ℝ) (x : E) (u : E) : u ∈ prox_set f x → (x - u) ∈ subdifferential f u",
+        "variable": [
+            "variable {E : Type*}",
+            "variable [NormedAddCommGroup E]",
+            "variable [InnerProductSpace ℝ E]",
+            "variable [CompleteSpace E]",
+            "variable {f g : E → ℝ}",
+            "variable {x y u v : E}",
+            "variable {c : ℝ}"
+        ],
+        "namespaces": [
+            "Topology",
+            "Set",
+            "BigOperators",
+            "Filter"
+        ],
+        "proof_process": "/-- the relation between subdifferential and poximal set-/\ntheorem rela_proximal_operator_partial (f : E → ℝ) (x : E) (u : E) : u ∈ prox_set f x → (x - u) ∈ subdifferential f u :=\n  by\n  intro uporx\n  rw [prox_set, mem_setOf, prox_prop] at uporx\n  have h : (0 : E) ∈ subdifferential (fun u ↦ f u + ‖u - x‖ ^ 2 / 2) u :=\n    by\n    apply mem_of_mem_of_subset\n    apply first_order_optimality_condition'\n    · apply IsMinOn.isLocalMin\n      apply uporx; simp\n    rfl\n  have ngradient : ∀ x₁, HasGradientAt (fun u ↦ ‖u - x‖ ^ 2 / 2) (x₁ - x) x₁ := by intro x₁; exact gradient_of_sq x₁\n  have _ncovex : ConvexOn ℝ Set.univ (fun u ↦ ‖u - x‖ ^ 2 / 2) := by apply convex_of_norm_sq x; exact convex_univ\n  have ncon : Continuous (fun u ↦ ‖u - x‖ ^ 2 / 2) :=\n    by\n    have funtrans : (fun u ↦ ‖u - x‖ ^ 2 / 2) = (fun u ↦ (1 / 2) * ‖u - x‖ ^ 2) :=\n      by\n      simp\n      ext y; rw [mul_comm, div_eq_mul_inv]\n    rw [funtrans]\n    apply Continuous.mul\n    simp\n    exact continuous_const\n    apply Continuous.pow\n    apply Continuous.norm\n    exact continuous_sub_right x\n  have gradcon : Continuous fun u ↦ u - x := by exact continuous_sub_right x\n  obtain h' := (subdiff_add f (fun u ↦ ‖u - x‖ ^ 2 / 2) (fun x₁ ↦ x₁ - x) u ngradient ncon gradcon 0).mp h\n  rcases h' with ⟨zf, zfin, zg, zgin, gfadd⟩\n  have nsubdifference : subdifferential (fun u ↦ ‖u - x‖ ^ 2 / 2) u = {y | y = u - x} := by\n    exact subdiff_gradient (fun u ↦ ‖u - x‖ ^ 2 / 2) (fun u ↦ u - x) ngradient gradcon u\n  rw [nsubdifference, mem_setOf] at zgin\n  rw [zgin] at gfadd\n  have zfeq : zf = -(u - x) := by\n    apply add_eq_zero_iff_eq_neg.mp\n    apply gfadd.symm\n  rw [zfeq] at zfin\n  simp at zfin\n  assumption",
+        "type": "theorem",
+        "filename": "Subdifferential"
+    }
+]
