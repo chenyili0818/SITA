@@ -12,7 +12,7 @@ SITA is a framework that automates the formalization of mathematical theorems in
 ## 🧭 Pipeline
 
 <p align="center">
-  <img src="fig/pipeline.png" alt="SITA Pipeline" width="85%">
+  <img src="fig/pipeline.svg" alt="SITA Pipeline" width="85%">
 </p>
 
 The pipeline starts from informal theorem statements, applies structure-aware parsing and template matching, and then performs LLM-assisted generation with rule-based fixes and verification feedback.
@@ -23,7 +23,7 @@ The pipeline starts from informal theorem statements, applies structure-aware pa
 SITA/
 ├── fig/
 │   ├── pipeline.pdf            # Original pipeline diagram
-│   └── pipeline.png            # Rendered image for README
+│   └── pipeline.svg            # Vector image for README
 ├── Code/
 │   ├── data/
 │   │   ├── api/                 # Configuration for external model calls
