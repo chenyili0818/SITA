@@ -4,13 +4,16 @@ SITA is a framework that automates the formalization of mathematical theorems in
 
 ## ✨ Highlights
 
+- Accepted at AAAI 2026.
 - Structure-to-instance formalization workflow for Lean.
 - Template-driven abstraction to reuse formalized structures.
 - LLM-assisted generation with feedback-guided refinement.
 
 ## 🧭 Pipeline
 
-![SITA Pipeline](fig/pipeline.png)
+<p align="center">
+  <img src="fig/pipeline.png" alt="SITA Pipeline" width="85%">
+</p>
 
 The pipeline starts from informal theorem statements, applies structure-aware parsing and template matching, and then performs LLM-assisted generation with rule-based fixes and verification feedback.
 
