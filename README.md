@@ -46,6 +46,61 @@ SITA/
 |   └── tool/model_downloader.py # Download the model needed
 ```
 
+## Use Case
+
+One representative structure-to-instance use case is **Lasso + Proximal Gradient Method (PGM)**:
+
+- **Step 1: Abstract structure $\mathcal{S}$ in Lean templates.**  
+  SITA starts from a formalized composite optimization template:
+  - problem class: `composite_pro`  
+    This describes the optimization problem form itself.
+  - algorithm class: `pg`  
+    This defines the proximal-gradient iteration scheme.
+  - abstract theorem: `pg_method_converge` (under convexity + smoothness + step-size assumptions)  
+    This is the generic convergence guarantee for the abstract `pg` method, reusable across instances once assumptions are verified.
+
+- **Step 2: Concrete instance $\mathcal{I}$ for Lasso.**  
+  Lasso objective is formalized as
+  $$
+  \min_x \frac{1}{2}\|Ax-b\|^2 + \mu\|x\|_1
+  $$
+  with explicit proximal-gradient update
+  $$
+  z = x_k - t A^\top (Ax_k-b),
+  $$
+  $$
+  (x_{k+1})_i = \operatorname{sign}(z_i)\max(|z_i|-t\mu,0).
+  $$
+  In code, this corresponds to instance-specific classes such as `Lasso_pro` and `pg_Lasso`.
+
+- **Step 3: Structure-to-instance linking.**  
+  SITA generates instance declarations from Lasso classes to abstract classes (e.g., from `Lasso_pro` to `composite_pro`, and from `pg_Lasso` to `pg`) so that generic theorems become reusable.
+
+- **Step 4: Theorem transfer.**  
+  After proving required assumptions (e.g., convexity and Lipschitz gradient lemmas), SITA applies the abstract theorem directly to obtain the instance theorem `Lasso_convergence`.
+
+This is the core idea of SITA: verify assumptions once per instance, then reuse formalized abstract theorems instead of reproving from scratch.
+
+## 📊 Core Results
+
+Table header meanings:
+- `Def`: percentage of syntactically correct generated definitions.
+- `Thm`: percentage of syntactically correct theorem statements.
+- `Instance`: percentage of syntactically correct Lean instance declarations.
+- `File`: percentage of end-to-end successful whole-file generation.
+- `MV`: majority-voting based semantic score used in the paper.
+
+| Method | Def | Thm | Instance | File | MV |
+| --- | --- | --- | --- | --- | --- |
+| Direct-V3 | 27.9% | 28.0% | 22.8% | 0.0% | 50.2 |
+| Direct-R1 | 62.8% | 25.6% | 25.7% | 0.0% | 46.0 |
+| SITA-V3 | 91.0% | 86.7% | 90.8% | 27.2% | 66.1 |
+| SITA-R1 | 93.8% | 95.6% | 95.4% | 57.14% | 76.9 |
+
+Interpretation:
+- SITA significantly improves all structure-level components (`Def`, `Thm`, `Instance`) over direct generation.
+- The biggest gap is at full-file level: direct generation is `0.0%`, while SITA-R1 reaches `57.14%`, showing that staged generation + error-fix + proof refinement is critical for end-to-end Lean files.
+
 ## 🚀 Getting Started
 
 ### Build
@@ -71,7 +126,12 @@ lake build
   python Code/src/main.py
   ```
 
-## 📄 Citation
+## Contact
+
+- Chenyi Li: `lichenyi@stu.pku.edu.cn`
+- Zaiwen Wen: `wenzw at pku dot edu dot cn`
+
+## Citation
 
 If you find our paper or our code useful, we would appreciate it if you could cite our work:
 
@@ -84,3 +144,7 @@ If you find our paper or our code useful, we would appreciate it if you could ci
   archivePrefix={arXiv},
 }
 ```
+
+## ⚖️ License
+
+This project is released under the MIT License. See `LICENSE`.
