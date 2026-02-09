@@ -50,7 +50,7 @@ SITA/
 
 One representative structure-to-instance use case is **Lasso + Proximal Gradient Method (PGM)**:
 
-- **Step 1: Abstract structure $\mathcal{S}$ in Lean templates.**  
+- **Step 1: Abstract structure in Lean templates.**  
   SITA starts from a formalized composite optimization template:
   - problem class: `composite_pro`  
     This describes the optimization problem form itself.
@@ -59,18 +59,23 @@ One representative structure-to-instance use case is **Lasso + Proximal Gradient
   - abstract theorem: `pg_method_converge` (under convexity + smoothness + step-size assumptions)  
     This is the generic convergence guarantee for the abstract `pg` method, reusable across instances once assumptions are verified.
 
-- **Step 2: Concrete instance $\mathcal{I}$ for Lasso.**  
+- **Step 2: Concrete instance for Lasso.**  
   Lasso objective is formalized as
+
   $$
   \min_x \frac{1}{2}\|Ax-b\|^2 + \mu\|x\|_1
   $$
+
   with explicit proximal-gradient update
+
   $$
   z = x_k - t A^\top (Ax_k-b),
   $$
+
   $$
   (x_{k+1})_i = \operatorname{sign}(z_i)\max(|z_i|-t\mu,0).
   $$
+
   In code, this corresponds to instance-specific classes such as `Lasso_pro` and `pg_Lasso`.
 
 - **Step 3: Structure-to-instance linking.**  
