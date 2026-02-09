@@ -73,7 +73,7 @@ One representative structure-to-instance use case is **Lasso + Proximal Gradient
   $$
 
   $$
-  (x_{k+1})_i = \operatorname{sign}(z_i)\max(|z_i|-t\mu,0).
+  (x_{k+1})_i = \text{sign}(z_i)\max(|z_i|-t\mu,0).
   $$
 
   In code, this corresponds to instance-specific classes such as `Lasso_pro` and `pg_Lasso`.
