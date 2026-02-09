@@ -62,16 +62,14 @@ lake build
 
 ## 🧪 Usage
 
-Run generation:
+- Integration with LLMs: (by `api/config.json`) for statement completion and proof suggestion.
 
-```bash
-# Generates formalizations based on config and input problems.
-python Code/src/main.py
-```
+- Run generation:
 
-## 📚 Use Cases
-
-- **Integration with LLMs**: (Suggested by `api/config.json`) for proof suggestion and statement completion.
+  ```bash
+  # Generates formalizations based on config and input problems.
+  python Code/src/main.py
+  ```
 
 ## 📄 Citation
 
